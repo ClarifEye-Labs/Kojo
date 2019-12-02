@@ -13,6 +13,7 @@ export default function App() {
       'open-sans-light': require('./assets/fonts/OpenSans-Light.ttf'),
       'open-sans-regular': require('./assets/fonts/OpenSans-Regular.ttf'),
       'open-sans-italic': require('./assets/fonts/OpenSans-Italic.ttf'),
+      'open-sans-bolditalic': require('./assets/fonts/OpenSans-BoldItalic.ttf'),
     });
     setFontLoaded(true)
     setIsAppReady(true)
