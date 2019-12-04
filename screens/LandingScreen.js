@@ -1,19 +1,19 @@
 import React from 'react'
 import { Text, Image, View, StyleSheet } from 'react-native'
-import {BlackOverlay, BackgroundImage, LandingContentView} from '../Components'
+import {BlackOverlay, BackgroundImage, LandingContentView, OutlineButton} from '../Components'
 import colors from '../constants/colors'
 
 const LandingScreen = (props) => {  
 
-    const {fullPageContainer, textStyle } = styles
+    const {fullPageContainer, textStyle, button } = styles
     const component = 
     (
        <View style={fullPageContainer}>
             <BlackOverlay>  
-                <BackgroundImage source={require('../assets/landing/1.jpg')} />
+                <BackgroundImage source={require('../assets/landing/1.jpg')}/>
             </BlackOverlay>
             <LandingContentView> 
-                <Text style={textStyle}>Welcome to KOJO!</Text> 
+                <OutlineButton style={button} />
             </LandingContentView>
        </View>
        
@@ -29,11 +29,15 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         fontFamily: 'open-sans-bolditalic',
         fontSize: 40,
-        color: colors.colorPrimary
+        backgroundColor: colors.colorPrimary, 
+        color: colors.colorAccent
     },
     fullPageContainer: {
         width: '100%',
         height: '100%'
+    },
+    button:{
+        width: 250,
     }
 })
 

@@ -1,14 +1,15 @@
 import React from 'react';
 import { View, Image, StyleSheet} from 'react-native';
+import PropTypes from 'prop-types';
 
 const BackgroundImage = (props) => {
 
-  const { container, image } = styles;
-
+  const { container } = styles; 
+  const { source } = props; 
 
   return (
     <View style={container}>
-      <Image source={props.source} />
+      <Image source={source} />
     </View>
   )
 };
@@ -20,11 +21,11 @@ const styles = StyleSheet.create({
     left: 0,   
     width: '100%',
     height: '100%'
-  },
-  image: {  
-    resizeMode: 'cover',
-    flex: 1
   }
 });
+
+BackgroundImage.propTypes = {
+  source: PropTypes.number
+}
 
 export default BackgroundImage;
