@@ -1,5 +1,5 @@
 const dimens = {
-  buttonHeight: 55,
+  buttonHeight: 45,
   buttonBorderWidth: 1,
   screenHorizontalMargin: 10,
   screenVerticalMargin: 10,

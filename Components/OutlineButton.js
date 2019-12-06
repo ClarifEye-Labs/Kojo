@@ -7,11 +7,11 @@ import dimens from '../constants/dimens'
 const OutlineButton = (props) => {
 
   const { buttonContainer } = styles;
-  const { style } = props;
+  const { style, title} = props;
  
   return (
     <View style={{...style, ...buttonContainer}}>
-      <Button onPress={props.onPress} title="Click me"/>
+      <Button onPress={props.onPress} title={title}/>
     </View>
   )
 };
@@ -23,7 +23,6 @@ const styles = StyleSheet.create({
     height: dimens.buttonHeight,
     justifyContent: 'center',
     alignContent: 'center',
-    margin: 20,
     borderWidth: dimens.buttonBorderWidth,
     borderColor: colors.colorAccent,
     backgroundColor: colors.transparent
