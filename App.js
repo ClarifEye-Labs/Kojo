@@ -28,7 +28,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      {isAppReady ? <SupplierScreen /> : null}
+      {isAppReady ? <LoginRegisterScreen /> : null}
     </View>
   );
 }

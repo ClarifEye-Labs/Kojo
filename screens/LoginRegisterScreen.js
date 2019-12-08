@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, StyleSheet, Text } from 'react-native'
+import { View, StyleSheet, Text, TextInput} from 'react-native'
 import { OutlineButton,  BlackOverlay, LogoPlaceholder} from '../Components'
 import { dimens, colors } from '../constants'
 
@@ -8,12 +8,14 @@ const LoginRegisterScreen = (props) => {
   const {
     lowerContainer, 
     upperContainer, 
+    middleContainer,
     mainContainer, 
     logo,
     logoText,
     loginText,
     loginSubText,
-    loginContainer
+    loginContainer,
+    textInputStyle
   } = styles;
 
   return (
@@ -22,8 +24,24 @@ const LoginRegisterScreen = (props) => {
         <LogoPlaceholder style={logo} />
         <Text style={logoText}> Welcome to KOJO!</Text>
       </View>
-      <View>
-        <Text> Register stuff here</Text>
+      <View style={middleContainer}>
+        <TextInput 
+        placeholder='Username' 
+        autoCompleteType='username'  
+        placeholderTextColor={colors.blackTransluscent} 
+        style={textInputStyle}/>
+        <TextInput 
+        placeholder='Password' 
+        autoCompleteType='off' 
+        style={textInputStyle}
+        placeholderTextColor={colors.blackTransluscent} 
+        secureTextEntry={true}/>
+        <TextInput 
+        placeholder='Confirm Password' 
+        autoCompleteType='off' 
+        style={textInputStyle}
+        placeholderTextColor={colors.blackTransluscent} 
+        secureTextEntry={true}/>
       </View>
       <View style={lowerContainer}>
         <View style={loginContainer}>
@@ -59,6 +77,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderColor: colors.colorPrimary,
   },
+  middleContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    paddingTop: 30
+  },
   logoText: {
     color: colors.colorPrimary,
     fontSize: 22,
@@ -87,6 +110,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignContent: 'center',
     justifyContent: 'center'
+  },
+  textInputStyle:{
+    width: '60%',
+    borderColor: colors.colorPrimary,
+    borderWidth: 1,
+    borderRadius: 8,
+    height: 40,
+    margin: 10,
+    textAlign: 'center',
+    fontFamily: 'open-sans-light'
   }
 })
 
