@@ -3,6 +3,7 @@ const dimens = {
   buttonBorderWidth: 1,
   screenHorizontalMargin: 10,
   screenVerticalMargin: 10,
+  screenDefaultMargin:10
 }
 
 export default dimens;
