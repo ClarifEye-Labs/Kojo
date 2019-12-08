@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import LandingScreen from './screens/LandingScreen'
 import * as Font from 'expo-font';
 import LoginRegisterScreen from './screens/LoginRegisterScreen';
+import SupplierScreen from './screens/supplierScreen'
 
 export default function App() {
   const [fontLoaded, setFontLoaded] = useState(false)
@@ -27,7 +28,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      {isAppReady ? <LoginRegisterScreen /> : null}
+      {isAppReady ? <SupplierScreen /> : null}
     </View>
   );
 }
