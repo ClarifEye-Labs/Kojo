@@ -4,6 +4,7 @@ import LandingScreen from './screens/LandingScreen'
 import * as Font from 'expo-font';
 import LoginRegisterScreen from './screens/LoginRegisterScreen';
 import SupplierScreen from './screens/supplierScreen'
+import SupplierRestaurantScreen from './screens/SupplierRestaurantScreen';
 
 export default function App() {
   const [fontLoaded, setFontLoaded] = useState(false)

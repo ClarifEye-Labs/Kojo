@@ -12,6 +12,9 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+    "facebookScheme": "fb1017119615324098",
+    "facebookAppId": "1017119615324098",
+    "facebookDisplayName":"Kojo",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",

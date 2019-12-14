@@ -1,7 +1,8 @@
 import React from 'react'
-import { View, StyleSheet, Text, TextInput} from 'react-native'
+import { View, StyleSheet, Text, TextInput, Button} from 'react-native'
 import { OutlineButton,  BlackOverlay, LogoPlaceholder} from '../Components'
 import { dimens, colors } from '../constants'
+import * as Facebook from 'expo-facebook';
 
 const LoginRegisterScreen = (props) => {  
 
@@ -17,6 +18,21 @@ const LoginRegisterScreen = (props) => {
     loginContainer,
     textInputStyle
   } = styles;
+
+
+  async function loginWithFacebook(){
+    const { type, token } = await Facebook.logInWithReadPermissionsAsync(
+      "1017119615324098",
+      {
+        permissions: ["public_profile"]
+      }
+    );
+    if (type === "success") {
+      // Handle successful authentication here
+    } else {
+      // Handle errors here.
+    }
+  }
 
   return (
     <View style={mainContainer}>
@@ -42,6 +58,11 @@ const LoginRegisterScreen = (props) => {
         style={textInputStyle}
         placeholderTextColor={colors.blackTransluscent} 
         secureTextEntry={true}/>
+
+        <Button style={{marginTop: 10}}
+          title='Login with Facebook' 
+          onPress={loginWithFacebook}>
+        </Button>
       </View>
       <View style={lowerContainer}>
         <View style={loginContainer}>
