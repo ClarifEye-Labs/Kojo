@@ -23,7 +23,12 @@ const LoginScreen = (props) => {
     textInput,
     textInputContainer,
     subText,
-    forgotPasswordText
+    forgotPasswordText,
+    submitButton,
+    loginText,
+    registerContainer,
+    registerText,
+    registerTextSubtext
   } = styles
   const screen =
   <KeyboardAvoidingView behavior="padding" enabled style={mainContainer}>
@@ -78,7 +83,20 @@ const LoginScreen = (props) => {
           />
         </View>
 
-        <Text style={forgotPasswordText}> Forgot Password? </Text>
+        <TouchableOpacity>
+          <Text style={forgotPasswordText}> Forgot Password? </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={submitButton}>
+          <Text style={loginText}> Login</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={registerContainer}>
+        <Text style={registerTextSubtext}>Don't have an account?</Text>
+        <TouchableOpacity>
+          <Text style={registerText}> Register Now.</Text>
+        </TouchableOpacity>
       </View>
     </View>
 
@@ -168,6 +186,34 @@ const styles = StyleSheet.create({
       marginTop: 20,
       textAlign: 'right',
       color: colors.colorPrimary
+    },
+    submitButton:{
+      height: dimens.buttonHeight,
+      backgroundColor: colors.colorPrimary,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginTop: 20
+    },
+    loginText:{
+      color: colors.colorAccent,
+      fontSize: 18
+    },
+    registerContainer:{
+      position: 'absolute',
+      bottom: 40,
+      left: 0,
+      right: 0,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center'
+    },
+    registerText:{
+      fontSize: 16,
+      color: colors.colorPrimary
+    },
+    registerTextSubtext:{
+      fontSize: 16,
+      color: colors.blackTransluscent
     }
 
 })
