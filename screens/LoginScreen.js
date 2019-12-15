@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
       marginTop: 8,
       textAlign: 'right',
       fontSize: 16,
-      fontFamily: customFonts.medium,
+      fontFamily: customFonts.semiBold,
       color: colors.colorPrimary
     },
     submitButton:{
