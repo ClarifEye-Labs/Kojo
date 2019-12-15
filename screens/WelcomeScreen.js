@@ -63,8 +63,8 @@ const styles = StyleSheet.create({
     paddingTop: dimens.screenSafeUpperNotchDistance
   },
   logo:{
-    width: 180,
-    height: 180,
+    width: dimens.logoWidthOnboarding,
+    height: dimens.logoHeightOnboarding,
     borderColor: colors.colorAccent,
     borderWidth: 2
   },

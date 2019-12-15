@@ -6,7 +6,10 @@ const colors = {
   black : 'rgb(0,0,0)',
   transparent: 'rgba(0,0,0,0)',
   whiteTransluscent: 'rgba(1,1,1,0.9)',
-  colorSecondaryTransluscent: 'rgba(188, 42, 141,0.4)'
+  colorSecondaryTransluscent: 'rgba(188, 42, 141,0.4)',
+  offWhite: '#f2f2f2',
+  facebookBlue: '#3b5998',
+  googleOrange: '#EA4335'
 }
 
 // colorPrimary hex code -> #bc2a8d
