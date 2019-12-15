@@ -10,7 +10,7 @@ firestore = firebase.firestore();
 
 const SupplierScreen = (props) => {
 
-    firestore.collection('suppliers').get()
+    firestore.collection('clients').get()
     .then((snapshot) => {
       snapshot.forEach((doc) => {
         console.log(doc.id, '=>', doc.data());

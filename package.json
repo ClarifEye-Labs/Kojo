@@ -8,13 +8,14 @@
     "eject": "expo eject"
   },
   "dependencies": {
-    "expo": "^35.0.0",
-    "expo-facebook": "^8.0.0",
+    "expo": "^36.0.0",
+    "expo-cli": "^3.11.1",
+    "expo-facebook": "~8.0.0",
     "firebase": "^7.5.2",
     "galio-framework": "^0.6.3",
-    "react": "16.8.3",
-    "react-dom": "16.8.3",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-35.0.0.tar.gz",
+    "react": "16.9.0",
+    "react-dom": "16.9.0",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-36.0.0.tar.gz",
     "react-native-web": "^0.11.7"
   },
   "devDependencies": {

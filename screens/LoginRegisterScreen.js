@@ -1,8 +1,10 @@
 import React from 'react'
-import { View, StyleSheet, Text, TextInput, Button} from 'react-native'
+import { View, StyleSheet, Text, TextInput, Button, TouchableOpacity} from 'react-native'
 import { OutlineButton,  BlackOverlay, LogoPlaceholder} from '../Components'
 import { dimens, colors } from '../constants'
 import * as Facebook from 'expo-facebook';
+
+
 
 const LoginRegisterScreen = (props) => {  
 
@@ -16,23 +18,49 @@ const LoginRegisterScreen = (props) => {
     loginText,
     loginSubText,
     loginContainer,
-    textInputStyle
+    textInputStyle,
+    facebookButton
   } = styles;
 
+  const id = "1017119615324098";
 
-  async function loginWithFacebook(){
-    const { type, token } = await Facebook.logInWithReadPermissionsAsync(
-      "1017119615324098",
-      {
-        permissions: ["public_profile"]
-      }
-    );
-    if (type === "success") {
-      // Handle successful authentication here
+  login = async () => {
+    console.log("hello")
+    await Facebook.initializeAsync("1017119615324098","Kojo")
+    await Facebook.setAutoInitEnabledAsync(true)
+    const {type,token} = await Facebook.logInWithReadPermissionsAsync("1017119615324098", {permissions: ['public_profile', 'email', 'user_friends']})
+    if(type=='success'){
+      const response = await fetch(
+        `https://graph.facebook.com/me?access_token=${token}&fields=id,name,email,about,picture`
+
+      );
+
+      console.log('response', response);
+      // const json = await response.json();
+      // console.log("USER_INFO", json);
+
     } else {
-      // Handle errors here.
-    }
+      alert(type)
+    } 
+
   }
+
+  
+
+
+  // async function loginWithFacebook(){
+  //   const { type, token } = await Facebook.logInWithReadPermissionsAsync(
+  //     "1017119615324098",
+  //     {
+  //       permissions: ["public_profile"]
+  //     }
+  //   );
+  //   if (type === "success") {
+  //     // Handle successful authentication here
+  //   } else {
+  //     // Handle errors here.
+  //   }
+  // }
 
   return (
     <View style={mainContainer}>
@@ -58,11 +86,13 @@ const LoginRegisterScreen = (props) => {
         style={textInputStyle}
         placeholderTextColor={colors.blackTransluscent} 
         secureTextEntry={true}/>
+        <TouchableOpacity onPress={()=> this.login()}>
+          <View style={facebookButton}>
+            <Text style={{color:'white'}}>Login with Facebook</Text>
+          </View>
+        </TouchableOpacity>
 
-        <Button style={{marginTop: 10}}
-          title='Login with Facebook' 
-          onPress={loginWithFacebook}>
-        </Button>
+  
       </View>
       <View style={lowerContainer}>
         <View style={loginContainer}>
@@ -141,6 +171,12 @@ const styles = StyleSheet.create({
     margin: 10,
     textAlign: 'center',
     fontFamily: 'open-sans-light'
+  },
+  facebookButton:{
+   width: '50%',
+   borderRadius: 4,
+   padding: 24,
+   backgroundColor: '#3b5998' 
   }
 })
 
