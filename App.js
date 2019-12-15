@@ -5,6 +5,7 @@ import * as Font from 'expo-font';
 import LoginRegisterScreen from './screens/LoginRegisterScreen';
 import SupplierScreen from './screens/supplierScreen'
 import SupplierRestaurantScreen from './screens/SupplierRestaurantScreen';
+import WelcomeScreen from './screens/Welcome';
 
 export default function App() {
   const [fontLoaded, setFontLoaded] = useState(false)
@@ -29,7 +30,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      {isAppReady ? <LoginRegisterScreen /> : null}
+      {isAppReady ? <WelcomeScreen /> : null}
     </View>
   );
 }

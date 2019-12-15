@@ -6,6 +6,7 @@ const colors = {
   black : 'rgb(0,0,0)',
   transparent: 'rgba(0,0,0,0)',
   whiteTransluscent: 'rgba(1,1,1,0.9)',
+  colorPrimaryTransluscent: 'rgba(236, 12, 129, 0.4)'
 }
 
 export default colors 
