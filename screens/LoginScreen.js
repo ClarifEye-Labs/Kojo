@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, StyleSheet, Text, TouchableOpacity, TextInput, KeyboardAvoidingView} from 'react-native'
 import { Card, LogoPlaceholder } from '../Components'
-import { dimens, colors } from '../constants'
+import { dimens, colors, customFonts } from '../constants'
 import { commonStyling } from '../common'
 import { Ionicons } from '@expo/vector-icons';
 import { dim } from 'ansi-colors'
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     },
     socialText:{
       marginLeft: 10,
-      fontFamily: 'open-sans-regular',
+      fontFamily: customFonts.medium,
       fontSize: 16
     },
     socialIcon: {
@@ -148,7 +148,9 @@ const styles = StyleSheet.create({
     },
     orStyling: {
       color: colors.blackTransluscent,
-      fontSize: 18
+      fontSize: 18,
+      marginHorizontal: 10,
+      fontFamily: customFonts.regular
     },
     orContainer: {
       alignItems: 'center',
@@ -169,7 +171,8 @@ const styles = StyleSheet.create({
     },
     textInput: {
      flex: 1,
-     fontSize: 19
+     fontSize: 19,
+     fontFamily: customFonts.regular
     },
     textInputContainer: {
       height: dimens.textInputHeight,
@@ -179,12 +182,14 @@ const styles = StyleSheet.create({
     subText: {
       fontSize:12,
       color: colors.blackTransluscent,
+      fontFamily: customFonts.regular,
       marginTop: 30
     },
     forgotPasswordText:{
       marginTop: 8,
       textAlign: 'right',
       fontSize: 16,
+      fontFamily: customFonts.medium,
       color: colors.colorPrimary
     },
     submitButton:{
@@ -197,21 +202,24 @@ const styles = StyleSheet.create({
     },
     loginText:{
       color: colors.colorAccent,
-      fontSize: 18
+      fontSize: 18,
+      fontFamily: customFonts.medium
     },
     registerContainer:{
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
-      marginTop: 10
+      marginTop: 20
     },
     registerText:{
       fontSize: 16,
+      fontFamily: customFonts.semiBold,
       color: colors.colorPrimary
     },
     registerTextSubtext:{
       fontSize: 16,
-      color: colors.blackTransluscent
+      color: colors.blackTransluscent,
+      fontFamily: customFonts.medium
     }
 
 })

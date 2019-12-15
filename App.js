@@ -8,6 +8,7 @@ import SupplierRestaurantScreen from './screens/SupplierRestaurantScreen';
 import WelcomeScreen from './screens/WelcomeScreen';
 import LoginScreen from './screens/LoginScreen';
 import EmailScreen from './screens/EmailScreen';
+import {customFonts} from './constants'
 
 export default function App() {
   const [fontLoaded, setFontLoaded] = useState(false)
@@ -15,16 +16,20 @@ export default function App() {
 
   async function setup(){
     await Font.loadAsync({
-      'open-sans-bold': require('./assets/fonts/OpenSans-Bold.ttf'),
-      'open-sans-light': require('./assets/fonts/OpenSans-Light.ttf'),
-      'open-sans-regular': require('./assets/fonts/OpenSans-Regular.ttf'),
-      'open-sans-italic': require('./assets/fonts/OpenSans-Italic.ttf'),
-      'open-sans-bold-italic': require('./assets/fonts/OpenSans-BoldItalic.ttf'),
-      'raleway-regular': require('./assets/fonts/Raleway-Regular.ttf'),
+      'raleway-bold' : require('./assets/fonts/Raleway-Bold.ttf'),
+      'raleway-bold-italic' : require('./assets/fonts/Raleway-BoldItalic.ttf'),
+      'raleway-extra-bold' : require('./assets/fonts/Raleway-ExtraBold.ttf'),
+      'raleway-extra-bold-italic': require('./assets/fonts/Raleway-ExtraBoldItalic.ttf'),
+      'raleway-italic': require('./assets/fonts/Raleway-Italic.ttf'),
       'raleway-light': require('./assets/fonts/Raleway-Light.ttf'),
-      'raleway-bold': require('./assets/fonts/Raleway-Bold.ttf'),
+      'raleway-light-italic': require('./assets/fonts/Raleway-LightItalic.ttf'),
       'raleway-medium': require('./assets/fonts/Raleway-Medium.ttf'),
-      'raleway-regular-italic': require('./assets/fonts/Raleway-Italic.ttf'),
+      'raleway-medium-italic': require('./assets/fonts/Raleway-MediumItalic.ttf'),
+      'raleway-regular': require('./assets/fonts/Raleway-Regular.ttf'),
+      'raleway-semi-bold': require('./assets/fonts/Raleway-SemiBold.ttf'),
+      'raleway-semi-bold-italic': require('./assets/fonts/Raleway-SemiBoldItalic.ttf'),
+      'raleway-thin': require('./assets/fonts/Raleway-Thin.ttf'),
+      'raleway-thin-italic': require('./assets/fonts/Raleway-ThinItalic.ttf'),
     });
     setFontLoaded(true)
     setIsAppReady(true)
@@ -37,7 +42,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      {isAppReady ? <EmailScreen/> : null}
+      {isAppReady ? <LoginScreen/> : null}
     </View>
   );
 }

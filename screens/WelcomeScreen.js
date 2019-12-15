@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, StyleSheet, Text, ImageBackground, Image, TouchableOpacity} from 'react-native'
 import { LogoPlaceholder } from '../Components'
-import { dimens, colors } from '../constants'
+import { dimens, colors, customFonts } from '../constants'
 import { dim } from 'ansi-colors'
 
 const WelcomeScreen = (props) => {  
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
   loginButtonText:{
     fontSize: 20,
     color: colors.colorPrimary,
-    fontFamily: 'open-sans-regular',
+    fontFamily: customFonts.medium,
     textAlign: 'center',
     width: '100%'
   },
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   signUpButtonText:{
     fontSize: 20,
     color: colors.colorAccent,
-    fontFamily: 'open-sans-regular',
+    fontFamily: customFonts.medium,
     textAlign: 'center',
     width: '100%'
   },
