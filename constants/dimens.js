@@ -8,6 +8,7 @@ const dimens = {
   defaultElevation: 5,
   logoWidthOnboarding: 170,
   logoHeightOnboarding: 170,
+  thinLine: 2
 }
 
 export default dimens;

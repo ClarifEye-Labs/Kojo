@@ -4,6 +4,7 @@ import { Card, LogoPlaceholder } from '../Components'
 import { dimens, colors } from '../constants'
 import { commonStyling } from '../common'
 import { Ionicons } from '@expo/vector-icons';
+import { dim } from 'ansi-colors'
 
 const LoginScreen = (props) => {  
   const {
@@ -14,7 +15,10 @@ const LoginScreen = (props) => {
     socialContainer,
     socialButton,
     socialText,
-    socialIcon
+    socialIcon,
+    orStyling,
+    orContainer,
+    thinLine
   } = styles
   const screen =
   <View style={mainContainer}>
@@ -41,6 +45,12 @@ const LoginScreen = (props) => {
             <Text style={socialText} >Google</Text>
           </TouchableOpacity>
         </Card>
+      </View>
+      
+      <View style={orContainer}>
+        <View style={thinLine} />
+        <Text style={orStyling}> or </Text>
+        <View style={thinLine} />
       </View>
     </View>
 
@@ -90,6 +100,21 @@ const styles = StyleSheet.create({
     socialIcon: {
       position: 'absolute',
       left: 20
+    },
+    orStyling: {
+      color: colors.blackTransluscent,
+      fontSize: 18
+    },
+    orContainer: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexDirection: 'row',
+      marginTop: 40
+    },
+    thinLine: {
+      height: dimens.thinLine,
+      backgroundColor: colors.blackTransluscent,
+      width: '40%'
     }
 
 })
