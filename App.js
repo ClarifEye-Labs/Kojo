@@ -7,6 +7,7 @@ import SupplierScreen from './screens/supplierScreen'
 import SupplierRestaurantScreen from './screens/SupplierRestaurantScreen';
 import WelcomeScreen from './screens/WelcomeScreen';
 import LoginScreen from './screens/LoginScreen';
+import EmailScreen from './screens/EmailScreen';
 
 export default function App() {
   const [fontLoaded, setFontLoaded] = useState(false)
@@ -19,6 +20,11 @@ export default function App() {
       'open-sans-regular': require('./assets/fonts/OpenSans-Regular.ttf'),
       'open-sans-italic': require('./assets/fonts/OpenSans-Italic.ttf'),
       'open-sans-bold-italic': require('./assets/fonts/OpenSans-BoldItalic.ttf'),
+      'raleway-regular': require('./assets/fonts/Raleway-Regular.ttf'),
+      'raleway-light': require('./assets/fonts/Raleway-Light.ttf'),
+      'raleway-bold': require('./assets/fonts/Raleway-Bold.ttf'),
+      'raleway-medium': require('./assets/fonts/Raleway-Medium.ttf'),
+      'raleway-regular-italic': require('./assets/fonts/Raleway-Italic.ttf'),
     });
     setFontLoaded(true)
     setIsAppReady(true)
@@ -31,7 +37,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      {isAppReady ? <LoginScreen/> : null}
+      {isAppReady ? <EmailScreen/> : null}
     </View>
   );
 }

@@ -3,4 +3,5 @@ export { default as LandingContentView } from './LandingContentView';
 export { default as OutlineButton } from './OutlineButton';
 export {default as LogoPlaceholder} from './LogoPlaceholder'
 export {default as Card} from './Card'
+export {default as Cross} from './Cross'
 

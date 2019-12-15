@@ -19,7 +19,7 @@ const Card = (props) => {
     width: parseInt(width),
     height: parseInt(height),
     backgroundColor: colors.colorAccent,
-    borderRadius: 10
+    borderRadius: dimens.defaultBorderRadius
   }
 
   const card = 

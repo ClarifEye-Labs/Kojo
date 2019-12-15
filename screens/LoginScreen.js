@@ -192,7 +192,8 @@ const styles = StyleSheet.create({
       backgroundColor: colors.colorPrimary,
       alignItems: 'center',
       justifyContent: 'center',
-      marginTop: 60
+      marginTop: 60,
+      borderRadius: dimens.defaultBorderRadius
     },
     loginText:{
       color: colors.colorAccent,

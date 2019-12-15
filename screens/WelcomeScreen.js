@@ -22,7 +22,7 @@ const WelcomeScreen = (props) => {
   const screen = 
   <View style={mainContainer}>
     <ImageBackground 
-    source ={require('../assets/Login/welcome.jpeg')}
+    source ={require('../assets/Onboarding/welcome.jpeg')}
     style={backgroundStyle}>
       <View style={contentContainer}>
         <View style={logoContainer}>
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     height: dimens.buttonHeight,
     backgroundColor: colors.colorAccent,
     borderWidth: 2,
-    borderRadius: 20,
+    borderRadius: dimens.defaultBorderRadius,
     borderColor: colors.colorAccent,
     alignContent: 'center',
     justifyContent: 'center',
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     height: dimens.buttonHeight,
     borderColor: colors.colorAccent,
     borderWidth: 2,
-    borderRadius: 20,
+    borderRadius: dimens.defaultBorderRadius,
     alignContent: 'center',
     justifyContent: 'center',
     marginTop: dimens.screenVerticalMargin,
