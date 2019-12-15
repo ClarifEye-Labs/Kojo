@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, StyleSheet, Text, TouchableOpacity} from 'react-native'
-import { dimens, colors } from '../constants'
+import { dimens, colors, customFonts } from '../constants'
 import { commonStyling } from '../common'
 
 const Cross = (props) => { 
@@ -22,7 +22,7 @@ const Cross = (props) => {
 const styles = StyleSheet.create({
   crossStyle:{
     fontSize: dimens.crossSize,
-    fontFamily: 'raleway-medium'
+    fontFamily: customFonts.semiBold
   }
 })
 

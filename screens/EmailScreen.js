@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, StyleSheet, Text, Image, TouchableOpacity} from 'react-native'
 import { Cross } from '../Components'
-import { dimens, colors } from '../constants'
+import { dimens, colors, customFonts } from '../constants'
 import { commonStyling } from '../common'
 
 const EmailScreen = (props) => { 
@@ -53,14 +53,14 @@ const styles = StyleSheet.create({
     mainText:{
       fontSize: 30,
       color: colors.black,
-      fontFamily: 'raleway-bold'
+      fontFamily: customFonts.semiBold
     },
     subText:{
       width: '80%',
       marginTop: 20,
       color: colors.blackTransluscent,
       fontSize: 17,
-      fontFamily: 'raleway-regular',
+      fontFamily: customFonts.regular,
       textAlign: 'center'
     },
     crossStyle:{
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     goToEmailText:{
       color: colors.colorAccent,
       fontSize: 20,
-      fontFamily: 'raleway-medium'
+      fontFamily: customFonts.medium
     }
 })
 
