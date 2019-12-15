@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, Text, TouchableOpacity, TextInput, KeyboardAvoidingView} from 'react-native'
 import { Card, LogoPlaceholder } from '../Components'
 import { dimens, colors } from '../constants'
 import { commonStyling } from '../common'
@@ -18,14 +18,22 @@ const LoginScreen = (props) => {
     socialIcon,
     orStyling,
     orContainer,
-    thinLine
+    thinLine,
+    loginDetailsContainer,
+    textInput,
+    textInputContainer,
+    subText,
+    forgotPasswordText
   } = styles
   const screen =
-  <View style={mainContainer}>
+  <KeyboardAvoidingView behavior="padding" enabled style={mainContainer}>
+
     <View style={logoContainer}>
       <LogoPlaceholder style={logo}/>
     </View>
+
     <View style={contentContainer}>
+
       <View style={socialContainer}>
         <Card 
         width={dimens.logoWidthOnboarding}
@@ -52,9 +60,29 @@ const LoginScreen = (props) => {
         <Text style={orStyling}> or </Text>
         <View style={thinLine} />
       </View>
+
+      <View style={loginDetailsContainer}>
+
+        <Text style={subText}>Email ID</Text>
+        <View style={textInputContainer}>
+          <TextInput 
+            style={textInput}
+            placeholder='johndoe@gmail.com'/>
+        </View>
+        <Text style={subText}>Password</Text>
+        <View style={textInputContainer}>
+          <TextInput 
+            style={textInput}
+            placeholder='Enter password'
+            secureTextEntry={true}
+          />
+        </View>
+
+        <Text style={forgotPasswordText}> Forgot Password? </Text>
+      </View>
     </View>
 
-  </View>
+  </KeyboardAvoidingView>
 
   return screen
 }
@@ -76,8 +104,7 @@ const styles = StyleSheet.create({
       borderWidth: 1
     },
     contentContainer: {
-      flex: 2,
-      // backgroundColor: colors.colorPrimary
+      flex: 2
     },
     socialContainer:{
       width: '100%',
@@ -115,6 +142,32 @@ const styles = StyleSheet.create({
       height: dimens.thinLine,
       backgroundColor: colors.blackTransluscent,
       width: '40%'
+    },
+    loginDetailsContainer:{
+      flexDirection: 'column',
+      justifyContent: 'center',
+      paddingLeft: '10%',
+      marginTop: 20,
+      paddingRight: '10%'
+    },
+    textInput: {
+     flex: 1,
+     fontSize: 19
+    },
+    textInputContainer: {
+      height: dimens.textInputHeight,
+      borderBottomWidth: 0.5,
+      borderBottomColor: colors.blackTransluscent,
+    },
+    subText: {
+      fontSize:12,
+      color: colors.blackTransluscent,
+      marginTop: 25
+    },
+    forgotPasswordText:{
+      marginTop: 20,
+      textAlign: 'right',
+      color: colors.colorPrimary
     }
 
 })
