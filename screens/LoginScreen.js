@@ -31,7 +31,7 @@ const LoginScreen = (props) => {
     registerTextSubtext
   } = styles
   const screen =
-  <KeyboardAvoidingView behavior="padding" enabled style={mainContainer}>
+  <KeyboardAvoidingView behavior="padding" enabled  style={mainContainer}>
 
     <View style={logoContainer}>
       <LogoPlaceholder style={logo}/>
@@ -165,7 +165,6 @@ const styles = StyleSheet.create({
       flexDirection: 'column',
       justifyContent: 'center',
       paddingLeft: '10%',
-      marginTop: 20,
       paddingRight: '10%'
     },
     textInput: {
@@ -180,11 +179,12 @@ const styles = StyleSheet.create({
     subText: {
       fontSize:12,
       color: colors.blackTransluscent,
-      marginTop: 25
+      marginTop: 30
     },
     forgotPasswordText:{
-      marginTop: 20,
+      marginTop: 8,
       textAlign: 'right',
+      fontSize: 16,
       color: colors.colorPrimary
     },
     submitButton:{
@@ -192,20 +192,17 @@ const styles = StyleSheet.create({
       backgroundColor: colors.colorPrimary,
       alignItems: 'center',
       justifyContent: 'center',
-      marginTop: 20
+      marginTop: 60
     },
     loginText:{
       color: colors.colorAccent,
       fontSize: 18
     },
     registerContainer:{
-      position: 'absolute',
-      bottom: 40,
-      left: 0,
-      right: 0,
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'center'
+      justifyContent: 'center',
+      marginTop: 10
     },
     registerText:{
       fontSize: 16,
