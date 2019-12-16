@@ -44,7 +44,7 @@ const LoginScreen = (props) => {
         width={dimens.logoWidthOnboarding}
         height={dimens.buttonHeight}
         elevation={10}>
-          <TouchableOpacity style={socialButton}>
+          <TouchableOpacity style={socialButton} onPress={null}>
             <Ionicons style={socialIcon} name="logo-facebook" size={32} color={colors.facebookBlue} />
             <Text style={socialText} >Facebook</Text>
           </TouchableOpacity>

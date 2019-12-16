@@ -42,7 +42,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      {isAppReady ? <EmailScreen/> : null}
+      {isAppReady ? <SupplierRestaurantScreen/> : null}
     </View>
   );
 }

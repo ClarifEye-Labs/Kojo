@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
   contentContainer:{
     width: '100%',
     height: '100%',
-    backgroundColor: colors.colorSecondaryTransluscent,
+    backgroundColor: colors.colorPrimaryTransluscent,
     alignItems: 'center',
     paddingTop: dimens.screenSafeUpperNotchDistance
   },
