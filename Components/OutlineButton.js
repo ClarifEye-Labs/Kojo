@@ -34,11 +34,11 @@ const OutlineButton= (props) => {
     color: outlineColor
   }
 
-  const screen = 
+  const component = 
   <TouchableOpacity style={stylingForButton} onPress={onPress}>
       <Text style={textStyling}>{title}</Text>
   </TouchableOpacity>
-  return screen
+  return component
 }
 
 const styles = StyleSheet.create({

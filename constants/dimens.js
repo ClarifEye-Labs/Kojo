@@ -12,7 +12,9 @@ const dimens = {
   logoWidthOnboarding: 170,
   logoHeightOnboarding: 170,
   thinLine: 1.2,
+  inputTextBorderWidth: 0.5,
   defaultBorderRadius: 10,
+  inputTextFontSize: 19,
   crossSize: 28,
   crossTop: 60,
   crossRight: 40

@@ -1,6 +1,17 @@
 import React from 'react'
-import { View, StyleSheet, Text, TouchableOpacity, TextInput, KeyboardAvoidingView} from 'react-native'
-import { Card, LogoPlaceholder, Button, SocialButton} from '../Components'
+import { 
+  View, 
+  StyleSheet, 
+  Text, 
+  TouchableOpacity, 
+  TextInput, 
+  KeyboardAvoidingView} from 'react-native'
+import { 
+  Card, 
+  LogoPlaceholder, 
+  Button, 
+  SocialButton, 
+  InputWithSubHeading} from '../Components'
 import { dimens, colors, customFonts } from '../constants'
 import { commonStyling } from '../common'
 import { Ionicons } from '@expo/vector-icons';
@@ -71,21 +82,20 @@ const LoginScreen = (props) => {
       </View>
 
       <View style={loginDetailsContainer}>
+        <InputWithSubHeading 
+          subHeadingTitle='Email ID'
+          placeholder='johndoe@gmail.com'
+          secureTextEntry={false} 
+          subHeadingStyle={subText}
+          textInputContainerStyle={textInputContainer} />
 
-        <Text style={subText}>Email ID</Text>
-        <View style={textInputContainer}>
-          <TextInput 
-            style={textInput}
-            placeholder='johndoe@gmail.com'/>
-        </View>
-        <Text style={subText}>Password</Text>
-        <View style={textInputContainer}>
-          <TextInput 
-            style={textInput}
-            placeholder='Enter password'
-            secureTextEntry={true}
-          />
-        </View>
+        <InputWithSubHeading 
+          subHeadingTitle='Password'
+          placeholder='Enter Password'
+          secureTextEntry={true} 
+          subHeadingStyle={subText}
+          textInputContainerStyle={textInputContainer} />
+
 
         <TouchableOpacity>
           <Text style={forgotPasswordText}> Forgot Password? </Text>
@@ -162,20 +172,10 @@ const styles = StyleSheet.create({
       paddingLeft: '10%',
       paddingRight: '10%'
     },
-    textInput: {
-     flex: 1,
-     fontSize: 19,
-     fontFamily: customFonts.regular
-    },
     textInputContainer: {
-      height: dimens.textInputHeight,
-      borderBottomWidth: 0.5,
       borderBottomColor: colors.blackTransluscent,
     },
     subText: {
-      fontSize:12,
-      color: colors.blackTransluscent,
-      fontFamily: customFonts.regular,
       marginTop: 30
     },
     forgotPasswordText:{
