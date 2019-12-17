@@ -3,7 +3,7 @@ import { View, StyleSheet, Text, TouchableOpacity} from 'react-native'
 import { dimens, colors, customFonts} from '../constants'
 import { commonStyling } from '../common'
 
-const Button = (props) => { 
+const OutlineButton= (props) => { 
   const screenName='Button'
   const {
     textStyle
@@ -48,5 +48,5 @@ const styles = StyleSheet.create({
   }
 })
 
-export default Button
+export default OutlineButton
 
