@@ -1,6 +1,7 @@
 const dimens = {
   buttonHeight: 55,
-  buttonDefaultWidth: 150,
+  defaultButtonWidth: 150,
+  defaultButtonBorder: 2,
   textInputHeight: 50,
   buttonBorderWidth: 1,
   screenHorizontalMargin: 10,

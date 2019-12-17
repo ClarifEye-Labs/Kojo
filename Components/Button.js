@@ -17,7 +17,7 @@ const Button = (props) => {
   } = props
 
   const stylingForButton = {
-    width: dimens.buttonDefaultWidth,
+    width: dimens.defaultButtonWidth,
     height: dimens.buttonHeight,
     borderRadius: dimens.defaultBorderRadius,
     alignItems: 'center',

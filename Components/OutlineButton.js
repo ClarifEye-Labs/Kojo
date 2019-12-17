@@ -1,32 +1,52 @@
-import React from 'react';
-import { View,  StyleSheet, Button} from 'react-native';
-import PropTypes from 'prop-types';
-import colors from '../constants/colors'
-import dimens from '../constants/dimens'
+import React from 'react'
+import { View, StyleSheet, Text, TouchableOpacity} from 'react-native'
+import { dimens, colors, customFonts} from '../constants'
+import { commonStyling } from '../common'
 
-const OutlineButton = (props) => {
+const Button = (props) => { 
+  const screenName='Button'
+  const {
+    textStyle
+  } = styles
 
-  const { buttonContainer } = styles;
-  const { style, title} = props;
- 
-  return (
-    <View style={{...style, ...buttonContainer}}>
-      <Button onPress={props.onPress} title={title}/>
-    </View>
-  )
-};
+  const {
+    title,
+    onPress,
+    outlineColor,
+    style
+  } = props
 
+  const stylingForButton = {
+    width: dimens.defaultButtonWidth,
+    height: dimens.buttonHeight,
+    borderColor: colors.colorAccent,
+    borderWidth: dimens.defaultButtonBorder,
+    borderRadius: dimens.defaultBorderRadius,
+    backgroundColor: colors.transparent,
+    borderColor: outlineColor,
+    alignItems: 'center',
+    justifyContent: 'center',
+    ...style
+  }
 
+  const textStyling = {
+    ...textStyle,
+    color: outlineColor
+  }
+
+  const screen = 
+  <TouchableOpacity style={stylingForButton} onPress={onPress}>
+      <Text style={textStyling}>{title}</Text>
+  </TouchableOpacity>
+  return screen
+}
 
 const styles = StyleSheet.create({
-  buttonContainer: {
-    height: dimens.buttonHeight,
-    justifyContent: 'center',
-    alignContent: 'center',
-    borderWidth: dimens.buttonBorderWidth,
-    borderColor: colors.colorAccent,
-    backgroundColor: colors.transparent
+  textStyle:{
+    fontSize: 20,
+    fontFamily: customFonts.medium
   }
-});
+})
 
-export default OutlineButton;
+export default Button
+
