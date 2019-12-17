@@ -2,7 +2,7 @@ const colors = {
   colorPrimary: 'rgb(188, 42, 141)',
   colorSecondary: 'rgba(205, 72, 107)',
   colorAccent: '#FFFFFF',
-  blackTransluscent : 'rgba(0,0,0,0.4)',
+  blackTransluscent : 'rgba(0,0,0,0.6)',
   black : 'rgb(0,0,0)',
   transparent: 'rgba(0,0,0,0)',
   whiteTransluscent: 'rgba(255,255,255,0.5)',
