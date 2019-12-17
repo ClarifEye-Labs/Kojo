@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, StyleSheet, Text, ImageBackground, Image, TouchableOpacity} from 'react-native'
-import { LogoPlaceholder } from '../Components'
+import { LogoPlaceholder, Button, OutlineButton } from '../Components'
 import { dimens, colors, customFonts } from '../constants'
 import { dim } from 'ansi-colors'
 
@@ -29,12 +29,15 @@ const WelcomeScreen = (props) => {
           <LogoPlaceholder style={logo} />
         </View>
         <View style={buttonContainer}>
-          <TouchableOpacity style={signUpButton}>
-            <Text style={signUpButtonText}> SIGN UP</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={loginButton}>
-            <Text style={loginButtonText}>LOGIN</Text>
-          </TouchableOpacity>
+          <OutlineButton 
+            title= 'SIGN UP'
+            outlineColor={colors.colorAccent}
+            style={signUpButton}
+            />
+          <Button 
+            title='LOGIN'
+            textColor={colors.colorPrimary}
+            style={loginButton} />
         </View>
       </View>
     </ImageBackground>
@@ -70,13 +73,7 @@ const styles = StyleSheet.create({
   },
   loginButton:{
     width: '75%',
-    height: dimens.buttonHeight,
     backgroundColor: colors.colorAccent,
-    borderWidth: 2,
-    borderRadius: dimens.defaultBorderRadius,
-    borderColor: colors.colorAccent,
-    alignContent: 'center',
-    justifyContent: 'center',
     marginTop: dimens.screenVerticalMargin,
     marginBottom: dimens.screenVerticalMargin
   },
@@ -89,12 +86,6 @@ const styles = StyleSheet.create({
   },
   signUpButton:{
     width: '75%',
-    height: dimens.buttonHeight,
-    borderColor: colors.colorAccent,
-    borderWidth: 2,
-    borderRadius: dimens.defaultBorderRadius,
-    alignContent: 'center',
-    justifyContent: 'center',
     marginTop: dimens.screenVerticalMargin,
     marginBottom: dimens.screenVerticalMargin
   },

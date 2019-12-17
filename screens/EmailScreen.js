@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, StyleSheet, Text, Image, TouchableOpacity} from 'react-native'
-import { Cross } from '../Components'
+import { Cross, Button} from '../Components'
 import { dimens, colors, customFonts } from '../constants'
 import { commonStyling } from '../common'
 
@@ -25,9 +25,10 @@ const EmailScreen = (props) => {
       <Text style={mainText}>Check your Email</Text>
       <Text style={subText}> We have sent you a reset password link on your registered email address.</Text>
     </View>
-    <TouchableOpacity style={goToEmailButton}>
-      <Text style={goToEmailText}>Go to Email</Text>
-    </TouchableOpacity>
+    <Button 
+    title="Go to Email" 
+    style={goToEmailButton} 
+    textColor={colors.colorAccent}/>
   </View>
 
   return screen
@@ -70,11 +71,7 @@ const styles = StyleSheet.create({
     },
     goToEmailButton: {
       backgroundColor: colors.colorPrimary,
-      height: dimens.buttonHeight,
       width: 280,
-      borderRadius: dimens.defaultBorderRadius,
-      alignItems: 'center',
-      justifyContent: 'center',
       marginTop: 50
     },
     goToEmailText:{

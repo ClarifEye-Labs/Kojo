@@ -1,6 +1,17 @@
 import React from 'react'
-import { View, StyleSheet, Text, TouchableOpacity, TextInput, KeyboardAvoidingView} from 'react-native'
-import { Card, LogoPlaceholder } from '../Components'
+import { 
+  View, 
+  StyleSheet, 
+  Text, 
+  TouchableOpacity, 
+  TextInput, 
+  KeyboardAvoidingView} from 'react-native'
+import { 
+  Card, 
+  LogoPlaceholder, 
+  Button, 
+  SocialButton, 
+  InputWithSubHeading} from '../Components'
 import { dimens, colors, customFonts } from '../constants'
 import { commonStyling } from '../common'
 import { Ionicons } from '@expo/vector-icons';
@@ -44,19 +55,23 @@ const LoginScreen = (props) => {
         width={dimens.logoWidthOnboarding}
         height={dimens.buttonHeight}
         elevation={10}>
-          <TouchableOpacity style={socialButton} onPress={null}>
-            <Ionicons style={socialIcon} name="logo-facebook" size={32} color={colors.facebookBlue} />
-            <Text style={socialText} >Facebook</Text>
-          </TouchableOpacity>
+          <SocialButton
+            title='Facebook'
+            icon='logo-facebook'
+            iconColor={colors.facebookBlue} 
+            style={socialButton}
+            onPress={null}/>
         </Card>
         <Card 
         width={dimens.logoWidthOnboarding}
         height={dimens.buttonHeight}
-        elevation={5}>
-          <TouchableOpacity style={socialButton}>
-            <Ionicons style={socialIcon} name="logo-google" size={32} color={colors.googleOrange} />
-            <Text style={socialText} >Google</Text>
-          </TouchableOpacity>
+        elevation={10}>
+          <SocialButton
+            title='Google'
+            icon='logo-google'
+            iconColor={colors.googleOrange} 
+            style={socialButton}
+            onPress={null}/>
         </Card>
       </View>
       
@@ -67,29 +82,29 @@ const LoginScreen = (props) => {
       </View>
 
       <View style={loginDetailsContainer}>
+        <InputWithSubHeading 
+          subHeadingTitle='Email ID'
+          placeholder='johndoe@gmail.com'
+          secureTextEntry={false} 
+          subHeadingStyle={subText}
+          textInputContainerStyle={textInputContainer} />
 
-        <Text style={subText}>Email ID</Text>
-        <View style={textInputContainer}>
-          <TextInput 
-            style={textInput}
-            placeholder='johndoe@gmail.com'/>
-        </View>
-        <Text style={subText}>Password</Text>
-        <View style={textInputContainer}>
-          <TextInput 
-            style={textInput}
-            placeholder='Enter password'
-            secureTextEntry={true}
-          />
-        </View>
+        <InputWithSubHeading 
+          subHeadingTitle='Password'
+          placeholder='Enter Password'
+          secureTextEntry={true} 
+          subHeadingStyle={subText}
+          textInputContainerStyle={textInputContainer} />
+
 
         <TouchableOpacity>
           <Text style={forgotPasswordText}> Forgot Password? </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={submitButton}>
-          <Text style={loginText}> Login</Text>
-        </TouchableOpacity>
+        <Button 
+          title='Login' 
+          textColor={colors.colorAccent} 
+          style={submitButton}/>
       </View>
 
       <View style={registerContainer}>
@@ -132,19 +147,7 @@ const styles = StyleSheet.create({
       flexDirection: 'row'
     },
     socialButton: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      flexDirection: 'row'
-    },
-    socialText:{
-      marginLeft: 10,
-      fontFamily: customFonts.medium,
-      fontSize: 16
-    },
-    socialIcon: {
-      position: 'absolute',
-      left: 20
+      width: '100%',
     },
     orStyling: {
       color: colors.blackTransluscent,
@@ -169,20 +172,10 @@ const styles = StyleSheet.create({
       paddingLeft: '10%',
       paddingRight: '10%'
     },
-    textInput: {
-     flex: 1,
-     fontSize: 19,
-     fontFamily: customFonts.regular
-    },
     textInputContainer: {
-      height: dimens.textInputHeight,
-      borderBottomWidth: 0.5,
       borderBottomColor: colors.blackTransluscent,
     },
     subText: {
-      fontSize:12,
-      color: colors.blackTransluscent,
-      fontFamily: customFonts.regular,
       marginTop: 30
     },
     forgotPasswordText:{
@@ -193,12 +186,9 @@ const styles = StyleSheet.create({
       color: colors.colorPrimary
     },
     submitButton:{
-      height: dimens.buttonHeight,
       backgroundColor: colors.colorPrimary,
-      alignItems: 'center',
-      justifyContent: 'center',
       marginTop: 60,
-      borderRadius: dimens.defaultBorderRadius
+      width: '100%'
     },
     loginText:{
       color: colors.colorAccent,

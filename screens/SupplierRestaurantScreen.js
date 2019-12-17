@@ -68,10 +68,10 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   containerSupplyBG:{
-    backgroundColor: colors.blackTransluscent
+    backgroundColor: colors.colorPrimaryTransluscent
   },
   constainerRestaurantOwnerBG:{
-    backgroundColor: colors.colorPrimaryTransluscent
+    backgroundColor: colors.blackTransluscent
   }
 
 })
