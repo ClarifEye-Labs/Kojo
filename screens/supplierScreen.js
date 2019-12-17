@@ -7,13 +7,14 @@ import firebase from '../config/firebase'
 
 //firestore db
 firestore = firebase.firestore();
-
 const SupplierScreen = (props) => {
 
     firestore.collection('clients').get()
     .then((snapshot) => {
       snapshot.forEach((doc) => {
-        console.log(doc.id, '=>', doc.data());
+         const name = doc.data().name
+         const supplierData = doc.data().suppliers
+         supplierData.forEach((supplierDoc) => supplierDoc.get().then(snap => {console.log(snap.data())}))
       });
     })
     .catch((err) => {
