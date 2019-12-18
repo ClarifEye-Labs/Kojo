@@ -1,4 +1,5 @@
 import React from 'react'
+import * as Facebook from 'expo-facebook';
 import { 
   View, 
   StyleSheet, 
@@ -16,8 +17,31 @@ import { dimens, colors, customFonts } from '../constants'
 import { commonStyling } from '../common'
 import { Ionicons } from '@expo/vector-icons';
 import { dim } from 'ansi-colors'
+import facebookConstants from '../config/facebook';
 
 const LoginScreen = (props) => {  
+
+
+  
+  async function loginWithFacebook(){
+    await Facebook.initializeAsync(facebookConstants.appID)
+    await Facebook.setAutoInitEnabledAsync(true)
+    const {type,token} = await Facebook.logInWithReadPermissionsAsync(facebookConstants.appID, {permissions: facebookConstants.permissions})
+    if(type == 'success'){
+      const response = await fetch(
+        `https://graph.facebook.com/me?access_token=${token}&fields=id,name,email,about,picture`
+      );
+      console.log('response', JSON.stringify(response.username));
+
+    } else {
+      alert(type)
+    } 
+  }
+
+  async function loginWithGoogle(){
+
+  }
+
   const {
     mainContainer,
     logoContainer,
@@ -25,18 +49,14 @@ const LoginScreen = (props) => {
     logo,
     socialContainer,
     socialButton,
-    socialText,
-    socialIcon,
     orStyling,
     orContainer,
     thinLine,
     loginDetailsContainer,
-    textInput,
     textInputContainer,
     subText,
     forgotPasswordText,
     submitButton,
-    loginText,
     registerContainer,
     registerText,
     registerTextSubtext
@@ -60,7 +80,7 @@ const LoginScreen = (props) => {
             icon='logo-facebook'
             iconColor={colors.facebookBlue} 
             style={socialButton}
-            onPress={null}/>
+            onPress={loginWithFacebook}/>
         </Card>
         <Card 
         width={dimens.logoWidthOnboarding}
