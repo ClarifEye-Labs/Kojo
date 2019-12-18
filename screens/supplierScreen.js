@@ -4,9 +4,6 @@ import firebase from '../config/firebase'
 import {Button} from '../Components'
 import { dimens, colors } from '../constants'
 import { commonStyling } from '../common'
-import SupplierInventoryScreen from './supplierInventoryScreen'
-import supplierClientsScreen from './supplierClientsScreen'
-
 
 const SupplierScreen = (props) => {
 
