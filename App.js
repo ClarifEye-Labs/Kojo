@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import * as Font from 'expo-font';
-import WelcomeScreen from './screens/WelcomeScreen'
+import RegistrationScreen from './screens/RegistrationScreen'
 
 
 export default function App() {
@@ -36,7 +36,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      {isAppReady ? <WelcomeScreen/> : null}
+      {isAppReady ? <RegistrationScreen /> : null}
     </View>
   );
 }
