@@ -1,14 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import LandingScreen from './screens/LandingScreen'
 import * as Font from 'expo-font';
-import LoginRegisterScreen from './screens/LoginRegisterScreen';
-import SupplierScreen from './screens/supplierScreen'
-import SupplierRestaurantScreen from './screens/SupplierRestaurantScreen';
-import WelcomeScreen from './screens/WelcomeScreen';
-import LoginScreen from './screens/LoginScreen';
-import EmailScreen from './screens/EmailScreen';
-import {customFonts} from './constants'
+import SupplierScreen from './screens/SupplierScreen'
+import SupplierInventoryScreen from './screens/SupplierInventoryScreen'
+import SupplierClientsScreen from './screens/SupplierClientsScreen'
 
 export default function App() {
   const [fontLoaded, setFontLoaded] = useState(false)
@@ -42,12 +37,12 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      {isAppReady ? <LoginScreen/> : null}
+      {isAppReady ? <SupplierClientsScreen /> : null}
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create({ 
   container: {
     flex: 1,
     backgroundColor: '#fff',
