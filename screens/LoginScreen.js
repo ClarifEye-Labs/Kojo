@@ -18,11 +18,10 @@ import { commonStyling } from '../common'
 import { Ionicons } from '@expo/vector-icons';
 import { dim } from 'ansi-colors'
 import facebookConstants from '../config/facebook';
+import firebase from 'firebase'
 
 const LoginScreen = (props) => {  
 
-
-  
   async function loginWithFacebook(){
     await Facebook.initializeAsync(facebookConstants.appID)
     await Facebook.setAutoInitEnabledAsync(true)
@@ -31,7 +30,16 @@ const LoginScreen = (props) => {
       const response = await fetch(
         `https://graph.facebook.com/me?access_token=${token}&fields=id,name,email,about,picture`
       );
-      console.log('response', JSON.stringify(response.username));
+      console.log('response', JSON.stringify(response));
+      await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);  // Set persistent auth state
+      const credential = firebase.auth.FacebookAuthProvider.credential(token);
+      const facebookProfileData = await firebase.auth().signInWithCredential(credential);  // Sign in with Facebook credential
+      console.log(facebookProfileData)
+
+      // Do something with Facebook profile data
+      // OR you have subscribed to auth state change, authStateChange handler will process the profile data
+      
+      return Promise.resolve({type: 'success'});
 
     } else {
       alert(type)
