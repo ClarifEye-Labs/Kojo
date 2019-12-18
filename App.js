@@ -2,6 +2,8 @@ import React, {useEffect, useState} from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import * as Font from 'expo-font';
 import SupplierScreen from './screens/SupplierScreen'
+import SupplierInventoryScreen from './screens/SupplierInventoryScreen'
+import SupplierClientsScreen from './screens/SupplierClientsScreen'
 
 export default function App() {
   const [fontLoaded, setFontLoaded] = useState(false)
@@ -35,7 +37,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      {isAppReady ? <SupplierScreen /> : null}
+      {isAppReady ? <SupplierClientsScreen /> : null}
     </View>
   );
 }
