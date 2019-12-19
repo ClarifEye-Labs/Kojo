@@ -104,12 +104,12 @@ const styles = StyleSheet.create({
   headingContainerStyle:{
     width: '100%',
     textAlign: 'left',
-    marginTop: dimens.screenSafeUpperNotchDistance + 65
+    marginTop: dimens.screenSafeUpperNotchDistance + 55
   },
   buttonStyle:{
     width: '90%',
     backgroundColor: colors.colorPrimary,
-    marginTop: 30
+    marginTop: 20
   },
   subHeadingStyle: {
     marginTop: 16
@@ -120,7 +120,6 @@ const styles = StyleSheet.create({
     color: colors.blackTransluscent
   },
   allInputsContainer:{
-    marginTop: 10,
     width: '100%',
     padding: 8,
     marginBottom: 10
@@ -136,7 +135,7 @@ const styles = StyleSheet.create({
     color: colors.colorPrimary
   },
   termsContainer: {
-    marginTop: 10
+    marginTop: 8
   }
 })
 
