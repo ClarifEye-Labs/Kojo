@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, StyleSheet, Text} from 'react-native'
+import { View, StyleSheet, Text, TouchableOpacity} from 'react-native'
 import { Back, Heading, InputWithSubHeading, Button } from '../Components'
 import { dimens, colors } from '../constants'
 import { commonStyling } from '../common'
@@ -11,10 +11,12 @@ const RegistrationScreen = (props) => {
     backButtonStyle,
     headingContainerStyle,
     buttonStyle,
-    textInputStyle,
-    textInputContainerStyle,
+    allInputsContainer,
     subHeadingStyle,
-    termsStyle
+    termsStyle,
+    tandcContainer,
+    termsContainer,
+    tandcText
   } = styles
 
   const screen = 
@@ -22,52 +24,65 @@ const RegistrationScreen = (props) => {
     <Back style={backButtonStyle} />
 
     <Heading 
-      title='Register to KOJO'
+      title='Register to Kojo'
       containerStyle={headingContainerStyle} />
+      
+    <View style={allInputsContainer}>
+      <InputWithSubHeading 
+        secureTextEntry={false}
+        placeholder='John Doe'
+        subHeadingTitle='Full Name'
+        subHeadingStyle={subHeadingStyle}/>
+      
 
-    <InputWithSubHeading 
-      secureTextEntry={false}
-      placeholder='John Doe'
-      subHeadingTitle='Full Name'
-      subHeadingStyle={subHeadingStyle}/>
-    
+      <InputWithSubHeading 
+        secureTextEntry={false}
+        placeholder='johndoe@gmail.com'
+        subHeadingTitle='Email'
+        subHeadingStyle={subHeadingStyle}/>
 
-    <InputWithSubHeading 
-      secureTextEntry={false}
-      placeholder='johndoe@gmail.com'
-      subHeadingTitle='Email'
-      subHeadingStyle={subHeadingStyle}/>
+      
+      <InputWithSubHeading 
+        secureTextEntry={false}
+        placeholder='+852-64346741'
+        subHeadingTitle='Mobile Number'
+        subHeadingStyle={subHeadingStyle}/>
+      
 
-    
-    <InputWithSubHeading 
-      secureTextEntry={false}
-      placeholder='+852-64346741'
-      subHeadingTitle='Mobile Number'
-      subHeadingStyle={subHeadingStyle}/>
-    
+      <InputWithSubHeading 
+        secureTextEntry={true}
+        placeholder='Enter your password'
+        subHeadingTitle='Password'
+        subHeadingStyle={subHeadingStyle}/>
+      
 
-    <InputWithSubHeading 
-      secureTextEntry={true}
-      placeholder='Enter your password'
-      subHeadingTitle='Password'
-      subHeadingStyle={subHeadingStyle}/>
-    
-
-    <InputWithSubHeading 
-      secureTextEntry={false}
-      placeholder='Confrim your password'
-      subHeadingTitle='Confirm Password'
-      subHeadingStyle={subHeadingStyle}/>
+      <InputWithSubHeading 
+        secureTextEntry={false}
+        placeholder='Confrim your password'
+        subHeadingTitle='Confirm Password'
+        subHeadingStyle={subHeadingStyle}/>
+    </View>
+  
 
     <Button 
       title='Register'
       textColor={colors.colorAccent}
       style={buttonStyle} />
 
-    <Text style={termsStyle}>
-      By registering you agree to Terms and Conditions
-      and Privacy Policy of Kojo.
-    </Text>
+    <View style={termsContainer}>
+      <Text style={termsStyle}>
+        By registering you agree to Kojo's 
+      </Text>
+      <View style={tandcContainer}>
+        <TouchableOpacity>
+          <Text style={tandcText}> Terms & Conditions</Text>
+        </TouchableOpacity>
+        <Text style={termsStyle}> and </Text>
+        <TouchableOpacity>
+          <Text style={tandcText}> Privacy Policy </Text>
+        </TouchableOpacity>
+      </View>
+    </View>
 
   </View>
 
@@ -77,29 +92,51 @@ const RegistrationScreen = (props) => {
 const styles = StyleSheet.create({
   mainContainer: {
     ...commonStyling.mainContainer,
-    padding: dimens.screenVerticalMargin
+    alignItems: 'center',
+    paddingLeft: dimens.screenHorizontalMargin,
+    paddingRight: dimens.screenHorizontalMargin
   },
   backButtonStyle: {
     position: 'absolute',
     top: 40,
-    left: 28
+    left: 25
   },
   headingContainerStyle:{
-    marginTop: 70
+    width: '100%',
+    textAlign: 'left',
+    marginTop: dimens.screenSafeUpperNotchDistance + 65
   },
   buttonStyle:{
-    width: '80%',
+    width: '90%',
     backgroundColor: colors.colorPrimary,
-    marginTop: 40
+    marginTop: 30
   },
   subHeadingStyle: {
     marginTop: 16
   },
   termsStyle: {
     textAlign: 'center',
-    width: '80%',
-    fontSize: 14,
+    fontSize: 15,
     color: colors.blackTransluscent
+  },
+  allInputsContainer:{
+    marginTop: 10,
+    width: '100%',
+    padding: 8,
+    marginBottom: 10
+  },
+  tandcContainer:{
+    flexDirection: 'row',
+    width: '100%',
+    marginTop: 2,
+    alignItems: 'center'
+  },
+  tandcText:{
+    fontSize: 15,
+    color: colors.colorPrimary
+  },
+  termsContainer: {
+    marginTop: 10
   }
 })
 
