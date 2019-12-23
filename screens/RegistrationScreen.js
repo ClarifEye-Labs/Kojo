@@ -1,5 +1,5 @@
-import React from 'react'
-import { View, StyleSheet, Text, TouchableOpacity} from 'react-native'
+import React, {useRef, useEffect} from 'react'
+import { View, StyleSheet, Text, TouchableOpacity, ScrollView } from 'react-native'
 import { Back, Heading, InputWithSubHeading, Button } from '../Components'
 import { dimens, colors } from '../constants'
 import { commonStyling } from '../common'
@@ -18,6 +18,7 @@ const RegistrationScreen = (props) => {
     termsContainer,
     tandcText
   } = styles
+
 
   const screen = 
   <View style={mainContainer}>
@@ -75,7 +76,7 @@ const RegistrationScreen = (props) => {
       </Text>
       <View style={tandcContainer}>
         <TouchableOpacity>
-          <Text style={tandcText}> Terms & Conditions</Text>
+          <Text style={tandcText}> Terms & Conditions </Text>
         </TouchableOpacity>
         <Text style={termsStyle}> and </Text>
         <TouchableOpacity>

@@ -1,7 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import * as Font from 'expo-font';
-import RegistrationScreen from './screens/RegistrationScreen'
+import LoginScreen from './screens/LoginScreen'
+import WelcomeScreen from './screens/WelcomeScreen';
+import EmailScreen from './screens/EmailScreen'
+import { emitNotification } from 'expo/build/Notifications/Notifications';
+import RegistrationScreen from './screens/RegistrationScreen';
 
 
 export default function App() {
