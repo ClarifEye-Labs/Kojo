@@ -2,11 +2,27 @@ import React, {useEffect, useState} from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import * as Font from 'expo-font';
 import WelcomeScreen from './screens/WelcomeScreen'
+import LoginScreen from './screens/LoginScreen'
+
+import {createAppContainer} from 'react-navigation';
+import {createStackNavigator} from 'react-navigation-stack';
+
+const RootStack = createStackNavigator({
+  WelcomeScreen: WelcomeScreen,
+  LoginScreen: LoginScreen
+})
 
 
 export default function App() {
   const [fontLoaded, setFontLoaded] = useState(false)
   const[isAppReady, setIsAppReady] = useState(false)
+
+  const RootStack = createStackNavigator({
+    WelcomeScreen: WelcomeScreen,
+    LoginScreen: LoginScreen
+  })
+
+  const AppContainer = createAppContainer(RootStack);
 
   async function setup(){
     await Font.loadAsync({
@@ -24,6 +40,7 @@ export default function App() {
       'raleway-semi-bold-italic': require('./assets/fonts/Raleway-SemiBoldItalic.ttf'),
       'raleway-thin': require('./assets/fonts/Raleway-Thin.ttf'),
       'raleway-thin-italic': require('./assets/fonts/Raleway-ThinItalic.ttf'),
+      'raleway-medium': require('./assets/fonts/Raleway-Medium.ttf')
     });
     setFontLoaded(true)
     setIsAppReady(true)
@@ -34,12 +51,21 @@ export default function App() {
     setup()
   },[])
 
-  return (
-    <View style={styles.container}>
-      {isAppReady ? <WelcomeScreen/> : null}
-    </View>
-  );
+  if (isAppReady){
+    return <AppContainer style={styles.container} />
+  }
+  else {
+    return null
+  }
+
+  {/* <View style={styles.container}>
+  {isAppReady ? <WelcomeScreen/> : null}
+</View> */}
+  
+  
 }
+
+
 
 const styles = StyleSheet.create({ 
   container: {
@@ -49,3 +75,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+

@@ -5,7 +5,8 @@ import { dimens, colors, customFonts } from '../constants'
 import { dim } from 'ansi-colors'
 
 const WelcomeScreen = (props) => {  
-
+  //
+  //const {navigate} = this.props.navigation
   const {
     mainContainer,
     backgroundStyle,
@@ -37,7 +38,8 @@ const WelcomeScreen = (props) => {
           <Button 
             title='LOGIN'
             textColor={colors.colorPrimary}
-            style={loginButton} />
+            style={loginButton}
+            onPress={() => props.navigation.navigate('LoginScreen')} />
         </View>
       </View>
     </ImageBackground>

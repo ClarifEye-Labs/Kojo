@@ -21,7 +21,7 @@ import facebookConstants from '../config/facebook';
 import firebase from 'firebase'
 
 const LoginScreen = (props) => {  
-
+  
   async function loginWithFacebook(){
     await Facebook.initializeAsync(facebookConstants.appID)
     await Facebook.setAutoInitEnabledAsync(true)
