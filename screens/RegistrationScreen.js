@@ -22,7 +22,9 @@ const RegistrationScreen = (props) => {
 
   const screen = 
   <View style={mainContainer}>
-    <Back style={backButtonStyle} />
+    <Back 
+      style={backButtonStyle}
+      onPress={()=> props.navigation.goBack()}/>
 
     <Heading 
       title='Register to Kojo'

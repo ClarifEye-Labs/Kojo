@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import * as Font from 'expo-font';
 import WelcomeScreen from './screens/WelcomeScreen'
 import LoginScreen from './screens/LoginScreen'
+import RegistrationScreen from './screens/RegistrationScreen'
 
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
@@ -24,6 +25,12 @@ export default function App() {
       screen: LoginScreen,
       navigationOptions: {
         title: 'Login'
+      } 
+    },
+    RegistrationScreen: {
+      screen: RegistrationScreen,
+      navigationOptions: {
+        header: null
       } 
     }
   })

@@ -32,6 +32,7 @@ const WelcomeScreen = (props) => {
           <OutlineButton 
             title= 'SIGN UP'
             outlineColor={colors.colorAccent}
+            onPress={() => props.navigation.navigate('RegistrationScreen')}
             style={signUpButton}
             />
           <Button 
