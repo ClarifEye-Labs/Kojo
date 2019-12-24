@@ -7,16 +7,6 @@ import LoginScreen from './screens/LoginScreen'
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 
-const RootStack = createStackNavigator({
-  WelcomeScreen: WelcomeScreen,
-  LoginScreen: LoginScreen
-})
-import LoginScreen from './screens/LoginScreen'
-import WelcomeScreen from './screens/WelcomeScreen';
-import EmailScreen from './screens/EmailScreen'
-import { emitNotification } from 'expo/build/Notifications/Notifications';
-import RegistrationScreen from './screens/RegistrationScreen';
-
 
 export default function App() {
   const [fontLoaded, setFontLoaded] = useState(false)
