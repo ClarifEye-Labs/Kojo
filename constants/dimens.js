@@ -4,8 +4,8 @@ const dimens = {
   defaultButtonBorder: 2,
   textInputHeight: 50,
   buttonBorderWidth: 1,
-  screenHorizontalMargin: 10,
-  screenVerticalMargin: 15,
+  screenHorizontalMargin: 20,
+  screenVerticalMargin: 20,
   screenDefaultMargin:15,
   screenSafeUpperNotchDistance: 30,
   defaultElevation: 5,
@@ -17,7 +17,8 @@ const dimens = {
   inputTextFontSize: 19,
   crossSize: 28,
   crossTop: 60,
-  crossRight: 40
+  crossRight: 40,
+  headingSize: 30
 }
 
 export default dimens;

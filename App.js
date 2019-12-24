@@ -11,6 +11,11 @@ const RootStack = createStackNavigator({
   WelcomeScreen: WelcomeScreen,
   LoginScreen: LoginScreen
 })
+import LoginScreen from './screens/LoginScreen'
+import WelcomeScreen from './screens/WelcomeScreen';
+import EmailScreen from './screens/EmailScreen'
+import { emitNotification } from 'expo/build/Notifications/Notifications';
+import RegistrationScreen from './screens/RegistrationScreen';
 
 
 export default function App() {
@@ -31,12 +36,7 @@ export default function App() {
       } 
     }
   })
-  // {
-  //   headerMode: 'none',
-  //   // navigationOptions: {
-  //   //     headerVisible: false,
-  //   // }
-  // })
+
 
   const AppContainer = createAppContainer(RootStack);
 
