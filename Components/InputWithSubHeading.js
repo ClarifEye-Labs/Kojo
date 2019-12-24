@@ -22,7 +22,10 @@ const InputWithSubHeading = (props) => {
     subHeadingTitle,
     subHeadingStyle,
     textInputStyle,
-    textInputContainerStyle
+    textInputContainerStyle,
+    autoCompleteType,
+    autoCorrect,
+    autoCapitalize
   } = props
 
   const subHeadingStyling = {
@@ -47,6 +50,9 @@ const InputWithSubHeading = (props) => {
         <TextInput 
           style={inputStyling}
           secureTextEntry = {secureTextEntry}
+          autoCompleteType={autoCompleteType ? autoCompleteType: true}
+          autoCorrect={autoCorrect ? autoCorrect: true}
+          autoCapitalize={autoCapitalize ? autoCapitalize : 'none'}
           placeholder={placeholder}/>
       </View>
     </View>

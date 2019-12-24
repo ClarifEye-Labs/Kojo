@@ -76,8 +76,7 @@ const styles = StyleSheet.create({
   loginButton:{
     width: '75%',
     backgroundColor: colors.colorAccent,
-    marginTop: dimens.screenVerticalMargin,
-    marginBottom: dimens.screenVerticalMargin
+    marginTop: dimens.screenVerticalMargin*1.5
   },
   loginButtonText:{
     fontSize: 20,
@@ -87,9 +86,7 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   signUpButton:{
-    width: '75%',
-    marginTop: dimens.screenVerticalMargin,
-    marginBottom: dimens.screenVerticalMargin
+    width: '75%'
   },
   signUpButtonText:{
     fontSize: 20,

@@ -34,35 +34,39 @@ const RegistrationScreen = (props) => {
       <InputWithSubHeading 
         secureTextEntry={false}
         placeholder='John Doe'
+        autoCorrect={false}
+        autoCompleteType='name'
         subHeadingTitle='Full Name'
+        autoCapitalize='words'
         subHeadingStyle={subHeadingStyle}/>
       
 
       <InputWithSubHeading 
         secureTextEntry={false}
         placeholder='johndoe@gmail.com'
+        autoCompleteType='email'
         subHeadingTitle='Email'
+        autoCorrect={false}
+        autoCapitalize='none'
         subHeadingStyle={subHeadingStyle}/>
 
-      
       <InputWithSubHeading 
-        secureTextEntry={false}
-        placeholder='+852-64346741'
-        subHeadingTitle='Mobile Number'
+        secureTextEntry={true}
+        autoCompleteType='password'
+        placeholder='Enter your password'
+        subHeadingTitle='Password'
+        autoCorrect={false}
+        autoCapitalize='none'
         subHeadingStyle={subHeadingStyle}/>
       
 
       <InputWithSubHeading 
         secureTextEntry={true}
-        placeholder='Enter your password'
-        subHeadingTitle='Password'
-        subHeadingStyle={subHeadingStyle}/>
-      
-
-      <InputWithSubHeading 
-        secureTextEntry={false}
+        autoCompleteType='password'
         placeholder='Confrim your password'
         subHeadingTitle='Confirm Password'
+        autoCorrect={false}
+        autoCapitalize='none'
         subHeadingStyle={subHeadingStyle}/>
     </View>
   
@@ -107,12 +111,12 @@ const styles = StyleSheet.create({
   headingContainerStyle:{
     width: '100%',
     textAlign: 'left',
-    marginTop: dimens.screenSafeUpperNotchDistance + 55
+    marginTop: dimens.screenSafeUpperNotchDistance + 60
   },
   buttonStyle:{
     width: '90%',
     backgroundColor: colors.colorPrimary,
-    marginTop: 20
+    marginTop: 35
   },
   subHeadingStyle: {
     marginTop: 16
@@ -125,6 +129,7 @@ const styles = StyleSheet.create({
   allInputsContainer:{
     width: '100%',
     padding: 8,
+    marginTop: 20,
     marginBottom: 10
   },
   tandcContainer:{
