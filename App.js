@@ -20,6 +20,12 @@ export default function App() {
   const RootStack = createStackNavigator({
     WelcomeScreen: WelcomeScreen,
     LoginScreen: LoginScreen
+  },
+  {
+    headerMode: 'none',
+    navigationOptions: {
+        headerVisible: false,
+    }
   })
 
   const AppContainer = createAppContainer(RootStack);
@@ -57,11 +63,6 @@ export default function App() {
   else {
     return null
   }
-
-  {/* <View style={styles.container}>
-  {isAppReady ? <WelcomeScreen/> : null}
-</View> */}
-  
   
 }
 
