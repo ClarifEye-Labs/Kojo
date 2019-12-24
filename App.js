@@ -18,15 +18,25 @@ export default function App() {
   const[isAppReady, setIsAppReady] = useState(false)
 
   const RootStack = createStackNavigator({
-    WelcomeScreen: WelcomeScreen,
-    LoginScreen: LoginScreen
-  },
-  {
-    headerMode: 'none',
-    navigationOptions: {
-        headerVisible: false,
+    WelcomeScreen: {
+      screen: WelcomeScreen,
+      navigationOptions: {
+        header: null,
+      } 
+    },
+    LoginScreen: {
+      screen: LoginScreen,
+      navigationOptions: {
+        title: 'Login'
+      } 
     }
   })
+  // {
+  //   headerMode: 'none',
+  //   // navigationOptions: {
+  //   //     headerVisible: false,
+  //   // }
+  // })
 
   const AppContainer = createAppContainer(RootStack);
 

@@ -1,12 +1,10 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import { View, StyleSheet, Text, ImageBackground, Image, TouchableOpacity} from 'react-native'
 import { LogoPlaceholder, Button, OutlineButton } from '../Components'
 import { dimens, colors, customFonts } from '../constants'
-import { dim } from 'ansi-colors'
 
 const WelcomeScreen = (props) => {  
-  //
-  //const {navigate} = this.props.navigation
+
   const {
     mainContainer,
     backgroundStyle,
@@ -19,6 +17,7 @@ const WelcomeScreen = (props) => {
     buttonContainer,
     loginButtonText
   } = styles
+
 
   const screen = 
   <View style={mainContainer}>
