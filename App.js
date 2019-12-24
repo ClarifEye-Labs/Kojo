@@ -6,6 +6,7 @@ import LoginScreen from './screens/LoginScreen'
 
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
+import { colors } from './constants';
 
 
 export default function App() {
@@ -57,12 +58,9 @@ export default function App() {
     setup()
   },[])
 
-  if (isAppReady){
-    return <AppContainer style={styles.container} />
-  }
-  else {
-    return null
-  }
+  const componentToRender = isAppReady? <AppContainer style={styles.container} /> : null;
+
+  return componentToRender
   
 }
 
@@ -71,7 +69,7 @@ export default function App() {
 const styles = StyleSheet.create({ 
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.colorAccent,
     alignItems: 'center',
     justifyContent: 'center',
   },
