@@ -31,6 +31,10 @@ class SupplierWelcomeScreen extends Component {
         id: '2',
         title: 'Add Items',
       },
+      {
+        id: '3',
+        title: 'View Clients',
+      },
      
     ];
 
@@ -39,13 +43,17 @@ class SupplierWelcomeScreen extends Component {
       listStyle
     } = styles
 
+    const {
+      navigation
+    } = this.props
+
     return (
       <View style={mainContainer}>
         <FlatList 
           style={listStyle}
           contentContainerStyle={listStyle}
           data={supplierData}
-          renderItem={({ item }) => ListItem(item)}
+          renderItem={({ item }) => ListItem(item, navigation)}
           keyExtractor={item => item.id}
       />
     </View>
@@ -54,33 +62,48 @@ class SupplierWelcomeScreen extends Component {
 }
 
 
-function ListItem(item) {
+function ListItem(item, navigation) {
   var backgroundImage = undefined
   var backgroundColorOverlay = undefined
   var cardTitle = item.title
   var textColor = undefined
+  var onPress  = undefined
+
+
   switch (item.title) {
     case 'Add Items': {
       backgroundImage = require('../assets/Supplier/addItems.jpg')
       backgroundColorOverlay = colors.blueTransluscent
       textColor = colors.colorAccent
+      onPress = () => navigation.navigate('WelcomeScreen') 
       break;
     }
     case 'View Inventory':{
       backgroundImage = require('../assets/Supplier/viewInventory.jpeg')
       backgroundColorOverlay = colors.blackTransluscent
       textColor = colors.colorAccent
+      onPress = () => navigation.navigate('SupplierInventoryScreen')
       break;
     }
     case 'Edit Items': {
       backgroundImage = require('../assets/Supplier/editItem.jpeg')
       backgroundColorOverlay = colors.orangeHueTransluscent
       textColor = colors.colorAccent
+      onPress = () => navigation.navigate('RegistrationScreen')
+      break;
+    }
+    case 'View Clients': {
+      backgroundImage = require('../assets/Supplier/client.jpg')
+      backgroundColorOverlay = colors.colorPrimaryTransluscent
+      textColor = colors.colorAccent
+      onPress = () => navigation.navigate('SupplierClientsScreen')
       break;
     }
     default: {
       backgroundImage = require('../assets/Supplier/viewInventory.jpeg')
-      backgroundColorOverlay = colors.colorPrimaryTransluscent
+      backgroundColorOverlay = colors.googleOrangeTransluscent
+      textColor = colors.colorAccent
+      onPress = () => navigation.navigate('RegistrationScreen')
     }
   }
 
@@ -89,6 +112,7 @@ function ListItem(item) {
     cardTitle={cardTitle}
     backgroundColorOverlay={backgroundColorOverlay}
     textColor={textColor}
+    onPress={onPress}
     />)
 }
 

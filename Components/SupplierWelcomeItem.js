@@ -28,7 +28,8 @@ export default  class SupplierWelcomeItem extends Component {
       backgroundImage,
       textColor,
       cardTitle,
-      backgroundColorOverlay
+      backgroundColorOverlay,
+      onPress
     } = this.props
 
     return (
@@ -45,7 +46,8 @@ export default  class SupplierWelcomeItem extends Component {
                 {
                   ...cardContentStyle, 
                   backgroundColor: backgroundColorOverlay
-                }}>
+                }} 
+                onPress={onPress}>
                 <Text style={
                   {
                     ...cardTitleTextStyle,

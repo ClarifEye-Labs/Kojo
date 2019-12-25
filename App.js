@@ -10,6 +10,8 @@ import EmailScreen from './screens/EmailScreen'
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 import { colors } from './constants';
+import SupplierInventoryScreen from './screens/SupplierInventoryScreen';
+import SupplierClientsScreen from './screens/SupplierClientsScreen';
 
 
 export default function App() {
@@ -22,7 +24,9 @@ export default function App() {
     RegistrationScreen: RegistrationScreen,
     SupplierWelcomeScreen: SupplierWelcomeScreen,
     EmailScreen: EmailScreen,
-    SupplierRestaurantScreen: SupplierRestaurantScreen
+    SupplierRestaurantScreen: SupplierRestaurantScreen,
+    SupplierInventoryScreen: SupplierInventoryScreen,
+    SupplierClientsScreen: SupplierClientsScreen,
   },
   {
     initialRouteName: 'SupplierWelcomeScreen'

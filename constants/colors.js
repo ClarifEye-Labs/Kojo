@@ -6,7 +6,7 @@ const colors = {
   black : 'rgb(0,0,0)',
   transparent: 'rgba(0,0,0,0)',
   whiteTransluscent: 'rgba(255,255,255,0.5)',
-  colorPrimaryTransluscent: 'rgba(188, 42, 141,0.4)',
+  colorPrimaryTransluscent: 'rgba(188, 42, 141,0.5)',
   offWhite: '#f2f2f2',
   facebookBlue: '#3b5998',
   googleOrange: '#EA4335',
