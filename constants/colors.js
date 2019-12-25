@@ -12,7 +12,8 @@ const colors = {
   googleOrange: '#EA4335',
   googleOrangeTransluscent: 'rgba(234, 67, 53,0.4)',
   blueTransluscent: 'rgba(23,94,145,0.4)',
-  orangeHueTransluscent: 'rgba(238,96,85,0.4)'
+  orangeHueTransluscent: 'rgba(238,96,85,0.4)',
+  errorRed: 'red'
 }
 
 // colorPrimary hex code -> #bc2a8d

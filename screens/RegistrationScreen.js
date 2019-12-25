@@ -76,8 +76,8 @@ class RegistrationScreen extends React.Component {
     }
 
     if(name == ''){
-      error.errorStatus = 'Name cannot be empty'
-      error.errorReason = false
+      error.errorStatus = true
+      error.errorReason = 'Name cannot be empty'
       return error
     }
 
@@ -92,8 +92,8 @@ class RegistrationScreen extends React.Component {
     }
 
     if(email == ''){
-      error.errorStatus = 'Email cannot be empty'
-      error.errorReason = false
+      error.errorStatus = true
+      error.errorReason = 'Email cannot be empty'
       return error
     }
 
@@ -108,8 +108,8 @@ class RegistrationScreen extends React.Component {
     }
 
     if(password == ''){
-      error.errorStatus = 'Password cannot be empty'
-      error.errorReason = false
+      error.errorStatus = true
+      error.errorReason = 'Password cannot be empty'
       return error
     }
 
@@ -123,13 +123,13 @@ class RegistrationScreen extends React.Component {
     }
 
     if(oldpassword == '' || newpassword==''){
-      error.errorStatus = 'Either Passwords cannot be empty'
-      error.errorReason = false
+      error.errorStatus = true
+      error.errorReason = 'Either Passwords cannot be empty'
       return error
     }
 
     if(oldpassword !== newpassword){
-      error.errorStatus = false
+      error.errorStatus = true
       error.errorReason = 'Passwords do not match'
     }
 
@@ -153,19 +153,16 @@ class RegistrationScreen extends React.Component {
   }
 
   peformUIOperationsForShowingErrors(errors){
-    if(errors.name.errorStatus){
-      console.log('Name error')
-    }
-    if(errors.email.errorStatus){
-      console.log('Email error')
-    }
-    if(errors.password.errorStatus){
-      console.log('Password error')
-    }
-    if(errors.confirmPassword.errorStatus){
-      console.log('Confirm Password error')
-    }
-
+    console.log('-----------')
+    console.log(errors)
+    console.log('-----------')
+    this.setState({
+      nameError: errors.name.errorStatus,
+      emailError: errors.email.errorStatus,
+      passwordError: errors.password.errorStatus || errors.confirmPassword.errorStatus,
+      confirmationPasswordError: errors.confirmPassword.errorStatus
+    })
+    
   }
   
 

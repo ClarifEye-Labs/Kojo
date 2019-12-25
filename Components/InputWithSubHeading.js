@@ -13,14 +13,6 @@ class InputWithSubHeading extends React.Component {
     super(props)
   }  
 
-  setText(text){
-    this.setState(
-      {
-        textEntered : text
-      }
-    )
-    console.log(this.state.textEntered)
-  }
   render(){
     const{
       subTextStyle,
@@ -44,7 +36,8 @@ class InputWithSubHeading extends React.Component {
   
     const subHeadingStyling = {
       ...subTextStyle,
-      ...subHeadingStyle
+      ...subHeadingStyle,
+      color: errorStatus? colors.errorRed : colors.blackTransluscent
     }
   
     const inputStyling = {
@@ -55,7 +48,7 @@ class InputWithSubHeading extends React.Component {
     const inputContainerStyling = {
       ...textInputContainerStyle,
       ...inputContainerStyle,
-      borderBottomColor: errorStatus ? 'red' : colors.blackTransluscent
+      borderBottomColor: errorStatus ? colors.errorRed : colors.blackTransluscent
     }
   
     const component = 
@@ -79,8 +72,7 @@ class InputWithSubHeading extends React.Component {
 
 const styles = StyleSheet.create({
   subTextStyle: {
-    fontSize:12,
-    color: colors.blackTransluscent,
+    fontSize:13,
     fontFamily: customFonts.regular
   },
   inputContainerStyle: {
