@@ -8,6 +8,7 @@ import {
 import {SupplierWelcomeItem} from '../Components'
 import { dimens, colors } from '../constants'
 import { commonStyling } from '../common' 
+import Constants from 'expo-constants'
 
 class SupplierWelcomeScreen extends Component {
  
@@ -97,7 +98,7 @@ const styles = StyleSheet.create({
     marginTop: dimens.screenSafeUpperNotchDistance +10 
   },
   listStyle: {
-
+    marginBottom: Constants.statusBarHeight + 10
   }
 })
 
