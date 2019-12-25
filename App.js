@@ -4,6 +4,7 @@ import * as Font from 'expo-font';
 import WelcomeScreen from './screens/WelcomeScreen'
 import LoginScreen from './screens/LoginScreen'
 import RegistrationScreen from './screens/RegistrationScreen'
+import SupplierWelcomeScreen from './screens/SupplierWelcomeScreen'
 
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
@@ -14,29 +15,17 @@ export default function App() {
   const [fontLoaded, setFontLoaded] = useState(false)
   const[isAppReady, setIsAppReady] = useState(false)
 
-  const RootStack = createStackNavigator({
-    WelcomeScreen: {
-      screen: WelcomeScreen,
-      navigationOptions: {
-        header: null,
-      } 
-    },
-    LoginScreen: {
-      screen: LoginScreen,
-      navigationOptions: {
-        title: 'Login'
-      } 
-    },
-    RegistrationScreen: {
-      screen: RegistrationScreen,
-      navigationOptions: {
-        header: null
-      } 
-    }
+  const AppNavigator = createStackNavigator({
+    LoginScreen: LoginScreen,
+    WelcomeScreen: WelcomeScreen,
+    RegistrationScreen: RegistrationScreen,
+    SupplierWelcomeScreen: SupplierWelcomeScreen
+  },
+  {
+    initialRouteName: 'SupplierWelcomeScreen'
   })
 
-
-  const AppContainer = createAppContainer(RootStack);
+  const AppContainer = createAppContainer(AppNavigator);
 
   async function setup(){
     await Font.loadAsync({

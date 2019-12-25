@@ -15,9 +15,9 @@ const Card = (props) => {
   } = props
 
   let cardStyle = {
-    ...elevationShadowStyle(parseInt(elevation)),
-    width: parseInt(width),
-    height: parseInt(height),
+    ...elevationShadowStyle(elevation),
+    width: width,
+    height: height,
     backgroundColor: colors.colorAccent,
     borderRadius: dimens.defaultBorderRadius
   }

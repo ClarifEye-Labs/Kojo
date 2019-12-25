@@ -6,6 +6,11 @@ const commonStyling = {
     height: '100%',
     backgroundColor : colors.offWhite
   },
+  backButtonStyling:{
+    position: 'absolute',
+    top: 40,
+    left: 25
+  }
 }
 
 export default commonStyling

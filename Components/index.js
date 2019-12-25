@@ -9,4 +9,5 @@ export {default as SocialButton} from './SocialButton'
 export {default as InputWithSubHeading} from './InputWithSubHeading'
 export {default as Back} from './Back'
 export {default as Heading} from './Heading'
+export {default as SupplierWelcomeItem} from './SupplierWelcomeItem'
 

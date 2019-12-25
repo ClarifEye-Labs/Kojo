@@ -4,96 +4,107 @@ import { Back, Heading, InputWithSubHeading, Button } from '../Components'
 import { dimens, colors } from '../constants'
 import { commonStyling } from '../common'
 
-const RegistrationScreen = (props) => { 
-  const screenName='Registration Screen'
-  const {
-    mainContainer,
-    backButtonStyle,
-    headingContainerStyle,
-    buttonStyle,
-    allInputsContainer,
-    subHeadingStyle,
-    termsStyle,
-    tandcContainer,
-    termsContainer,
-    tandcText
-  } = styles
+class RegistrationScreen extends React.Component { 
+  constructor(props){
+    super(props)
+    this.state={
 
+    }
+  }
 
-  const screen = 
-  <View style={mainContainer}>
-    <Back 
-      style={backButtonStyle}
-      onPress={()=> props.navigation.goBack()}/>
+  render(){
+    const {
+      mainContainer,
+      backButtonStyle,
+      headingContainerStyle,
+      buttonStyle,
+      allInputsContainer,
+      subHeadingStyle,
+      termsStyle,
+      tandcContainer,
+      termsContainer,
+      tandcText
+    } = styles
 
-    <Heading 
-      title='Register to Kojo'
-      containerStyle={headingContainerStyle} />
-      
-    <View style={allInputsContainer}>
-      <InputWithSubHeading 
-        secureTextEntry={false}
-        placeholder='John Doe'
-        autoCorrect={false}
-        autoCompleteType='name'
-        subHeadingTitle='Full Name'
-        autoCapitalize='words'
-        subHeadingStyle={subHeadingStyle}/>
-      
+    const {
+      navigation
+    } = this.props
 
-      <InputWithSubHeading 
-        secureTextEntry={false}
-        placeholder='johndoe@gmail.com'
-        autoCompleteType='email'
-        subHeadingTitle='Email'
-        autoCorrect={false}
-        autoCapitalize='none'
-        subHeadingStyle={subHeadingStyle}/>
+    const screen = 
+    <View style={mainContainer}>
+      <Back 
+        style={{...commonStyling.backButtonStyling}}
+        onPress={()=> navigation.goBack()}/>
 
-      <InputWithSubHeading 
-        secureTextEntry={true}
-        autoCompleteType='password'
-        placeholder='Enter your password'
-        subHeadingTitle='Password'
-        autoCorrect={false}
-        autoCapitalize='none'
-        subHeadingStyle={subHeadingStyle}/>
-      
+      <Heading 
+        title='Register to Kojo'
+        containerStyle={headingContainerStyle} />
+        
+      <View style={allInputsContainer}>
+        <InputWithSubHeading 
+          secureTextEntry={false}
+          placeholder='John Doe'
+          autoCorrect={false}
+          autoCompleteType='name'
+          subHeadingTitle='Full Name'
+          autoCapitalize='words'
+          subHeadingStyle={subHeadingStyle}/>
+        
 
-      <InputWithSubHeading 
-        secureTextEntry={true}
-        autoCompleteType='password'
-        placeholder='Confrim your password'
-        subHeadingTitle='Confirm Password'
-        autoCorrect={false}
-        autoCapitalize='none'
-        subHeadingStyle={subHeadingStyle}/>
-    </View>
-  
+        <InputWithSubHeading 
+          secureTextEntry={false}
+          placeholder='johndoe@gmail.com'
+          autoCompleteType='email'
+          subHeadingTitle='Email'
+          autoCorrect={false}
+          autoCapitalize='none'
+          subHeadingStyle={subHeadingStyle}/>
 
-    <Button 
-      title='Register'
-      textColor={colors.colorAccent}
-      style={buttonStyle} />
+        <InputWithSubHeading 
+          secureTextEntry={true}
+          autoCompleteType='password'
+          placeholder='Enter your password'
+          subHeadingTitle='Password'
+          autoCorrect={false}
+          autoCapitalize='none'
+          subHeadingStyle={subHeadingStyle}/>
+        
 
-    <View style={termsContainer}>
-      <Text style={termsStyle}>
-        By registering you agree to Kojo's 
-      </Text>
-      <View style={tandcContainer}>
-        <TouchableOpacity>
-          <Text style={tandcText}> Terms & Conditions </Text>
-        </TouchableOpacity>
-        <Text style={termsStyle}> and </Text>
-        <TouchableOpacity>
-          <Text style={tandcText}> Privacy Policy </Text>
-        </TouchableOpacity>
+        <InputWithSubHeading 
+          secureTextEntry={true}
+          autoCompleteType='password'
+          placeholder='Confrim your password'
+          subHeadingTitle='Confirm Password'
+          autoCorrect={false}
+          autoCapitalize='none'
+          subHeadingStyle={subHeadingStyle}/>
       </View>
+    
+
+      <Button 
+        title='Register'
+        textColor={colors.colorAccent}
+        style={buttonStyle} />
+
+      <View style={termsContainer}>
+        <Text style={termsStyle}>
+          By registering you agree to Kojo's 
+        </Text>
+        <View style={tandcContainer}>
+          <TouchableOpacity>
+            <Text style={tandcText}> Terms & Conditions </Text>
+          </TouchableOpacity>
+          <Text style={termsStyle}> and </Text>
+          <TouchableOpacity>
+            <Text style={tandcText}> Privacy Policy </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
     </View>
 
-  </View>
-
-  return screen
+    return screen
+  }
 }
 
 const styles = StyleSheet.create({
@@ -104,9 +115,7 @@ const styles = StyleSheet.create({
     paddingRight: dimens.screenHorizontalMargin
   },
   backButtonStyle: {
-    position: 'absolute',
-    top: 40,
-    left: 25
+    ...commonStyling.backButtonStyling
   },
   headingContainerStyle:{
     width: '100%',
@@ -147,5 +156,8 @@ const styles = StyleSheet.create({
   }
 })
 
+RegistrationScreen.navigationOptions={
+  header:null
+}
 export default RegistrationScreen
 

@@ -10,7 +10,9 @@ const colors = {
   offWhite: '#f2f2f2',
   facebookBlue: '#3b5998',
   googleOrange: '#EA4335',
-  googleOrangeTransluscent: 'rgba(234, 67, 53,0.4)'
+  googleOrangeTransluscent: 'rgba(234, 67, 53,0.4)',
+  blueTransluscent: 'rgba(23,94,145,0.4)',
+  orangeHueTransluscent: 'rgba(238,96,85,0.4)'
 }
 
 // colorPrimary hex code -> #bc2a8d
