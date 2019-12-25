@@ -4,17 +4,21 @@ import { } from '../Components'
 import { dimens, colors } from '../constants'
 import { commonStyling } from '../common' 
 
-export default class Name extends Component {
+class Name extends Component {
   constructor(props){
     super(props)
     this.state = {
-      name : 'Name'
+
     }
   }
   render() {
     const {
       mainContainer
     } = styles
+
+    const {
+      navigation
+    } = this.props
     return (
       <View style={mainContainer}>
         <Text> Hello from {this.state.name} </Text>
@@ -30,3 +34,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   }
 })
+
+Name.navigationOptions = {
+  title: 'Title'
+}
+
+export default Name

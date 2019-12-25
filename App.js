@@ -5,7 +5,7 @@ import WelcomeScreen from './screens/WelcomeScreen'
 import LoginScreen from './screens/LoginScreen'
 import RegistrationScreen from './screens/RegistrationScreen'
 import SupplierWelcomeScreen from './screens/SupplierWelcomeScreen'
-
+import EmailScreen from './screens/EmailScreen'
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 import { colors } from './constants';
@@ -19,7 +19,8 @@ export default function App() {
     LoginScreen: LoginScreen,
     WelcomeScreen: WelcomeScreen,
     RegistrationScreen: RegistrationScreen,
-    SupplierWelcomeScreen: SupplierWelcomeScreen
+    SupplierWelcomeScreen: SupplierWelcomeScreen,
+    EmailScreen: EmailScreen
   },
   {
     initialRouteName: 'SupplierWelcomeScreen'

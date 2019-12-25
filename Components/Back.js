@@ -1,9 +1,7 @@
 import React from 'react'
-import { View, StyleSheet, Text, TouchableOpacity} from 'react-native'
+import { View, StyleSheet, Text, TouchableOpacity, Platform } from 'react-native'
 import { dimens, colors, customFonts } from '../constants'
-import { commonStyling } from '../common'
 import { Ionicons } from '@expo/vector-icons';
-import { Platform } from 'react-native';
 
 
 
