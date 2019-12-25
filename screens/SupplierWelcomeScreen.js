@@ -2,11 +2,9 @@ import React, { Component } from 'react';
 import { 
   View, 
   StyleSheet, 
-  Text,
-  TouchableOpacity,
   FlatList} from 'react-native'
 import {SupplierWelcomeItem} from '../Components'
-import { dimens, colors } from '../constants'
+import { dimens, colors, strings } from '../constants'
 import { commonStyling } from '../common' 
 import Constants from 'expo-constants'
 
@@ -21,19 +19,19 @@ class SupplierWelcomeScreen extends Component {
     const supplierData = [
       {
         id: '0',
-        title: 'View Inventory',
+        title: strings.viewInventory,
       },
       {
         id: '1',
-        title: 'Edit Items',
+        title: strings.editItems,
       },
       {
         id: '2',
-        title: 'Add Items',
+        title: strings.addItems,
       },
       {
         id: '3',
-        title: 'View Clients',
+        title: strings.viewClients,
       },
      
     ];

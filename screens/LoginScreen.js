@@ -14,10 +14,8 @@ import {
   SocialButton, 
   InputWithSubHeading,
   Back} from '../Components'
-import { dimens, colors, customFonts } from '../constants'
+import { dimens, colors, customFonts, strings } from '../constants'
 import { commonStyling } from '../common'
-import { Ionicons } from '@expo/vector-icons';
-import { dim } from 'ansi-colors'
 import facebookConstants from '../config/facebook';
 import firebase from 'firebase'
 
@@ -76,7 +74,7 @@ class LoginScreen extends React.Component {
          height={dimens.buttonHeight}
          elevation={10}>
            <SocialButton
-             title='Facebook'
+             title={strings.facebook}
              icon='logo-facebook'
              iconColor={colors.facebookBlue} 
              style={socialButton}
@@ -87,7 +85,7 @@ class LoginScreen extends React.Component {
          height={dimens.buttonHeight}
          elevation={10}>
            <SocialButton
-             title='Google'
+             title={strings.google}
              icon='logo-google'
              iconColor={colors.googleOrange} 
              style={socialButton}
@@ -103,8 +101,8 @@ class LoginScreen extends React.Component {
  
           <View style={loginDetailsContainer}>
          <InputWithSubHeading 
-           subHeadingTitle='Email ID'
-           placeholder='johndoe@gmail.com'
+           subHeadingTitle={strings.emailSubHeading}
+           placeholder={strings.emailPlaceholderText}
            secureTextEntry={false} 
            subHeadingStyle={subText}
            textInputContainerStyle={textInputContainer} 
@@ -112,8 +110,8 @@ class LoginScreen extends React.Component {
            />
  
          <InputWithSubHeading 
-           subHeadingTitle='Password'
-           placeholder='Enter Password'
+           subHeadingTitle={strings.passwordSubHeading}
+           placeholder={strings.passwordPlaceholderText}
            secureTextEntry={true} 
            subHeadingStyle={subText}
            autoCompleteType='password'
@@ -121,19 +119,19 @@ class LoginScreen extends React.Component {
  
  
          <TouchableOpacity>
-           <Text style={forgotPasswordText}> Forgot Password? </Text>
+           <Text style={forgotPasswordText}> {strings.forgotPassword} </Text>
          </TouchableOpacity>
  
          <Button 
-           title='Login' 
+           title={strings.login} 
            textColor={colors.colorAccent} 
            style={submitButton}/>
        </View>
  
           <View style={registerContainer}>
-         <Text style={registerTextSubtext}>Don't have an account?</Text>
+         <Text style={registerTextSubtext}>{strings.dontHaveAnAccount}</Text>
          <TouchableOpacity>
-           <Text style={registerText}> Register Now.</Text>
+           <Text style={registerText}> {strings.registerNow}</Text>
          </TouchableOpacity>
        </View>
         </View>

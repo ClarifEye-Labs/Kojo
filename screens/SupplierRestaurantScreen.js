@@ -1,6 +1,6 @@
 import React, { Component } from 'react'; 
 import { View, StyleSheet, Text, TouchableOpacity, ImageBackground} from 'react-native'
-import { dimens, colors, customFonts } from '../constants'
+import { dimens, colors, customFonts, strings } from '../constants'
 import { commonStyling } from '../common'
 
 class SupplierRestaurantScreen extends Component {
@@ -26,14 +26,14 @@ class SupplierRestaurantScreen extends Component {
     <View style={mainContainer}>
       <ImageBackground style={upperHalfContainer} source={require('../assets/Onboarding/supplier.jpg')}>
         <TouchableOpacity style={{...textContainer,...containerSupplyBG}}>
-          <Text style={subText}> I am a </Text>
-          <Text style={mainText}> Supplier </Text>
+          <Text style={subText}> {strings.iAmA}</Text>
+          <Text style={mainText}> {strings.supplier} </Text>
         </TouchableOpacity>
       </ImageBackground>
       <ImageBackground source={require('../assets/Onboarding/restaurantOwner.jpg')} style={lowerHalfContainer}>
         <TouchableOpacity style={{...textContainer,...constainerRestaurantOwnerBG}}>
-          <Text style={subText}> I own a </Text>
-          <Text style={mainText}> Restaurant </Text>
+          <Text style={subText}> {strings.iOwnA} </Text>
+          <Text style={mainText}> {strings.restaurant} </Text>
         </TouchableOpacity>
       </ImageBackground>
     </View>

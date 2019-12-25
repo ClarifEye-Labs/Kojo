@@ -1,7 +1,7 @@
 import React, {useRef, useEffect} from 'react'
 import { View, StyleSheet, Text, TouchableOpacity, ScrollView } from 'react-native'
 import { Back, Heading, InputWithSubHeading, Button } from '../Components'
-import { dimens, colors } from '../constants'
+import { dimens, colors, strings} from '../constants'
 import { commonStyling } from '../common'
 
 class RegistrationScreen extends React.Component { 
@@ -17,10 +17,6 @@ class RegistrationScreen extends React.Component {
       confirmationPasswordEntered: '',
       confirmationPasswordError: false
     }
-  }
-
-  componentDidUpdate(){
-    // console.log(this.state)
   }
 
   setEmailEntered = (text) => {
@@ -153,9 +149,6 @@ class RegistrationScreen extends React.Component {
   }
 
   peformUIOperationsForShowingErrors(errors){
-    console.log('-----------')
-    console.log(errors)
-    console.log('-----------')
     this.setState({
       nameError: errors.name.errorStatus,
       emailError: errors.email.errorStatus,
@@ -190,16 +183,16 @@ class RegistrationScreen extends React.Component {
         onPress={()=> navigation.goBack()}/>
 
       <Heading 
-        title='Register to Kojo'
+        title={strings.registerWithKojo}
         containerStyle={headingContainerStyle} />
         
       <View style={allInputsContainer}>
         <InputWithSubHeading 
           secureTextEntry={false}
-          placeholder='John Doe'
+          placeholder={strings.namePlaceholderText}
           autoCorrect={false}
           autoCompleteType='name'
-          subHeadingTitle='Full Name'
+          subHeadingTitle={strings.fullNameSubHeading}
           autoCapitalize='words'
           onChangeText={this.setNameEntered}
           errorStatus={this.state.nameError}
@@ -208,9 +201,9 @@ class RegistrationScreen extends React.Component {
 
         <InputWithSubHeading 
           secureTextEntry={false}
-          placeholder='johndoe@gmail.com'
+          placeholder = {strings.emailPlaceholderText}
           autoCompleteType='email'
-          subHeadingTitle='Email'
+          subHeadingTitle={strings.emailSubHeading}
           autoCorrect={false}
           autoCapitalize='none'
           onChangeText={this.setEmailEntered}
@@ -220,8 +213,8 @@ class RegistrationScreen extends React.Component {
         <InputWithSubHeading 
           secureTextEntry={true}
           autoCompleteType='password'
-          placeholder='Enter your password'
-          subHeadingTitle='Password'
+          placeholder={strings.passwordPlaceholderText}
+          subHeadingTitle={strings.passwordSubHeading}
           autoCorrect={false}
           autoCapitalize='none'
           onChangeText={this.setPasswordEntered}
@@ -232,8 +225,8 @@ class RegistrationScreen extends React.Component {
         <InputWithSubHeading 
           secureTextEntry={true}
           autoCompleteType='password'
-          placeholder='Confrim your password'
-          subHeadingTitle='Confirm Password'
+          placeholder={strings.confirmPasswordPlaceholderText}
+          subHeadingTitle={strings.confirmPasswordSubHeading}
           autoCorrect={false}
           autoCapitalize='none'
           onChangeText={this.setConfirmationPasswordEntered}
@@ -243,22 +236,22 @@ class RegistrationScreen extends React.Component {
     
 
       <Button 
-        title='Register'
+        title={strings.register}
         textColor={colors.colorAccent}
         style={buttonStyle} 
         onPress={this.submitButtonOnClick}/>
 
       <View style={termsContainer}>
         <Text style={termsStyle}>
-          By registering you agree to Kojo's 
+          {strings.registeringWithKojoHeadline}
         </Text>
         <View style={tandcContainer}>
           <TouchableOpacity>
-            <Text style={tandcText}> Terms & Conditions </Text>
+            <Text style={tandcText}> {strings.termsAndConditions} </Text>
           </TouchableOpacity>
-          <Text style={termsStyle}> and </Text>
+          <Text style={termsStyle}> {strings.and} </Text>
           <TouchableOpacity>
-            <Text style={tandcText}> Privacy Policy </Text>
+            <Text style={tandcText}> {strings.privacyPolicy} </Text>
           </TouchableOpacity>
         </View>
       </View>

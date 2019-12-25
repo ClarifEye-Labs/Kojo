@@ -1,7 +1,7 @@
 import React, { Component } from 'react'; 
 import { View, StyleSheet, Text, Image, TouchableOpacity} from 'react-native'
 import { Cross, Button} from '../Components'
-import { dimens, colors, customFonts } from '../constants'
+import { dimens, colors, customFonts, strings } from '../constants'
 import { commonStyling } from '../common'
 
 
@@ -28,11 +28,11 @@ class EmailScreen extends Component {
       <Cross style={crossStyle} size={40}/>
       <Image style={imageStyle} source={require('../assets/Onboarding/emailSent.png')}/>
       <View style={textContainer}>
-        <Text style={mainText}>Check your Email</Text>
-        <Text style={subText}> We have sent you a reset password link on your registered email address.</Text>
+        <Text style={mainText}>{strings.checkYourEmail}</Text>
+        <Text style={subText}> {strings.resetLinkSent} </Text>
       </View>
       <Button 
-      title="Go to Email" 
+      title={strings.goToEmail}
       style={goToEmailButton} 
       textColor={colors.colorAccent}/>
     </View>

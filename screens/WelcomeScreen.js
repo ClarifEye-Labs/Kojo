@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { View, StyleSheet, Text, ImageBackground, Image, TouchableOpacity } from 'react-native'
 import { LogoPlaceholder, Button, OutlineButton } from '../Components'
-import { dimens, colors, customFonts } from '../constants'
+import { dimens, colors, customFonts, strings } from '../constants'
 
 class WelcomeScreen extends React.Component {
   constructor(props) {
@@ -41,13 +41,13 @@ class WelcomeScreen extends React.Component {
             </View>
             <View style={buttonContainer}>
               <OutlineButton
-                title='SIGN UP'
+                title={strings.welcomeSignUp}
                 outlineColor={colors.colorAccent}
                 onPress={() => navigation.navigate('RegistrationScreen')}
                 style={signUpButton}
               />
               <Button
-                title='LOGIN'
+                title={strings.welcomeLogin}
                 textColor={colors.colorPrimary}
                 style={loginButton}
                 onPress={() => navigation.navigate('LoginScreen')} />
