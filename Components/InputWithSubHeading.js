@@ -3,61 +3,78 @@ import {
   View, 
   StyleSheet, 
   Text, 
-  TextInput,
-  TouchableOpacity} from 'react-native'
+  TextInput} from 'react-native'
 import { dimens, colors, customFonts} from '../constants'
 import { Ionicons } from '@expo/vector-icons';
 import { commonStyling } from '../common'
 
-const InputWithSubHeading = (props) => { 
-  const{
-    subTextStyle,
-    inputStyle,
-    inputContainerStyle
-  } = styles
+class InputWithSubHeading extends React.Component {
+  constructor(props){
+    super(props)
+  }  
 
-  const {
-    secureTextEntry,
-    placeholder,
-    subHeadingTitle,
-    subHeadingStyle,
-    textInputStyle,
-    textInputContainerStyle,
-    autoCompleteType,
-    autoCorrect,
-    autoCapitalize
-  } = props
-
-  const subHeadingStyling = {
-    ...subTextStyle,
-    ...subHeadingStyle
+  setText(text){
+    this.setState(
+      {
+        textEntered : text
+      }
+    )
+    console.log(this.state.textEntered)
   }
-
-  const inputStyling = {
-    ...inputStyle,
-    ...textInputStyle
-  }
-
-  const inputContainerStyling = {
-    ...textInputContainerStyle,
-    ...inputContainerStyle
-  }
-
-  const component = 
-    <View>
-      <Text style={subHeadingStyling}>{subHeadingTitle}</Text>
-      <View style={inputContainerStyling}>
-        <TextInput 
-          style={inputStyling}
-          secureTextEntry = {secureTextEntry}
-          autoCompleteType={autoCompleteType ? autoCompleteType: 'off'}
-          autoCorrect={autoCorrect ? autoCorrect: true}
-          autoCapitalize={autoCapitalize ? autoCapitalize : 'none'}
-          placeholder={placeholder}/>
+  render(){
+    const{
+      subTextStyle,
+      inputStyle,
+      inputContainerStyle
+    } = styles
+  
+    const {
+      secureTextEntry,
+      placeholder,
+      subHeadingTitle,
+      subHeadingStyle,
+      textInputStyle,
+      textInputContainerStyle,
+      autoCompleteType,
+      autoCorrect,
+      autoCapitalize,
+      errorStatus,
+      onChangeText
+    } = this.props
+  
+    const subHeadingStyling = {
+      ...subTextStyle,
+      ...subHeadingStyle
+    }
+  
+    const inputStyling = {
+      ...inputStyle,
+      ...textInputStyle
+    }
+  
+    const inputContainerStyling = {
+      ...textInputContainerStyle,
+      ...inputContainerStyle,
+      borderBottomColor: errorStatus ? 'red' : colors.blackTransluscent
+    }
+  
+    const component = 
+      <View>
+        <Text style={subHeadingStyling}>{subHeadingTitle}</Text>
+        <View style={inputContainerStyling}>
+          <TextInput 
+            style={inputStyling}
+            secureTextEntry = {secureTextEntry}
+            autoCompleteType={autoCompleteType ? autoCompleteType: 'off'}
+            autoCorrect={autoCorrect ? autoCorrect: true}
+            onChangeText={onChangeText}
+            autoCapitalize={autoCapitalize ? autoCapitalize : 'none'}
+            placeholder={placeholder}/>
+        </View>
       </View>
-    </View>
-
-  return component
+  
+    return component
+  }
 }
 
 const styles = StyleSheet.create({
@@ -69,7 +86,6 @@ const styles = StyleSheet.create({
   inputContainerStyle: {
     height: dimens.textInputHeight,
     borderBottomWidth: dimens.inputTextBorderWidth,
-    borderBottomColor: colors.blackTransluscent,
   },
   inputStyle: {
     flex: 1,

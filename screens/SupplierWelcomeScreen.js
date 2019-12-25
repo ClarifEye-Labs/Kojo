@@ -119,7 +119,7 @@ function ListItem(item, navigation) {
 const styles = StyleSheet.create({
   mainContainer: {
     ...commonStyling.mainContainer,
-    marginTop: dimens.screenSafeUpperNotchDistance +10 
+    paddingTop: dimens.screenSafeUpperNotchDistance +10 
   },
   listStyle: {
     marginBottom: Constants.statusBarHeight + 10

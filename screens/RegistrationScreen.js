@@ -8,14 +8,170 @@ class RegistrationScreen extends React.Component {
   constructor(props){
     super(props)
     this.state={
-
+      nameEntered: '',
+      nameError: false,
+      emailError: false,
+      emailEntered: '',
+      passwordError: false,
+      passwordEntered: '',
+      confirmationPasswordEntered: '',
+      confirmationPasswordError: false
     }
   }
+
+  componentDidUpdate(){
+    // console.log(this.state)
+  }
+
+  setEmailEntered = (text) => {
+    this.setState({
+      emailEntered: text
+    })
+  }
+
+  setNameEntered = (text) => {
+    this.setState({
+      nameEntered: text
+    })
+  }
+
+  setPasswordEntered = (text) => {
+    this.setState({
+      passwordEntered: text
+    })
+  }
+
+  setConfirmationPasswordEntered = (text) => {
+    this.setState({
+      confirmationPasswordEntered: text
+    })
+  }
+
+  submitButtonOnClick = () => {
+    const{
+      nameEntered,
+      emailEntered,
+      passwordEntered,
+      confirmationPasswordEntered
+    } = this.state
+
+    const errors = {
+      email: {},
+      name: {},
+      password: {},
+      confirmPassword: {}
+    }
+    errors.name = this.performNameValidation(nameEntered)
+    errors.email = this.performEmailValidation(emailEntered)
+    errors.password = this.performPasswordValidation(passwordEntered)
+    errors.confirmPassword = this.performConfirmPasswordValidation(passwordEntered, confirmationPasswordEntered)
+
+    this.peformUIOperationsForShowingErrors(errors)
+  }
+
+  performNameValidation = (name) => { 
+    var error = {
+      errorStatus : false,
+      errorReason : 'No Error'
+    }
+
+    if(name == ''){
+      error.errorStatus = 'Name cannot be empty'
+      error.errorReason = false
+      return error
+    }
+
+    return error
+    
+  }
+
+  performEmailValidation = (email) => {
+    var error = {
+      errorStatus : false,
+      errorReason : 'No Error'
+    }
+
+    if(email == ''){
+      error.errorStatus = 'Email cannot be empty'
+      error.errorReason = false
+      return error
+    }
+
+    return error
+  }
+
+
+  performPasswordValidation = (password) => {
+    var error = {
+      errorStatus : false,
+      errorReason : 'No Error'
+    }
+
+    if(password == ''){
+      error.errorStatus = 'Password cannot be empty'
+      error.errorReason = false
+      return error
+    }
+
+    return error
+  }
+
+  performConfirmPasswordValidation = (oldpassword, newpassword) => {
+    var error = {
+      errorStatus : false,
+      errorReason : 'No Error'
+    }
+
+    if(oldpassword == '' || newpassword==''){
+      error.errorStatus = 'Either Passwords cannot be empty'
+      error.errorReason = false
+      return error
+    }
+
+    if(oldpassword !== newpassword){
+      error.errorStatus = false
+      error.errorReason = 'Passwords do not match'
+    }
+
+    return error
+  }
+  
+
+  performEmailValidation = (email) => {
+    var error = {
+      errorStatus : false,
+      errorReason : 'No Error'
+    }
+
+    if(email == ''){
+      error.errorStatus = 'Email cannot be empty'
+      error.errorReason = false
+      return error
+    }
+
+    return error
+  }
+
+  peformUIOperationsForShowingErrors(errors){
+    if(errors.name.errorStatus){
+      console.log('Name error')
+    }
+    if(errors.email.errorStatus){
+      console.log('Email error')
+    }
+    if(errors.password.errorStatus){
+      console.log('Password error')
+    }
+    if(errors.confirmPassword.errorStatus){
+      console.log('Confirm Password error')
+    }
+
+  }
+  
 
   render(){
     const {
       mainContainer,
-      backButtonStyle,
       headingContainerStyle,
       buttonStyle,
       allInputsContainer,
@@ -48,6 +204,8 @@ class RegistrationScreen extends React.Component {
           autoCompleteType='name'
           subHeadingTitle='Full Name'
           autoCapitalize='words'
+          onChangeText={this.setNameEntered}
+          errorStatus={this.state.nameError}
           subHeadingStyle={subHeadingStyle}/>
         
 
@@ -58,6 +216,8 @@ class RegistrationScreen extends React.Component {
           subHeadingTitle='Email'
           autoCorrect={false}
           autoCapitalize='none'
+          onChangeText={this.setEmailEntered}
+          errorStatus={this.state.emailError}
           subHeadingStyle={subHeadingStyle}/>
 
         <InputWithSubHeading 
@@ -67,6 +227,8 @@ class RegistrationScreen extends React.Component {
           subHeadingTitle='Password'
           autoCorrect={false}
           autoCapitalize='none'
+          onChangeText={this.setPasswordEntered}
+          errorStatus={this.state.passwordError}
           subHeadingStyle={subHeadingStyle}/>
         
 
@@ -77,6 +239,8 @@ class RegistrationScreen extends React.Component {
           subHeadingTitle='Confirm Password'
           autoCorrect={false}
           autoCapitalize='none'
+          onChangeText={this.setConfirmationPasswordEntered}
+          errorStatus={this.state.confirmationPasswordError}
           subHeadingStyle={subHeadingStyle}/>
       </View>
     
@@ -84,7 +248,8 @@ class RegistrationScreen extends React.Component {
       <Button 
         title='Register'
         textColor={colors.colorAccent}
-        style={buttonStyle} />
+        style={buttonStyle} 
+        onPress={this.submitButtonOnClick}/>
 
       <View style={termsContainer}>
         <Text style={termsStyle}>
