@@ -1,4 +1,4 @@
-import { colors } from "../constants";
+import { colors, dimens } from "../constants";
 
 const commonStyling = {
   mainContainer: {
@@ -10,6 +10,11 @@ const commonStyling = {
     position: 'absolute',
     top: 40,
     left: 25
+  },
+  crossStyle:{
+    position: 'absolute',
+    top: dimens.crossTop,
+    right: dimens.crossRight
   }
 }
 

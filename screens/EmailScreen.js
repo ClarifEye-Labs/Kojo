@@ -19,13 +19,16 @@ class EmailScreen extends Component {
       subText,
       textContainer,
       mainText,
-      crossStyle,
       goToEmailButton
     } = styles
-  
+    
+    const {
+      navigation
+    } = this.props
+
     const screen = 
     <View style={mainContainer}>
-      <Cross style={crossStyle} size={40}/>
+      <Cross style={commonStyling.crossStyle} size={40} onPress={() => navigation.goBack()} />
       <Image style={imageStyle} source={require('../assets/Onboarding/emailSent.png')}/>
       <View style={textContainer}>
         <Text style={mainText}>{strings.checkYourEmail}</Text>
@@ -71,11 +74,6 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontFamily: customFonts.regular,
     textAlign: 'center'
-  },
-  crossStyle:{
-    position: 'absolute',
-    top: dimens.crossTop,
-    right: dimens.crossRight
   },
   goToEmailButton: {
     backgroundColor: colors.colorPrimary,

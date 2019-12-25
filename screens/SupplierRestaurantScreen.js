@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, ImageBackground} from 'react-native'
 import { dimens, colors, customFonts, strings } from '../constants'
 import { commonStyling } from '../common'
+import { Cross } from '../Components';
+import {NavigationActions, StackActions} from 'react-navigation'
 
 class SupplierRestaurantScreen extends Component {
   constructor(props){
@@ -10,6 +12,19 @@ class SupplierRestaurantScreen extends Component {
 
     }
   }
+  
+  navigateToSupplierScreen = () => {
+    console
+    const resetAction = StackActions.reset({
+      index: 0,
+      actions: [
+        NavigationActions.navigate({ routeName: 'SupplierWelcomeScreen' })
+      ]
+    })
+    this.props.navigation.dispatch(resetAction);
+  }
+
+  
   render() {
     const {
       mainContainer,
@@ -19,13 +34,22 @@ class SupplierRestaurantScreen extends Component {
       mainText,
       textContainer,
       containerSupplyBG,
-      constainerRestaurantOwnerBG
+      constainerRestaurantOwnerBG,
+      crossStyle
     } = styles
+
+    const {
+      navigation
+    } = this.props
+
   
     const screen = 
     <View style={mainContainer}>
       <ImageBackground style={upperHalfContainer} source={require('../assets/Onboarding/supplier.jpg')}>
-        <TouchableOpacity style={{...textContainer,...containerSupplyBG}}>
+        <TouchableOpacity 
+          style={{...textContainer,...containerSupplyBG}} 
+          onPress={() => this.navigateToSupplierScreen()}>
+          <Cross style={crossStyle} size={50} color={colors.colorAccent} onPress={() => navigation.goBack()}/>
           <Text style={subText}> {strings.iAmA}</Text>
           <Text style={mainText}> {strings.supplier} </Text>
         </TouchableOpacity>
@@ -41,6 +65,8 @@ class SupplierRestaurantScreen extends Component {
     return screen
   }
 }
+
+
 
 const styles = StyleSheet.create({
   mainContainer: {
@@ -78,6 +104,11 @@ const styles = StyleSheet.create({
   },
   constainerRestaurantOwnerBG:{
     backgroundColor: colors.blackTransluscent
+  },
+  crossStyle:{
+    position: 'absolute',
+    right: 20,
+    top: 32
   }
 
 })

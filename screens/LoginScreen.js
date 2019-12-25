@@ -118,7 +118,7 @@ class LoginScreen extends React.Component {
            textInputContainerStyle={textInputContainer} />
  
  
-         <TouchableOpacity>
+         <TouchableOpacity onPress={()=>navigation.navigate('EmailScreen')}>
            <Text style={forgotPasswordText}> {strings.forgotPassword} </Text>
          </TouchableOpacity>
  
@@ -130,7 +130,7 @@ class LoginScreen extends React.Component {
  
           <View style={registerContainer}>
          <Text style={registerTextSubtext}>{strings.dontHaveAnAccount}</Text>
-         <TouchableOpacity>
+         <TouchableOpacity onPress={()=>navigation.navigate('RegistrationScreen')}>
            <Text style={registerText}> {strings.registerNow}</Text>
          </TouchableOpacity>
        </View>

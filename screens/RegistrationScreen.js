@@ -246,7 +246,7 @@ class RegistrationScreen extends React.Component {
           {strings.registeringWithKojoHeadline}
         </Text>
         <View style={tandcContainer}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('SupplierRestaurantScreen')}>
             <Text style={tandcText}> {strings.termsAndConditions} </Text>
           </TouchableOpacity>
           <Text style={termsStyle}> {strings.and} </Text>

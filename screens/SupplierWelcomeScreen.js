@@ -7,6 +7,7 @@ import {SupplierWelcomeItem} from '../Components'
 import { dimens, colors, strings } from '../constants'
 import { commonStyling } from '../common' 
 import Constants from 'expo-constants'
+import * as Animatable from 'react-native-animatable'
 
 class SupplierWelcomeScreen extends Component {
  
@@ -46,7 +47,7 @@ class SupplierWelcomeScreen extends Component {
     } = this.props
 
     return (
-      <View style={mainContainer}>
+      <Animatable.View animation='fadeInUpBig' style={mainContainer}>
         <FlatList 
           style={listStyle}
           contentContainerStyle={listStyle}
@@ -54,7 +55,7 @@ class SupplierWelcomeScreen extends Component {
           renderItem={({ item }) => ListItem(item, navigation)}
           keyExtractor={item => item.id}
       />
-    </View>
+    </Animatable.View>
     );
   }
 }

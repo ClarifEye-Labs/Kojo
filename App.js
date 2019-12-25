@@ -29,7 +29,7 @@ export default function App() {
     SupplierClientsScreen: SupplierClientsScreen,
   },
   {
-    initialRouteName: 'SupplierRestaurantScreen'
+    initialRouteName: 'WelcomeScreen'
   })
 
   const AppContainer = createAppContainer(AppNavigator);
