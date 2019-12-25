@@ -5,6 +5,7 @@ import WelcomeScreen from './screens/WelcomeScreen'
 import LoginScreen from './screens/LoginScreen'
 import RegistrationScreen from './screens/RegistrationScreen'
 import SupplierWelcomeScreen from './screens/SupplierWelcomeScreen'
+import SupplierRestaurantScreen from './screens/SupplierRestaurantScreen'
 import EmailScreen from './screens/EmailScreen'
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
@@ -20,7 +21,8 @@ export default function App() {
     WelcomeScreen: WelcomeScreen,
     RegistrationScreen: RegistrationScreen,
     SupplierWelcomeScreen: SupplierWelcomeScreen,
-    EmailScreen: EmailScreen
+    EmailScreen: EmailScreen,
+    SupplierRestaurantScreen: SupplierRestaurantScreen
   },
   {
     initialRouteName: 'SupplierWelcomeScreen'

@@ -1,39 +1,45 @@
-import React from 'react'
+import React, { Component } from 'react'; 
 import { View, StyleSheet, Text, TouchableOpacity, ImageBackground} from 'react-native'
-import { } from '../Components'
 import { dimens, colors, customFonts } from '../constants'
 import { commonStyling } from '../common'
 
-const SupplierRestaurantScreen = (props) => { 
-  const screenName='SupplierRestaurantScreen'
-  const {
-    mainContainer,
-    upperHalfContainer,
-    lowerHalfContainer,
-    subText,
-    mainText,
-    textContainer,
-    containerSupplyBG,
-    constainerRestaurantOwnerBG
-  } = styles
+class SupplierRestaurantScreen extends Component {
+  constructor(props){
+    super(props)
+    this.state = {
 
-  const screen = 
-  <View style={mainContainer}>
-    <ImageBackground style={upperHalfContainer} source={require('../assets/Onboarding/supplier.jpg')}>
-      <TouchableOpacity style={{...textContainer,...containerSupplyBG}}>
-        <Text style={subText}> I am a </Text>
-        <Text style={mainText}> Supplier </Text>
-      </TouchableOpacity>
-    </ImageBackground>
-    <ImageBackground source={require('../assets/Onboarding/restaurantOwner.jpg')} style={lowerHalfContainer}>
-      <TouchableOpacity style={{...textContainer,...constainerRestaurantOwnerBG}}>
-        <Text style={subText}> I own a </Text>
-        <Text style={mainText}> Restaurant </Text>
-      </TouchableOpacity>
-    </ImageBackground>
-  </View>
-
-  return screen
+    }
+  }
+  render() {
+    const {
+      mainContainer,
+      upperHalfContainer,
+      lowerHalfContainer,
+      subText,
+      mainText,
+      textContainer,
+      containerSupplyBG,
+      constainerRestaurantOwnerBG
+    } = styles
+  
+    const screen = 
+    <View style={mainContainer}>
+      <ImageBackground style={upperHalfContainer} source={require('../assets/Onboarding/supplier.jpg')}>
+        <TouchableOpacity style={{...textContainer,...containerSupplyBG}}>
+          <Text style={subText}> I am a </Text>
+          <Text style={mainText}> Supplier </Text>
+        </TouchableOpacity>
+      </ImageBackground>
+      <ImageBackground source={require('../assets/Onboarding/restaurantOwner.jpg')} style={lowerHalfContainer}>
+        <TouchableOpacity style={{...textContainer,...constainerRestaurantOwnerBG}}>
+          <Text style={subText}> I own a </Text>
+          <Text style={mainText}> Restaurant </Text>
+        </TouchableOpacity>
+      </ImageBackground>
+    </View>
+  
+    return screen
+  }
 }
 
 const styles = StyleSheet.create({
@@ -76,5 +82,10 @@ const styles = StyleSheet.create({
 
 })
 
+SupplierRestaurantScreen.navigationOptions = {
+  header:null
+}
+
 export default SupplierRestaurantScreen
+
 
