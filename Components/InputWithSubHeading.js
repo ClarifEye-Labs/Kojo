@@ -50,7 +50,7 @@ const InputWithSubHeading = (props) => {
         <TextInput 
           style={inputStyling}
           secureTextEntry = {secureTextEntry}
-          autoCompleteType={autoCompleteType ? autoCompleteType: true}
+          autoCompleteType={autoCompleteType ? autoCompleteType: 'off'}
           autoCorrect={autoCorrect ? autoCorrect: true}
           autoCapitalize={autoCapitalize ? autoCapitalize : 'none'}
           placeholder={placeholder}/>

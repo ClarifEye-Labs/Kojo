@@ -5,7 +5,7 @@ import {
   StyleSheet, 
   Text, 
   TouchableOpacity, 
-  TextInput, 
+  ScrollView,
   KeyboardAvoidingView} from 'react-native'
 import { 
   Card, 
@@ -56,85 +56,92 @@ class LoginScreen extends React.Component {
     } = this.props
 
     const screen =
-    <KeyboardAvoidingView behavior="padding" enabled  style={mainContainer}>
-     
+  
+      <KeyboardAvoidingView behavior="padding" enabled style={mainContainer} >
+        <ScrollView style={mainContainer}>
 
-      <View style={logoContainer}>
-        <Back 
-          style={{...commonStyling.backButtonStyling}}
-          onPress={()=> navigation.goBack()}/>
-          
-        <LogoPlaceholder style={logo}/>
-      </View>
-  
-      <View style={contentContainer}>
-  
-        <View style={socialContainer}>
-          <Card 
-          width={dimens.logoWidthOnboarding}
-          height={dimens.buttonHeight}
-          elevation={10}>
-            <SocialButton
-              title='Facebook'
-              icon='logo-facebook'
-              iconColor={colors.facebookBlue} 
-              style={socialButton}
-              onPress={loginWithFacebook}/>
-          </Card>
-          <Card 
-          width={dimens.logoWidthOnboarding}
-          height={dimens.buttonHeight}
-          elevation={10}>
-            <SocialButton
-              title='Google'
-              icon='logo-google'
-              iconColor={colors.googleOrange} 
-              style={socialButton}
-              onPress={null}/>
-          </Card>
+        <View style={logoContainer}>
+          <Back 
+            style={{...commonStyling.backButtonStyling}}
+            onPress={()=> navigation.goBack()}/>
+            
+          <LogoPlaceholder style={logo}/>
         </View>
+ 
+        <View style={contentContainer}>
+ 
+          <View style={socialContainer}>
+         <Card 
+         width={dimens.logoWidthOnboarding}
+         height={dimens.buttonHeight}
+         elevation={10}>
+           <SocialButton
+             title='Facebook'
+             icon='logo-facebook'
+             iconColor={colors.facebookBlue} 
+             style={socialButton}
+             onPress={loginWithFacebook}/>
+         </Card>
+         <Card 
+         width={dimens.logoWidthOnboarding}
+         height={dimens.buttonHeight}
+         elevation={10}>
+           <SocialButton
+             title='Google'
+             icon='logo-google'
+             iconColor={colors.googleOrange} 
+             style={socialButton}
+             onPress={null}/>
+         </Card>
+       </View>
+       
+          <View style={orContainer}>
+         <View style={thinLine} />
+         <Text style={orStyling}> or </Text>
+         <View style={thinLine} />
+       </View>
+ 
+          <View style={loginDetailsContainer}>
+         <InputWithSubHeading 
+           subHeadingTitle='Email ID'
+           placeholder='johndoe@gmail.com'
+           secureTextEntry={false} 
+           subHeadingStyle={subText}
+           textInputContainerStyle={textInputContainer} 
+           autoCompleteType='email'
+           />
+ 
+         <InputWithSubHeading 
+           subHeadingTitle='Password'
+           placeholder='Enter Password'
+           secureTextEntry={true} 
+           subHeadingStyle={subText}
+           autoCompleteType='password'
+           textInputContainerStyle={textInputContainer} />
+ 
+ 
+         <TouchableOpacity>
+           <Text style={forgotPasswordText}> Forgot Password? </Text>
+         </TouchableOpacity>
+ 
+         <Button 
+           title='Login' 
+           textColor={colors.colorAccent} 
+           style={submitButton}/>
+       </View>
+ 
+          <View style={registerContainer}>
+         <Text style={registerTextSubtext}>Don't have an account?</Text>
+         <TouchableOpacity>
+           <Text style={registerText}> Register Now.</Text>
+         </TouchableOpacity>
+       </View>
+        </View>
+        </ScrollView>
         
-        <View style={orContainer}>
-          <View style={thinLine} />
-          <Text style={orStyling}> or </Text>
-          <View style={thinLine} />
-        </View>
-  
-        <View style={loginDetailsContainer}>
-          <InputWithSubHeading 
-            subHeadingTitle='Email ID'
-            placeholder='johndoe@gmail.com'
-            secureTextEntry={false} 
-            subHeadingStyle={subText}
-            textInputContainerStyle={textInputContainer} />
-  
-          <InputWithSubHeading 
-            subHeadingTitle='Password'
-            placeholder='Enter Password'
-            secureTextEntry={true} 
-            subHeadingStyle={subText}
-            textInputContainerStyle={textInputContainer} />
-  
-  
-          <TouchableOpacity>
-            <Text style={forgotPasswordText}> Forgot Password? </Text>
-          </TouchableOpacity>
-  
-          <Button 
-            title='Login' 
-            textColor={colors.colorAccent} 
-            style={submitButton}/>
-        </View>
-  
-        <View style={registerContainer}>
-          <Text style={registerTextSubtext}>Don't have an account?</Text>
-          <TouchableOpacity>
-            <Text style={registerText}> Register Now.</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-  
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    
+    
   
     return screen
   }
@@ -176,6 +183,7 @@ const styles = StyleSheet.create({
     },
     logoContainer: {
       flex: 1,
+      paddingTop: dimens.screenSafeUpperNotchDistance + 40,
       alignItems: 'center',
       justifyContent: 'center'
     },
@@ -186,7 +194,8 @@ const styles = StyleSheet.create({
       borderWidth: 1
     },
     contentContainer: {
-      flex: 2
+      flex: 2,
+      marginTop: 40
     },
     socialContainer:{
       width: '100%',
@@ -236,7 +245,7 @@ const styles = StyleSheet.create({
     },
     submitButton:{
       backgroundColor: colors.colorPrimary,
-      marginTop: 60,
+      marginTop: 40,
       width: '100%'
     },
     loginText:{
@@ -248,7 +257,8 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
-      marginTop: 20
+      marginTop: 20,
+      marginBottom: 20
     },
     registerText:{
       fontSize: 16,
