@@ -31,7 +31,6 @@ const Card = (props) => {
 }
 
 const styles = StyleSheet.create({
-  // supporting styles
   container: {
     flex: 1,
     paddingTop: 20,

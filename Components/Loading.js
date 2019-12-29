@@ -1,7 +1,7 @@
 import React from 'react'
 import { ActivityIndicator, View, StyleSheet, Text} from 'react-native'
 import { } from '../Components'
-import { dimens, colors, customFonts } from '../constants'
+import { dimens, colors, customFonts, strings } from '../constants'
 import { commonStyling } from '../common'
 
 const Loading = (props) => { 
@@ -31,7 +31,7 @@ const Loading = (props) => {
   const component = 
   <View style={mainContainer}>
     <ActivityIndicator size={sizeMain} color={colorMain}/>
-    <Text style={textStyleMain}> Loading, please wait ... </Text>
+    <Text style={textStyleMain}> {strings.loading}</Text>
   </View>
 
   return component

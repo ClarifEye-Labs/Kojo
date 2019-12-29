@@ -31,7 +31,8 @@ const strings = {
   iAmA: 'I am a',
   iOwnA:'I own a',
   supplier: 'Supplier',
-  restaurant: 'Restaurant'
+  restaurant: 'Restaurant',
+  loading: 'Loading, please wait...',
 }
 
 export default strings
