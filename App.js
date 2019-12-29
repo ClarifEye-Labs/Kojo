@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import firebase from './config/firebase'
 import * as Font from 'expo-font';
 import WelcomeScreen from './screens/WelcomeScreen'
 import LoginScreen from './screens/LoginScreen'
@@ -12,6 +13,7 @@ import {createStackNavigator} from 'react-navigation-stack';
 import { colors } from './constants';
 import SupplierInventoryScreen from './screens/SupplierInventoryScreen';
 import SupplierClientsScreen from './screens/SupplierClientsScreen';
+import SupplierScreen from './screens/supplierScreen'
 
 
 export default function App() {
@@ -61,7 +63,8 @@ export default function App() {
     setup()
   },[])
 
-  const componentToRender = isAppReady? <AppContainer style={styles.container} /> : null;
+  // const componentToRender = isAppReady? <AppContainer style={styles.container} /> : null;
+  const componentToRender = isAppReady? <SupplierInventoryScreen />: null;
 
   return componentToRender
   

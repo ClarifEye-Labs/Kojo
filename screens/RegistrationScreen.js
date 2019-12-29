@@ -3,6 +3,7 @@ import { View, StyleSheet, Text, TouchableOpacity, ScrollView } from 'react-nati
 import { Back, Heading, InputWithSubHeading, Button } from '../Components'
 import { dimens, colors, strings} from '../constants'
 import { commonStyling } from '../common'
+import firebase from '../config/firebase'
 
 class RegistrationScreen extends React.Component { 
   constructor(props){
@@ -155,7 +156,29 @@ class RegistrationScreen extends React.Component {
       passwordError: errors.password.errorStatus || errors.confirmPassword.errorStatus,
       confirmationPasswordError: errors.confirmPassword.errorStatus
     })
+
+    if( ! (errors.name.errorStatus && errors.email.errorStatus && errors.password.errorStatus && errors.confirmationPasswordError) ){
+      this.performRegitstration()
+    }
     
+  }
+
+  performRegitstration(){
+    
+    const {
+      emailEntered,
+      passwordEntered,
+      nameEntered
+    } = this.state
+
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(emailEntered, passwordEntered)
+      .then((user) => console.log(user))
+      .catch(error => console.log(error))
+
+
+
   }
   
 
@@ -316,3 +339,4 @@ RegistrationScreen.navigationOptions={
 }
 export default RegistrationScreen
 
+ 
