@@ -14,8 +14,7 @@ import {createStackNavigator} from 'react-navigation-stack';
 import { colors } from './constants';
 import {createStore} from 'redux';
 import {Provider} from 'react-redux';
-
-
+import InventoryItemScreen from './screens/InventoryItemScreen'
 import SupplierInventoryScreen from './screens/SupplierInventoryScreen';
 import SupplierClientsScreen from './screens/SupplierClientsScreen';
 import SupplierScreen from './screens/supplierScreen'
@@ -29,6 +28,7 @@ EmailScreen: EmailScreen,
 SupplierRestaurantScreen: SupplierRestaurantScreen,
 SupplierInventoryScreen: SupplierInventoryScreen,
 SupplierClientsScreen: SupplierClientsScreen,
+InventoryItemScreen: InventoryItemScreen
 },
 {
 initialRouteName: 'WelcomeScreen'

@@ -136,8 +136,8 @@ class SupplierInventoryScreen extends Component {
       /> : null }
       <SectionList   
         sections={this.state.dummyInventory}
-        renderItem={({item}) => SectionContent(item)}  
-        renderSectionHeader={({section}) => SectionHeader(section) }  
+        renderItem={({item}) => SectionContent(item, this.props)}  
+        renderSectionHeader={({section}) => SectionHeader(section, this.props) }  
         keyExtractor={(item, index) => index}  
       />  
     </Animatable.View>
@@ -162,6 +162,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 const SectionHeader = (section) => {
+
   const { 
     sectionHeaderContainer,
     sectionHeaderTitle
@@ -174,7 +175,7 @@ const SectionHeader = (section) => {
 
 }
 
-const SectionContent = (sectionContent) => {
+const SectionContent = (sectionContent, props) => {
   const {
     sectionContentContainerOuter,
     sectionContentContainerInner,
@@ -183,6 +184,11 @@ const SectionContent = (sectionContent) => {
     cardContainerStyle,
     thinLine
   } = styles
+
+  const{
+    navigation
+  } = props
+
 
   const sectionContentToRender = <View style={sectionContentContainerOuter}>
     <View style={cardContainerStyle}>
@@ -195,7 +201,7 @@ const SectionContent = (sectionContent) => {
     </View>
    
     <View style={sectionContentContainerInner}>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={()=>{navigation.navigate('InventoryItemScreen')}}>
         <Text style={sectionContentText}>{sectionContent.name}</Text>
       </TouchableOpacity>
     </View>
