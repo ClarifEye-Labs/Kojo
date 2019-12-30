@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { SectionList, View, StyleSheet, Text, TouchableOpacity} from 'react-native'
-import { Loading, Heading, Card } from '../Components'
+import { Loading, Heading, Card, Button } from '../Components'
 import { dimens, colors, customFonts } from '../constants'
 import { commonStyling } from '../common' 
 import * as Animatable from 'react-native-animatable'
@@ -49,7 +49,7 @@ class SupplierInventoryScreen extends Component {
         console.log('Error getting documents', err);
     })
 
-    //ready to proceed to get data 
+    //ready to p t data 
     await Utils.asyncForEach(supplierInventoryReference, async (inventory) => {
       await inventory.get().then(async (inventoryData) => {
           await supplierInventoryData.push(inventoryData.data())
@@ -61,7 +61,7 @@ class SupplierInventoryScreen extends Component {
     this.setState({
       inventory: supplierInventoryData,
       loadingContent: false
-    })
+    }, () => {console.log(this.state.inventory)})
   }
 
 
@@ -87,7 +87,11 @@ class SupplierInventoryScreen extends Component {
         containerStyle={headingContainerStyle}
         headingStyle={headingStyle}
         title="Hi Lorem, here is your inventory:" /> */}
-
+        <Button 
+      title= "Click to update inventory"
+      onPress = {() => { console.log("update clicked") 
+      this.props.updateInventory()}}
+      textColor={colors.colorAccent}/>
       <SectionList   
         sections={this.props.dummyInventory}
         renderItem={({item}) => SectionContent(item)}  
@@ -111,7 +115,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    updateInventory : () => dispatch({type:'UPDATE_INVENTORY'})
+    updateInventory: () => dispatch({type:'UPDATE_INVENTORY'})
   }
 }
 
@@ -202,4 +206,4 @@ SupplierInventoryScreen.navigationOptions = {
   title: 'Inventory'
 }
 
-export default connect(mapStateToProps)(SupplierInventoryScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(SupplierInventoryScreen)

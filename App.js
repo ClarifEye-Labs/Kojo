@@ -18,7 +18,8 @@ import {Provider} from 'react-redux';
 
 import SupplierInventoryScreen from './screens/SupplierInventoryScreen';
 import SupplierClientsScreen from './screens/SupplierClientsScreen';
-import SupplierScreen from './screens/supplierScreen'
+import SupplierScreen from './screens/SupplierScreen'
+
 
 
 
@@ -50,11 +51,12 @@ const initialState = {
 }
 
 const reducer = (state = initialState, action) => {
+  console.log("reducer called")
   switch(action.type) {
     case 'UPDATE_INVENTORY' : 
     return {dummyInventory : [
-      {title: 'Alcohol', data: ['ALTERED','ABBY','ACTION U.S.A.','AMUCK','ANGUISH']},  
       {title: 'Dairy', data: ['BEST MEN','BEYOND JUSTICE','BLACK GUNN','BLOOD RANCH','BEASTIES']},   
+      {title: 'Meat', data: ['CARTEL', 'CASTLE OF EVIL', 'CHANCE', 'COP GAME', 'CROSS FIRE',]},
     ]}
   }
   return state
