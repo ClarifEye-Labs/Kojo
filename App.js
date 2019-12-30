@@ -1,5 +1,5 @@
 import React, {useEffect, useState, Component} from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Button } from 'react-native';
 import { commonStyling } from './common' 
 import firebase from './config/firebase'
 import * as Font from 'expo-font';
@@ -19,10 +19,6 @@ import {Provider} from 'react-redux';
 import SupplierInventoryScreen from './screens/SupplierInventoryScreen';
 import SupplierClientsScreen from './screens/SupplierClientsScreen';
 import SupplierScreen from './screens/supplierScreen'
-
-
-
-
 
 const AppNavigator = createStackNavigator({
 LoginScreen: LoginScreen,
@@ -114,7 +110,7 @@ class App extends Component {
     {
       return (
         <Provider store = {store}>
-        <SupplierInventoryScreen />
+        <AppContainer />
         </Provider>
       )
 

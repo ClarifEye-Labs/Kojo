@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { SectionList, View, StyleSheet, Text, TouchableOpacity, ImageBackground} from 'react-native'
-import { Loading, Heading, Card } from '../Components'
+import { SectionList, View, StyleSheet, Text, TouchableOpacity, ImageBackground, Button} from 'react-native'
+import { SearchBar } from 'react-native-elements'
+import { Loading, Header, Card, SearchIcon } from '../Components'
 import { dimens, colors, customFonts } from '../constants'
 import { commonStyling } from '../common' 
 import * as Animatable from 'react-native-animatable'
@@ -18,18 +19,62 @@ class SupplierInventoryScreen extends Component {
         suppliersData: undefined,
         supplierID: 'carlsberg',
         inventory: undefined,
+        search: '',
+        showSearch: false,
         dummyInventory: [
-          {title: 'Alcohol', data: ['ALTERED','ABBY','ACTION U.S.A.','AMUCK','ANGUISH']},  
-          {title: 'Dairy', data: ['BEST MEN','BEYOND JUSTICE','BLACK GUNN','BLOOD RANCH','BEASTIES']},  
-          {title: 'Meat', data: ['CARTEL', 'CASTLE OF EVIL', 'CHANCE', 'COP GAME', 'CROSS FIRE',]},  
+          {title: 'Alcohol', data: [
+            {name :"asahi super dry draught 20L",
+            price_per_unit: 350,
+            imageURL: 'https://screenshotlayer.com/images/assets/placeholder.png',
+            quantity_available: "3 KEG"},
+            {name :"asahi super dry draught 20L",
+            price_per_unit: 350,
+            imageURL: 'https://screenshotlayer.com/images/assets/placeholder.png',
+            quantity_available: "3 KEG"},
+            {name :"asahi super dry draught 20L",
+            price_per_unit: 350,
+            imageURL: 'https://screenshotlayer.com/images/assets/placeholder.png',
+            quantity_available: "3 KEG"},
+            {name :"asahi super dry draught 20L",
+            price_per_unit: 350,
+            imageURL: 'https://screenshotlayer.com/images/assets/placeholder.png',
+            quantity_available: "3 KEG"}] },  
+          {title: 'Dairy', data: [
+              { name :"Milk",
+              price_per_unit: 20,
+              imageURL: 'https://screenshotlayer.com/images/assets/placeholder.png',
+              quantity_available: "3 L"},
+              { name :"Milk",
+              price_per_unit: 20,
+              imageURL: 'https://screenshotlayer.com/images/assets/placeholder.png',
+              quantity_available: "3 L"},
+              { name :"Milk",
+              price_per_unit: 20,
+              imageURL: 'https://screenshotlayer.com/images/assets/placeholder.png',
+              quantity_available: "3 L"},
+              { name :"Milk",
+              price_per_unit: 20,
+              imageURL: 'https://screenshotlayer.com/images/assets/placeholder.png',
+              quantity_available: "3 L"}]}
         ]
     }
+  }
+
+  updateSearch = search => {
+    this.setState({search})
+  }
+
+  showSearchPanel = () => {
+    this.setState({
+      showSearch: true
+    })
   }
 
   componentDidMount = () => {
     var firestore = firebase.firestore()
     var suppliersData = firestore.collection('suppliers')
 
+    this.props.navigation.setParams({ showSearchPanel: this.showSearchPanel }); 
     this.setState({
       firestore: firestore,
       suppliersData: suppliersData
@@ -83,13 +128,14 @@ class SupplierInventoryScreen extends Component {
 
     const componentLoaded = 
     <Animatable.View animation='fadeInUpBig' style={mainContainer}> 
-      {/* <Heading 
-        containerStyle={headingContainerStyle}
-        headingStyle={headingStyle}
-        title="Hi Lorem, here is your inventory:" /> */}
-
+       {this.state.showSearch ? <SearchBar
+        placeholder="Type Here..."
+        lightTheme = {true}
+        onChangeText={this.updateSearch}
+        value={this.state.search}
+      /> : null }
       <SectionList   
-        sections={this.props.dummyInventory}
+        sections={this.state.dummyInventory}
         renderItem={({item}) => SectionContent(item)}  
         renderSectionHeader={({section}) => SectionHeader(section) }  
         keyExtractor={(item, index) => index}  
@@ -141,12 +187,17 @@ const SectionContent = (sectionContent) => {
   const sectionContentToRender = <View style={sectionContentContainerOuter}>
     <View style={cardContainerStyle}>
       <Card width={65} height={65} elevation={dimens.defaultBorderRadius}>
-        <ImageBackground style={imageStyle} imageStyle={{borderRadius: dimens.defaultBorderRadius}} source={require('../assets/Supplier/addItems.jpg')} />
+        <ImageBackground 
+          style={imageStyle} 
+          imageStyle={{borderRadius: dimens.defaultBorderRadius}} 
+          source={{ uri: sectionContent.imageURL }} />
       </Card>
     </View>
    
     <View style={sectionContentContainerInner}>
-      <Text style={sectionContentText}>{sectionContent}</Text>
+      <TouchableOpacity>
+        <Text style={sectionContentText}>{sectionContent.name}</Text>
+      </TouchableOpacity>
     </View>
   </View>
 
@@ -155,8 +206,7 @@ const SectionContent = (sectionContent) => {
 
 const styles = StyleSheet.create({
   mainContainer: {
-    ...commonStyling.mainContainer,
-    paddingTop: dimens.screenSafeUpperNotchDistance,
+    ...commonStyling.mainContainer
   },
   headingContainerStyle: {
     width: '100%',
@@ -212,8 +262,18 @@ const styles = StyleSheet.create({
 
 
 
-SupplierInventoryScreen.navigationOptions = {
-  title: 'Inventory'
+SupplierInventoryScreen.navigationOptions = ({navigation}) => {
+  return{
+    title: 'Inventory',
+    headerRight: () => (
+      <SearchIcon 
+        style={{marginRight: dimens.screenHorizontalMargin}} 
+        size={30}
+        color={colors.colorPrimary}
+        onPress={navigation.getParam('showSearchPanel')} />
+    )
+  }
+ 
 }
 
 export default connect(mapStateToProps)(SupplierInventoryScreen)
