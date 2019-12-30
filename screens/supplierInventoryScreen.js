@@ -6,6 +6,7 @@ import { commonStyling } from '../common'
 import * as Animatable from 'react-native-animatable'
 import firebase from '../config/firebase'
 import Utils from '../utils/Utils';
+import {connect} from 'react-redux';
 
 class SupplierInventoryScreen extends Component {
   constructor(props){
@@ -86,7 +87,7 @@ class SupplierInventoryScreen extends Component {
         title="Hi Lorem, here is your inventory:" /> */}
 
       <SectionList   
-        sections={this.state.dummyInventory}
+        sections={this.props.dummyInventory}
         renderItem={({item}) => SectionContent(item)}  
         renderSectionHeader={({section}) => SectionHeader(section) }  
         keyExtractor={(item, index) => index}  
@@ -97,6 +98,18 @@ class SupplierInventoryScreen extends Component {
     
 
     return componentToRender
+  }
+}
+
+function mapStateToProps(state) {
+  return {
+    dummyInventory: state.dummyInventory
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    updateInventory : () => dispatch({type:'UPDATE_INVENTORY'})
   }
 }
 
@@ -187,4 +200,4 @@ SupplierInventoryScreen.navigationOptions = {
   title: 'Inventory'
 }
 
-export default SupplierInventoryScreen
+export default connect(mapStateToProps)(SupplierInventoryScreen)

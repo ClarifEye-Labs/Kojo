@@ -12,9 +12,14 @@ import EmailScreen from './screens/EmailScreen'
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 import { colors } from './constants';
+import {createStore} from 'redux';
+import {Provider} from 'react-redux';
+
+
 import SupplierInventoryScreen from './screens/SupplierInventoryScreen';
 import SupplierClientsScreen from './screens/SupplierClientsScreen';
 import SupplierScreen from './screens/supplierScreen'
+
 
 
 
@@ -33,7 +38,30 @@ SupplierClientsScreen: SupplierClientsScreen,
 initialRouteName: 'WelcomeScreen'
 })
 
+
 const AppContainer = createAppContainer(AppNavigator);
+
+const initialState = {
+  dummyInventory: [
+    {title: 'Alcohol', data: ['ALTERED','ABBY','ACTION U.S.A.','AMUCK','ANGUISH']},  
+    {title: 'Dairy', data: ['BEST MEN','BEYOND JUSTICE','BLACK GUNN','BLOOD RANCH','BEASTIES']},  
+    {title: 'Meat', data: ['CARTEL', 'CASTLE OF EVIL', 'CHANCE', 'COP GAME', 'CROSS FIRE',]},  
+  ]
+}
+
+const reducer = (state = initialState, action) => {
+  switch(action.type) {
+    case 'UPDATE_INVENTORY' : 
+    return {dummyInventory : [
+      {title: 'Alcohol', data: ['ALTERED','ABBY','ACTION U.S.A.','AMUCK','ANGUISH']},  
+      {title: 'Dairy', data: ['BEST MEN','BEYOND JUSTICE','BLACK GUNN','BLOOD RANCH','BEASTIES']},   
+    ]}
+  }
+  return state
+}
+
+const store = createStore(reducer)
+
 
 
 class App extends Component {
@@ -72,7 +100,7 @@ class App extends Component {
     })
   }
 
-  
+
   render() {
     const {
       mainContainer
@@ -82,10 +110,16 @@ class App extends Component {
       navigation
     } = this.props
 
+            {/* <Provider store = {store}>
+        <AppContainer style={styles.container} />
+        </Provider> */}
     if(this.state.isAppReady)
     {
       return (
-        <AppContainer style={styles.container} />
+
+        <Provider store = {store}>
+          <SupplierInventoryScreen />
+        </Provider>
       );
 
     }
