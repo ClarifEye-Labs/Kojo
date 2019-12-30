@@ -125,8 +125,8 @@ const SectionContent = (sectionContent) => {
 
   const sectionContentToRender = <View style={sectionContentContainerOuter}>
     <View style={cardContainerStyle}>
-      <Card width={60} height={60} elevation={dimens.defaultBorderRadius}>
-        <ImageBackground style={imageStyle} source={require('../assets/Supplier/addItems.jpg')} />
+      <Card width={65} height={65} elevation={dimens.defaultBorderRadius}>
+        <ImageBackground style={imageStyle} imageStyle={{borderRadius: dimens.defaultBorderRadius}} source={require('../assets/Supplier/addItems.jpg')} />
       </Card>
     </View>
    
@@ -171,25 +171,17 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row'
   },
-  thinLine:{
-    width: '100%',
-    height: 0.2,
-    backgroundColor: colors.blackTransluscent,
-    position: 'absolute',
-    top: 91,
-    left: dimens.screenHorizontalMargin + 60
-  },
   sectionContentContainerInner:{
     width: '100%',
     height: '100%',
     justifyContent: 'center',
-    marginLeft: dimens.screenHorizontalMargin + 70,
+    marginLeft: dimens.screenHorizontalMargin + 65 + dimens.screenHorizontalMargin,
     borderBottomWidth: 0.2,
     borderBottomColor: colors.blackTransluscent
   },
   sectionContentText:{
     fontFamily: customFonts.regular,
-    fontSize: 18,
+    fontSize: 17,
     color: colors.blackTransluscent
   },
   imageStyle:{
