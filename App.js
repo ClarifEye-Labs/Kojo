@@ -110,17 +110,13 @@ class App extends Component {
       navigation
     } = this.props
 
-            {/* <Provider store = {store}>
-        <AppContainer style={styles.container} />
-        </Provider> */}
     if(this.state.isAppReady)
     {
       return (
-
         <Provider store = {store}>
-          <SupplierInventoryScreen />
+        <SupplierInventoryScreen />
         </Provider>
-      );
+      )
 
     }
 
