@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { SectionList, View, StyleSheet, Text, TouchableOpacity} from 'react-native'
+import { SectionList, View, StyleSheet, Text, TouchableOpacity, ImageBackground} from 'react-native'
 import { Loading, Heading, Card } from '../Components'
 import { dimens, colors, customFonts } from '../constants'
 import { commonStyling } from '../common' 
@@ -117,17 +117,22 @@ const SectionContent = (sectionContent) => {
   const {
     sectionContentContainerOuter,
     sectionContentContainerInner,
-    sectionContentText
+    sectionContentText,
+    imageStyle,
+    cardContainerStyle,
+    thinLine
   } = styles
 
   const sectionContentToRender = <View style={sectionContentContainerOuter}>
-    <Card height={120} width='100%' elevation={4}>
-      <TouchableOpacity>
-        <View style={sectionContentContainerInner}>
-          <Text style={sectionContentText}>{sectionContent}</Text>
-        </View>
-      </TouchableOpacity>
-    </Card>
+    <View style={cardContainerStyle}>
+      <Card width={60} height={60} elevation={dimens.defaultBorderRadius}>
+        <ImageBackground style={imageStyle} source={require('../assets/Supplier/addItems.jpg')} />
+      </Card>
+    </View>
+   
+    <View style={sectionContentContainerInner}>
+      <Text style={sectionContentText}>{sectionContent}</Text>
+    </View>
   </View>
 
   return sectionContentToRender
@@ -161,23 +166,40 @@ const styles = StyleSheet.create({
     fontFamily: customFonts.bold
   },
   sectionContentContainerOuter: {
-    height: 120,
-    marginTop: 4,
-    marginBottom: 4,
+    height: 90,
     alignItems: 'center',
-    width: '100%'
+    width: '100%',
+    flexDirection: 'row'
+  },
+  thinLine:{
+    width: '100%',
+    height: 0.2,
+    backgroundColor: colors.blackTransluscent,
+    position: 'absolute',
+    top: 91,
+    left: dimens.screenHorizontalMargin + 60
   },
   sectionContentContainerInner:{
     width: '100%',
     height: '100%',
     justifyContent: 'center',
-    paddingLeft: dimens.screenHorizontalMargin,
-    paddingRight: dimens.screenHorizontalMargin
+    marginLeft: dimens.screenHorizontalMargin + 70,
+    borderBottomWidth: 0.2,
+    borderBottomColor: colors.blackTransluscent
   },
   sectionContentText:{
-    fontFamily: customFonts.semiBold,
-    fontSize: 23,
+    fontFamily: customFonts.regular,
+    fontSize: 18,
     color: colors.blackTransluscent
+  },
+  imageStyle:{
+    width: '100%',
+    height: '100%',
+    borderRadius: dimens.defaultBorderRadius
+  },
+  cardContainerStyle:{
+    position: 'absolute',
+    left: dimens.screenHorizontalMargin
   }
 })
 
