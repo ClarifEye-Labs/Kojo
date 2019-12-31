@@ -44,7 +44,8 @@ const strings = {
   inventoryPricePerUnitPlaceholderText: 'Enter price per unit',
   addInventoryText: 'Add Inventory',
   inventoryDocumentName: 'Inventory Title',
-  inventoryDocumentNamePlaceholderText: 'Add a unique title'
+  inventoryDocumentNamePlaceholderText: 'Add a unique title',
+  inventoryUploadImage: 'Upload Image'
 
 }
 
