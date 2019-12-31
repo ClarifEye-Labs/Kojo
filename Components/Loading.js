@@ -1,6 +1,5 @@
 import React from 'react'
 import { ActivityIndicator, View, StyleSheet, Text} from 'react-native'
-import { } from '../Components'
 import { dimens, colors, customFonts, strings } from '../constants'
 import { commonStyling } from '../common'
 
