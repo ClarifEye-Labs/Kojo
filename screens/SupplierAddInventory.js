@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
       marginTop: 35
     },
     uploadButtonStyle:{
-        width: '50%',
+        width: '51%',
         backgroundColor: colors.facebookBlue,
         marginTop: 35,
 
