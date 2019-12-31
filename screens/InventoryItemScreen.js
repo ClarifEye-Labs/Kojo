@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text} from 'react-native'
-import { } from '../Components'
-import { dimens, colors } from '../constants'
+import { View, StyleSheet, Image, Text} from 'react-native'
+import { dimens, colors, customFonts, strings } from '../constants'
 import { commonStyling } from '../common' 
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 class InventoryItemScreen extends Component {
   constructor(props){
@@ -13,15 +13,27 @@ class InventoryItemScreen extends Component {
   }
   render() {
     const {
-      mainContainer
+      mainContainer,
+      imageStyle,
+      collapsableHeaderStyle,
+      itemNameStyle
     } = styles
 
     const {
-      navigation
+      navigation,
     } = this.props
+    
+    const itemName = navigation.getParam('item').name;
+    const itemPrice = navigation.getParam('item').price_per_unit;
+    const itemImageURL = navigation.getParam('item').imageURL;
+    const quantityAvailable = navigation.getParam('item').quantityAvailable;
+
     return (
       <View style={mainContainer}>
-        <Text> Hello from {this.state.name} </Text>
+        <View style={collapsableHeaderStyle}> 
+          <Image source= {{ uri: itemImageURL} }  style={imageStyle} />
+          <Text style={itemNameStyle}> {itemName} </Text>
+        </View>
       </View>
     );
   }
@@ -29,14 +41,40 @@ class InventoryItemScreen extends Component {
 
 const styles = StyleSheet.create({
   mainContainer: {
-    ...commonStyling.mainContainer,
+    ...commonStyling.mainContainer
+  },
+  imageStyle:{
+    width: 150,
+    height: 150
+  },
+  collapsableHeaderStyle:{
+    width: '100%',
+    height: 250,
     alignItems: 'center',
-    justifyContent: 'center'
+    paddingTop: dimens.screenVerticalMargin
+  },
+  itemNameStyle: {
+    fontSize: 20,
+    marginTop: 10,
+    fontFamily: customFonts.semiBold,
+    color: colors.gray
+  },
+  headerEditContainerStyle:{
+    marginRight: dimens.screenHorizontalMargin
+  },
+  headerEditStyle:{
+    fontSize: 16,
+    color: colors.facebookBlue
   }
 })
 
 InventoryItemScreen.navigationOptions = {
-  title: 'InventoryItemScreen'
+  title: 'InventoryItemScreen',
+  headerRight: () => (
+    <TouchableOpacity style={styles.headerEditContainerStyle}>
+      <Text style={styles.headerEditStyle}>{strings.edit}</Text>
+    </TouchableOpacity>
+  )
 }
 
 export default InventoryItemScreen

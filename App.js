@@ -1,7 +1,6 @@
 import React, {useEffect, useState, Component} from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { commonStyling } from './common' 
-import firebase from './config/firebase'
 import * as Font from 'expo-font';
 import WelcomeScreen from './screens/WelcomeScreen'
 import LoginScreen from './screens/LoginScreen'
@@ -11,13 +10,11 @@ import SupplierRestaurantScreen from './screens/SupplierRestaurantScreen'
 import EmailScreen from './screens/EmailScreen'
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
-import { colors } from './constants';
 import {createStore} from 'redux';
 import {Provider} from 'react-redux';
 import InventoryItemScreen from './screens/InventoryItemScreen'
 import SupplierInventoryScreen from './screens/SupplierInventoryScreen';
 import SupplierClientsScreen from './screens/SupplierClientsScreen';
-import SupplierScreen from './screens/supplierScreen'
 
 const AppNavigator = createStackNavigator({
 LoginScreen: LoginScreen,
@@ -31,7 +28,7 @@ SupplierClientsScreen: SupplierClientsScreen,
 InventoryItemScreen: InventoryItemScreen
 },
 {
-initialRouteName: 'WelcomeScreen'
+initialRouteName: 'SupplierInventoryScreen'
 })
 
 
@@ -110,7 +107,7 @@ class App extends Component {
     {
       return (
         <Provider store = {store}>
-        <AppContainer />
+          <AppContainer />
         </Provider>
       )
 

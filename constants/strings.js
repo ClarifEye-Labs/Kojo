@@ -33,6 +33,7 @@ const strings = {
   supplier: 'Supplier',
   restaurant: 'Restaurant',
   loading: 'Loading, please wait...',
+  edit: 'Edit'
 }
 
 export default strings

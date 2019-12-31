@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { SectionList, View, StyleSheet, Text, TouchableOpacity, ImageBackground, Button} from 'react-native'
 import { SearchBar } from 'react-native-elements'
-import { Loading, Header, Card, SearchIcon } from '../Components'
+import { Loading, Card, SearchIcon, Heading } from '../Components'
 import { dimens, colors, customFonts } from '../constants'
 import { commonStyling } from '../common' 
 import * as Animatable from 'react-native-animatable'
@@ -128,6 +128,17 @@ class SupplierInventoryScreen extends Component {
 
     const componentLoaded = 
     <Animatable.View animation='fadeInUpBig' style={mainContainer}> 
+      <View style={headingContainerStyle}>
+        <Heading 
+          title='Inventory: '
+          headingStyle={headingStyle}
+          containerStyle={headingContainerStyle}
+          />
+        <Text>
+          Hi, find your items below:   
+        </Text>
+      </View>
+      
        {this.state.showSearch ? <SearchBar
         placeholder="Type Here..."
         lightTheme = {true}
@@ -201,7 +212,9 @@ const SectionContent = (sectionContent, props) => {
     </View>
    
     <View style={sectionContentContainerInner}>
-      <TouchableOpacity onPress={()=>{navigation.navigate('InventoryItemScreen')}}>
+      <TouchableOpacity onPress={()=>{navigation.navigate('InventoryItemScreen', {
+        item: sectionContent
+      })}}>
         <Text style={sectionContentText}>{sectionContent.name}</Text>
       </TouchableOpacity>
     </View>
@@ -263,6 +276,13 @@ const styles = StyleSheet.create({
   cardContainerStyle:{
     position: 'absolute',
     left: dimens.screenHorizontalMargin
+  },
+  headingStyle:{
+
+  },
+  headingContainerStyle: {
+    width: '100%',
+    margin: dimens.screenHorizontalMargin
   }
 })
 
@@ -270,13 +290,13 @@ const styles = StyleSheet.create({
 
 SupplierInventoryScreen.navigationOptions = ({navigation}) => {
   return{
-    title: 'Inventory',
+    headerTintColor: colors.colorPrimary,
     headerRight: () => (
       <SearchIcon 
-        style={{marginRight: dimens.screenHorizontalMargin}} 
-        size={30}
-        color={colors.colorPrimary}
-        onPress={navigation.getParam('showSearchPanel')} />
+      style={{marginRight: dimens.screenHorizontalMargin}} 
+      size={25}
+      color={colors.colorPrimary}
+      onPress={navigation.getParam('showSearchPanel')} />
     )
   }
  
