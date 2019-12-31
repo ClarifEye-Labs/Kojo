@@ -48,7 +48,8 @@ const reducer = (state = initialState, action) => {
     return {dummyInventory : [
       {title: 'Alcohol', data: ['ALTERED','ABBY','ACTION U.S.A.','AMUCK','ANGUISH']},  
       {title: 'Dairy', data: ['BEST MEN','BEYOND JUSTICE','BLACK GUNN','BLOOD RANCH','BEASTIES']},   
-    ]}
+      {title: 'Meat', data: ['CARTEL', 'CASTLE OF EVIL', 'CHANCE', 'COP GAME', 'CROSS FIRE',]},
+    ]}  
   }
   return state
 }
