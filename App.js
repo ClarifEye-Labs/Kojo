@@ -15,6 +15,7 @@ import {Provider} from 'react-redux';
 import InventoryItemScreen from './screens/InventoryItemScreen'
 import SupplierInventoryScreen from './screens/SupplierInventoryScreen';
 import SupplierClientsScreen from './screens/SupplierClientsScreen';
+import SupplierAddInventoryScreen from './screens/SupplierAddInventory';
 
 const AppNavigator = createStackNavigator({
 LoginScreen: LoginScreen,
@@ -108,7 +109,7 @@ class App extends Component {
     {
       return (
         <Provider store = {store}>
-          <AppContainer />
+          <SupplierAddInventoryScreen />
         </Provider>
       )
 
