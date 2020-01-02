@@ -17,7 +17,7 @@ import {
 import { dimens, colors, customFonts, strings } from '../constants'
 import { commonStyling } from '../common'
 import facebookConstants from '../config/facebook';
-import firebase from 'firebase'
+import firebase from '../config/firebase'
 
 class LoginScreen extends React.Component { 
   constructor(props){

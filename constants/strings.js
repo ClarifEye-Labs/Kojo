@@ -31,7 +31,22 @@ const strings = {
   iAmA: 'I am a',
   iOwnA:'I own a',
   supplier: 'Supplier',
-  restaurant: 'Restaurant'
+  restaurant: 'Restaurant',
+  loading: 'Loading, please wait...',
+  edit: 'Edit',
+  inventoryTypeText: 'Inventory type ',
+  inventoryTypeSubheading: 'Inventory Type',
+  inventoryName: 'Inventory Name',
+  inventoryNamePlaceholderText: 'Add inventory name',
+  inventoryQuantityAvailable: 'Quantity Available',
+  inventoryQuantityAvailablePlaceholderText: 'Enter the quantity',
+  inventoryPricePerUnit: 'Price per Unit',
+  inventoryPricePerUnitPlaceholderText: 'Enter price per unit',
+  addInventoryText: 'Add Inventory',
+  inventoryDocumentName: 'Inventory Title',
+  inventoryDocumentNamePlaceholderText: 'Add a unique title',
+  inventoryUploadImage: 'Upload Image'
+
 }
 
 export default strings

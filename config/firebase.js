@@ -1,5 +1,7 @@
 import firebase from "firebase/app"
 import "firebase/firestore"
+import "firebase/auth"
+
 var firebaseConfig = {
     apiKey: "AIzaSyCqAVUpIHOv_mgfBqdVg3vR15zYwUXVEAA",
     authDomain: "kojo-9861a.firebaseapp.com",
@@ -12,6 +14,5 @@ var firebaseConfig = {
   };
 
 firebase.initializeApp(firebaseConfig)
-
 
 export default firebase
