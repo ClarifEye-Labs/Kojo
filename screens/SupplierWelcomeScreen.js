@@ -74,7 +74,7 @@ function ListItem(item, navigation) {
       backgroundImage = require('../assets/Supplier/addItems.jpg')
       backgroundColorOverlay = colors.blueTransluscent
       textColor = colors.colorAccent
-      onPress = () => navigation.navigate('WelcomeScreen') 
+      onPress = () => navigation.navigate('SupplierAddInventoryScreen') 
       break;
     }
     case 'View Inventory':{

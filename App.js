@@ -26,10 +26,11 @@ EmailScreen: EmailScreen,
 SupplierRestaurantScreen: SupplierRestaurantScreen,
 SupplierInventoryScreen: SupplierInventoryScreen,
 SupplierClientsScreen: SupplierClientsScreen,
-InventoryItemScreen: InventoryItemScreen
+InventoryItemScreen: InventoryItemScreen,
+SupplierAddInventoryScreen: SupplierAddInventoryScreen
 },
 {
-initialRouteName: 'SupplierInventoryScreen'
+initialRouteName: 'WelcomeScreen'
 })
 
 
@@ -109,7 +110,7 @@ class App extends Component {
     {
       return (
         <Provider store = {store}>
-          <SupplierAddInventoryScreen />
+          <AppContainer  />
         </Provider>
       )
 

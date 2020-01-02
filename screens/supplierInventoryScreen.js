@@ -111,8 +111,7 @@ class SupplierInventoryScreen extends Component {
 
 
   render() {
-    console.log("inventory is")
-    console.log(this.props.dummyInventory)
+
     const {
       mainContainer,
       headingContainerStyle,
