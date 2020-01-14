@@ -79,17 +79,17 @@ class SupplierInventoryScreen extends Component {
     )
   }
 
-  getCollapsedHeaderView = () => {
+  getCollapsedHeaderView = (navigation) => {
     const { 
       collpasedHeaderContainer,
       collpasedHeaderTitle,
       collapsedHeaderBackButtonStyling,
       collapsedHeaderSearchButtonStyling,
     } = styles
-
+  
     return (
       <View style={collpasedHeaderContainer}>
-        <Back style={collapsedHeaderBackButtonStyling} color={colors.colorAccent} />
+        <Back style={collapsedHeaderBackButtonStyling} color={colors.colorAccent}  size={34} onPress={()=> navigation.goBack()} />
         <Text style={collpasedHeaderTitle}>Inventory</Text>
         <SearchIcon 
           style={collapsedHeaderSearchButtonStyling} 
@@ -193,7 +193,7 @@ class SupplierInventoryScreen extends Component {
 
         <Animated.View 
           style={{ flex: 1 , opacity: headerTitleOpacity }}>
-            {this.getCollapsedHeaderView()}
+            {this.getCollapsedHeaderView(navigation)}
         </Animated.View>
 
       </Animated.View>
