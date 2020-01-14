@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { CollapsibleHeaderScrollView } from 'react-native-collapsible-header-views';
 import {
   Animated,
   Dimensions,
@@ -45,26 +46,14 @@ class CollapsibleHeader extends Component {
     const headerTitle = 'HEADER'
 
     return (
-      <View style={styles.container}>
-        <Animated.View style={[styles.header, { height: headerHeight }]}>
-          <Animated.Text style={{textAlign: 'center', fontSize: 18, color: 'black', marginTop: dimens.screenSafeUpperNotchDistance + 20, opacity: headerTitleOpacity}}>{headerTitle}</Animated.Text>
-          <Animated.Text style={{textAlign: 'center', fontSize: 32, color: 'black', position: 'absolute', bottom: 16, left: 16, opacity: heroTitleOpacity}}>{headerTitle}</Animated.Text>
-        </Animated.View>
-        <ScrollView
-          contentContainerStyle={styles.scrollContainer}
-          onScroll={Animated.event(
-            [{ nativeEvent: {
-                contentOffset: {
-                  y: this.state.scrollY
-                }
-              }
-            }])
-          }
-          scrollEventThrottle={16}>
-          <Text style={styles.title}>This is Title</Text>
-          <Text style={styles.content}>{str}</Text>
-        </ScrollView>
-      </View>
+      <CollapsibleHeaderScrollView
+    CollapsibleHeaderComponent={<View style={{  width: '100%',
+    backgroundColor: colors.colorPrimary, height: headerHeight}} />}
+    headerHeight={300}
+    statusBarHeight={100}
+    >
+    <View style={{ height: 2000, backgroundColor: 'wheat' }} />
+  </CollapsibleHeaderScrollView>
     );
   }
 }

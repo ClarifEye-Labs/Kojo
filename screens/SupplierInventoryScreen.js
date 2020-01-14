@@ -5,7 +5,7 @@ import { SectionList, View, StyleSheet, Text, TouchableOpacity, ImageBackground,
   ScrollView} from 'react-native'
 import { SearchBar } from 'react-native-elements'
 import str from './content';
-import { Loading, Card, SearchIcon, Heading } from '../Components'
+import { Loading, Card, SearchIcon, Heading, Back } from '../Components'
 import { dimens, colors, customFonts } from '../constants'
 import { commonStyling } from '../common' 
 import * as Animatable from 'react-native-animatable'
@@ -14,10 +14,10 @@ import Utils from '../utils/Utils';
 import {connect} from 'react-redux';
 
 
-const HEADER_EXPANDED_HEIGHT = 300
-const HEADER_COLLAPSED_HEIGHT = 80;
+const HEADER_EXPANDED_HEIGHT = 200;
+const HEADER_COLLAPSED_HEIGHT = 100;
 
-const { width: SCREEN_WIDTH } = Dimensions.get("screen")
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen")
 
 class SupplierInventoryScreen extends Component {
   constructor(props){
@@ -34,30 +34,7 @@ class SupplierInventoryScreen extends Component {
         showSearch: false,
         dummyInventory: [
           {title: 'Alcohol', data: [
-            {name :"asahi super dry draught 20L",
-            price_per_unit: 350,
-            imageURL: 'https://screenshotlayer.com/images/assets/placeholder.png',
-            quantity_available: "3 KEG"},
-            {name :"asahi super dry draught 20L",
-            price_per_unit: 350,
-            imageURL: 'https://screenshotlayer.com/images/assets/placeholder.png',
-            quantity_available: "3 KEG"},
-            {name :"asahi super dry draught 20L",
-            price_per_unit: 350,
-            imageURL: 'https://screenshotlayer.com/images/assets/placeholder.png',
-            quantity_available: "3 KEG"},
-            {name :"asahi super dry draught 20L",
-            price_per_unit: 350,
-            imageURL: 'https://screenshotlayer.com/images/assets/placeholder.png',
-            quantity_available: "3 KEG"},
-            {name :"asahi super dry draught 20L",
-            price_per_unit: 350,
-            imageURL: 'https://screenshotlayer.com/images/assets/placeholder.png',
-            quantity_available: "3 KEG"},
-            {name :"asahi super dry draught 20L",
-            price_per_unit: 350,
-            imageURL: 'https://screenshotlayer.com/images/assets/placeholder.png',
-            quantity_available: "3 KEG"},
+            
             {name :"asahi super dry draught 20L",
             price_per_unit: 350,
             imageURL: 'https://screenshotlayer.com/images/assets/placeholder.png',
@@ -85,6 +62,42 @@ class SupplierInventoryScreen extends Component {
               quantity_available: "3 L"}]}
         ]
     }
+  }
+
+  getMainHeaderView = () => {
+    const {
+      headingStyle,
+      subHeadingStyle,
+      expandedHeaderContainerStyle
+    } = styles
+    
+    return (
+      <View style={expandedHeaderContainerStyle}>
+        <Text style={headingStyle}>Inventory </Text>
+        <Text style={subHeadingStyle}>View your items below: </Text> 
+      </View>
+    )
+  }
+
+  getCollapsedHeaderView = () => {
+    const { 
+      collpasedHeaderContainer,
+      collpasedHeaderTitle,
+      collapsedHeaderBackButtonStyling,
+      collapsedHeaderSearchButtonStyling,
+    } = styles
+
+    return (
+      <View style={collpasedHeaderContainer}>
+        <Back style={collapsedHeaderBackButtonStyling} color={colors.colorAccent} />
+        <Text style={collpasedHeaderTitle}>Inventory</Text>
+        <SearchIcon 
+          style={collapsedHeaderSearchButtonStyling} 
+          size={32}
+          onPress={this.showSearchPanel}
+          color={colors.colorAccent}/>
+      </View>
+    )
   }
 
   updateSearch = search => {
@@ -143,7 +156,7 @@ class SupplierInventoryScreen extends Component {
       inputRange: [0, HEADER_EXPANDED_HEIGHT-HEADER_COLLAPSED_HEIGHT],
       outputRange: [HEADER_EXPANDED_HEIGHT, HEADER_COLLAPSED_HEIGHT],
       extrapolate: 'clamp'
-    });
+    });3
     const headerTitleOpacity = this.state.scrollY.interpolate({
       inputRange: [0, HEADER_EXPANDED_HEIGHT-HEADER_COLLAPSED_HEIGHT],
       outputRange: [0, 1],
@@ -159,8 +172,7 @@ class SupplierInventoryScreen extends Component {
 
     const {
       mainContainer,
-      headingContainerStyle,
-      headingStyle
+      mainHeaderContainerStyle
     } = styles
 
     const {
@@ -172,9 +184,18 @@ class SupplierInventoryScreen extends Component {
 
     const componentLoaded = 
     <Animatable.View animation='fadeInUpBig' style={mainContainer}> 
-      <Animated.View style={[headingContainerStyle, {height: headerHeight}]}>
-        <Animated.Text style={{textAlign: 'center', fontSize: 32, color: 'white', position: 'absolute', bottom: 16, left: 16, opacity: heroTitleOpacity}}>{headerTitle}</Animated.Text>
-        <Animated.Text style={{textAlign: 'center', fontSize: 18, color: 'black', marginTop: dimens.screenSafeUpperNotchDistance + 20, opacity: headerTitleOpacity}}>{headerTitle}</Animated.Text>
+      <Animated.View style={[mainHeaderContainerStyle, {height: headerHeight}]}>
+
+        <Animated.View 
+          style={{ flex: 1, opacity: heroTitleOpacity}}> 
+            {this.getMainHeaderView()}
+        </Animated.View>
+
+        <Animated.View 
+          style={{ flex: 1 , opacity: headerTitleOpacity }}>
+            {this.getCollapsedHeaderView()}
+        </Animated.View>
+
       </Animated.View>
       
        {this.state.showSearch ? <SearchBar
@@ -184,6 +205,7 @@ class SupplierInventoryScreen extends Component {
         value={this.state.search}
       /> : null }
       <SectionList   
+        contentContainerStyle = {{minHeight: SCREEN_HEIGHT + HEADER_COLLAPSED_HEIGHT}}
         sections={this.state.dummyInventory}
         renderItem={({item}) => SectionContent(item, this.props)}  
         renderSectionHeader={({section}) => SectionHeader(section, this.props) }  
@@ -274,16 +296,6 @@ const styles = StyleSheet.create({
   mainContainer: {
     ...commonStyling.mainContainer
   },
-  headingContainerStyle: {
-    width: '100%',
-    textAlign: 'left',
-    padding: dimens.screenHorizontalMargin
-  },
-  headingStyle: {
-    fontSize: 23,
-    color: colors.blackTransluscent,
-    fontFamily: customFonts.semiBold
-  },
   sectionHeaderContainer: {
     width: '100%',
     height: 40,
@@ -324,30 +336,65 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: dimens.screenHorizontalMargin
   },
-  headingStyle:{
-
-  },
-  headingContainerStyle: {
+  mainHeaderContainerStyle: {
     width: '100%',
     backgroundColor: colors.colorPrimary
+  },
+  collpasedHeaderContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  collpasedHeaderTitle: {
+    fontSize: 24,
+    textAlign: "center",
+    color: colors.colorAccent,
+    fontFamily: customFonts.semiBold
+  },
+  collapsedHeaderBackButtonStyling: {
+    position: 'absolute',
+    left: dimens.screenHorizontalMargin
+  },
+  collapsedHeaderSearchButtonStyling: {
+    position: 'absolute',
+    right: dimens.screenHorizontalMargin
+  },
+  expandedHeaderContainer: {
+    width: '100%',
+    backgroundColor: colors.colorPrimary,
+    flexDirection: 'row'
+  },
+  headingStyle: {
+    fontSize: 40,
+    fontFamily: customFonts.semiBold,
+    color: colors.colorAccent,
+    width: '100%',
+    textAlign: 'left',
+    paddingLeft: dimens.screenHorizontalMargin
+  },
+  subHeadingStyle: {
+    fontSize: 18,
+    fontFamily: customFonts.regular,
+    marginTop: 8,
+    width: '100%',
+    textAlign: 'left',
+    color: colors.colorAccent,
+    paddingLeft: dimens.screenHorizontalMargin
+  },
+  expandedHeaderContainerStyle: {
+    width: '100%', 
+    height: HEADER_EXPANDED_HEIGHT, 
+    justifyContent: 'center', 
+    flexDirection: 'column', 
+    position: 'absolute'
   }
+
 })
 
 
-
-SupplierInventoryScreen.navigationOptions = ({navigation}) => {
-  return{
-    // headerTintColor: colors.colorPrimary,
-    // headerRight: () => (
-    //   <SearchIcon 
-    //   style={{marginRight: dimens.screenHorizontalMargin}} 
-    //   size={25}
-    //   color={colors.colorPrimary}
-    //   onPress={navigation.getParam('showSearchPanel')} />
-    // )
-    header: null
-  }
- 
+SupplierInventoryScreen.navigationOptions = {
+  header: null
 }
 
 export default connect(mapStateToProps)(SupplierInventoryScreen)
