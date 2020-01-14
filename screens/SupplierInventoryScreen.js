@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
-import { SectionList, View, StyleSheet, Text, TouchableOpacity, ImageBackground, Button} from 'react-native'
+import { SectionList, View, StyleSheet, Text, TouchableOpacity, ImageBackground, Button, Animated,
+  Dimensions,
+  Platform,
+  ScrollView} from 'react-native'
 import { SearchBar } from 'react-native-elements'
+import str from './content';
 import { Loading, Card, SearchIcon, Heading } from '../Components'
 import { dimens, colors, customFonts } from '../constants'
 import { commonStyling } from '../common' 
@@ -8,6 +12,12 @@ import * as Animatable from 'react-native-animatable'
 import firebase from '../config/firebase'
 import Utils from '../utils/Utils';
 import {connect} from 'react-redux';
+
+
+const HEADER_EXPANDED_HEIGHT = 300
+const HEADER_COLLAPSED_HEIGHT = 80;
+
+const { width: SCREEN_WIDTH } = Dimensions.get("screen")
 
 class SupplierInventoryScreen extends Component {
   constructor(props){
@@ -17,12 +27,29 @@ class SupplierInventoryScreen extends Component {
         loadingContent: false,
         firestore: undefined,
         suppliersData: undefined,
+        scrollY: new Animated.Value(0),
         supplierID: 'carlsberg',
         inventory: undefined,
         search: '',
         showSearch: false,
         dummyInventory: [
           {title: 'Alcohol', data: [
+            {name :"asahi super dry draught 20L",
+            price_per_unit: 350,
+            imageURL: 'https://screenshotlayer.com/images/assets/placeholder.png',
+            quantity_available: "3 KEG"},
+            {name :"asahi super dry draught 20L",
+            price_per_unit: 350,
+            imageURL: 'https://screenshotlayer.com/images/assets/placeholder.png',
+            quantity_available: "3 KEG"},
+            {name :"asahi super dry draught 20L",
+            price_per_unit: 350,
+            imageURL: 'https://screenshotlayer.com/images/assets/placeholder.png',
+            quantity_available: "3 KEG"},
+            {name :"asahi super dry draught 20L",
+            price_per_unit: 350,
+            imageURL: 'https://screenshotlayer.com/images/assets/placeholder.png',
+            quantity_available: "3 KEG"},
             {name :"asahi super dry draught 20L",
             price_per_unit: 350,
             imageURL: 'https://screenshotlayer.com/images/assets/placeholder.png',
@@ -109,8 +136,26 @@ class SupplierInventoryScreen extends Component {
     })
   }
 
-
+  
   render() {
+
+    const headerHeight = this.state.scrollY.interpolate({
+      inputRange: [0, HEADER_EXPANDED_HEIGHT-HEADER_COLLAPSED_HEIGHT],
+      outputRange: [HEADER_EXPANDED_HEIGHT, HEADER_COLLAPSED_HEIGHT],
+      extrapolate: 'clamp'
+    });
+    const headerTitleOpacity = this.state.scrollY.interpolate({
+      inputRange: [0, HEADER_EXPANDED_HEIGHT-HEADER_COLLAPSED_HEIGHT],
+      outputRange: [0, 1],
+      extrapolate: 'clamp'
+    });
+    const heroTitleOpacity = this.state.scrollY.interpolate({
+      inputRange: [0, HEADER_EXPANDED_HEIGHT-HEADER_COLLAPSED_HEIGHT],
+      outputRange: [1, 0],
+      extrapolate: 'clamp'
+    });
+
+    const headerTitle = 'HEADER'
 
     const {
       mainContainer,
@@ -127,16 +172,10 @@ class SupplierInventoryScreen extends Component {
 
     const componentLoaded = 
     <Animatable.View animation='fadeInUpBig' style={mainContainer}> 
-      <View style={headingContainerStyle}>
-        <Heading 
-          title='Inventory: '
-          headingStyle={headingStyle}
-          containerStyle={headingContainerStyle}
-          />
-        <Text>
-          Hi, find your items below:   
-        </Text>
-      </View>
+      <Animated.View style={[headingContainerStyle, {height: headerHeight}]}>
+        <Animated.Text style={{textAlign: 'center', fontSize: 32, color: 'white', position: 'absolute', bottom: 16, left: 16, opacity: heroTitleOpacity}}>{headerTitle}</Animated.Text>
+        <Animated.Text style={{textAlign: 'center', fontSize: 18, color: 'black', marginTop: dimens.screenSafeUpperNotchDistance + 20, opacity: headerTitleOpacity}}>{headerTitle}</Animated.Text>
+      </Animated.View>
       
        {this.state.showSearch ? <SearchBar
         placeholder="Type Here..."
@@ -149,6 +188,15 @@ class SupplierInventoryScreen extends Component {
         renderItem={({item}) => SectionContent(item, this.props)}  
         renderSectionHeader={({section}) => SectionHeader(section, this.props) }  
         keyExtractor={(item, index) => index}  
+        onScroll={Animated.event(
+          [{ nativeEvent: {
+              contentOffset: {
+                y: this.state.scrollY
+              }
+            }
+          }])
+        }
+        scrollEventThrottle={16}
       />  
     </Animatable.View>
 
@@ -239,7 +287,7 @@ const styles = StyleSheet.create({
   sectionHeaderContainer: {
     width: '100%',
     height: 40,
-    backgroundColor: colors.colorPrimaryTransluscent,
+    backgroundColor: colors.colorPrimary,
     justifyContent: 'center',
     paddingLeft: dimens.screenHorizontalMargin
   },
@@ -281,7 +329,7 @@ const styles = StyleSheet.create({
   },
   headingContainerStyle: {
     width: '100%',
-    margin: dimens.screenHorizontalMargin
+    backgroundColor: colors.colorPrimary
   }
 })
 
@@ -289,14 +337,15 @@ const styles = StyleSheet.create({
 
 SupplierInventoryScreen.navigationOptions = ({navigation}) => {
   return{
-    headerTintColor: colors.colorPrimary,
-    headerRight: () => (
-      <SearchIcon 
-      style={{marginRight: dimens.screenHorizontalMargin}} 
-      size={25}
-      color={colors.colorPrimary}
-      onPress={navigation.getParam('showSearchPanel')} />
-    )
+    // headerTintColor: colors.colorPrimary,
+    // headerRight: () => (
+    //   <SearchIcon 
+    //   style={{marginRight: dimens.screenHorizontalMargin}} 
+    //   size={25}
+    //   color={colors.colorPrimary}
+    //   onPress={navigation.getParam('showSearchPanel')} />
+    // )
+    header: null
   }
  
 }
