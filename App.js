@@ -32,7 +32,7 @@ SupplierAddInventoryScreen: SupplierAddInventoryScreen,
 CollapsibleHeader: CollapsibleHeader
 },
 {
-initialRouteName: 'SupplierInventoryScreen'
+initialRouteName: 'WelcomeScreen'
 })
 
 
