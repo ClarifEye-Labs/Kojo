@@ -341,7 +341,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.colorPrimary
   },
   collpasedHeaderContainer: {
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center'
@@ -376,7 +375,7 @@ const styles = StyleSheet.create({
   subHeadingStyle: {
     fontSize: 18,
     fontFamily: customFonts.regular,
-    marginTop: 8,
+    marginTop: 12,
     width: '100%',
     textAlign: 'left',
     color: colors.colorAccent,
