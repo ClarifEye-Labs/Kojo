@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { SectionList, View, StyleSheet, Text, TouchableOpacity, ImageBackground, Button, Animated,
+import { SectionList, View, StyleSheet, Text, TouchableOpacity, ImageBackground, Animated,
   Dimensions,
-  Platform,
-  ScrollView} from 'react-native'
+  Platform} from 'react-native'
 import { SearchBar } from 'react-native-elements'
 import str from './content';
 import { Loading, Card, SearchIcon, Back, Forward } from '../Components'
@@ -64,92 +63,7 @@ class SupplierInventoryScreen extends Component {
     }
   }
 
-  getMainHeaderView = () => {
-    const {
-      headingStyle,
-      subHeadingStyle,
-      expandedHeaderContainerStyle
-    } = styles
-    
-    return (
-      <View style={expandedHeaderContainerStyle}>
-        <Text style={headingStyle}>Inventory </Text>
-        <Text style={subHeadingStyle}>View your items below : </Text> 
-      </View>
-    )
-  }
 
-  getCollapsedHeaderView = (navigation) => {
-    const { 
-      collpasedHeaderContainer,
-      collpasedHeaderTitle,
-      collapsedHeaderBackButtonStyling,
-      collapsedHeaderSearchButtonStyling,
-    } = styles
-  
-    return (
-      <View style={collpasedHeaderContainer}>
-        <Back style={collapsedHeaderBackButtonStyling} color={colors.colorAccent}  size={34} onPress={()=> navigation.goBack()} />
-        <Text style={collpasedHeaderTitle}>Inventory</Text>
-        <SearchIcon 
-          style={collapsedHeaderSearchButtonStyling} 
-          size={32}
-          onPress={this.showSearchPanel}
-          color={colors.colorAccent}/>
-      </View>
-    )
-  }
-
-  updateSearch = search => {
-    this.setState({search})
-  }
-
-  showSearchPanel = () => {
-    this.setState({
-      showSearch: true
-    })
-  }
-
-  componentDidMount = () => {
-    var firestore = firebase.firestore()
-    var suppliersData = firestore.collection('suppliers')
-
-    this.props.navigation.setParams({ showSearchPanel: this.showSearchPanel }); 
-    this.setState({
-      firestore: firestore,
-      suppliersData: suppliersData
-    }, () => this.getDataFromDatabase(this.state.suppliersData,this.state.supplierID))
-
-  }
-
- 
-
-  getDataFromDatabase = async (suppliersData, supplierID) => {
-    let supplierInventoryReference
-    let supplierInventoryData = []
-
-    await suppliersData.doc(supplierID).get().then((docRef) => {
-        supplierInventoryReference = docRef.data().inventory
-    }).catch((err) => {
-        console.log('Error getting documents', err);
-    })
-
-    //ready to proceed to get data 
-    await Utils.asyncForEach(supplierInventoryReference, async (inventory) => {
-      await inventory.get().then(async (inventoryData) => {
-          await supplierInventoryData.push(inventoryData.data())
-      }).catch((err) => {
-          console.log('Error getting documents', err);
-      })
-    })
-
-    this.setState({
-      inventory: supplierInventoryData,
-      loadingContent: false
-    })
-  }
-
-  
   render() {
 
     const headerHeight = this.state.scrollY.interpolate({
@@ -199,9 +113,12 @@ class SupplierInventoryScreen extends Component {
       </Animated.View>
       
        {this.state.showSearch ? <SearchBar
-        placeholder="Type Here..."
-        lightTheme = {true}
+        placeholder="Search Item"
         onChangeText={this.updateSearch}
+        platform={ (Platform.OS === 'ios') ? 'ios' : 'android'}
+        showCancel={true}
+        round={true}
+        contentContainerStyle={colors.colorAccent}
         value={this.state.search}
       /> : null }
       <SectionList   
@@ -226,6 +143,92 @@ class SupplierInventoryScreen extends Component {
     
 
     return componentToRender
+  }
+
+  getMainHeaderView = () => {
+    const {
+      headingStyle,
+      subHeadingStyle,
+      expandedHeaderContainerStyle
+    } = styles
+    
+    return (
+      <View style={expandedHeaderContainerStyle}>
+        <Text style={headingStyle}>Inventory </Text>
+        <Text style={subHeadingStyle}>View your items below : </Text> 
+      </View>
+    )
+  }
+
+  getCollapsedHeaderView = (navigation) => {
+    const { 
+      collpasedHeaderContainer,
+      collpasedHeaderTitle,
+      collapsedHeaderBackButtonStyling,
+      collapsedHeaderSearchButtonStyling,
+    } = styles
+  
+    return (
+      <View style={collpasedHeaderContainer}>
+        <Back style={collapsedHeaderBackButtonStyling} color={colors.colorAccent}  size={34} onPress={()=> navigation.goBack()} />
+        <Text style={collpasedHeaderTitle}>Inventory</Text>
+        <SearchIcon 
+          style={collapsedHeaderSearchButtonStyling} 
+          size={32}
+          onPress={this.showSearchPanel}
+          color={colors.colorAccent}/>
+      </View>
+    )
+  }
+
+  updateSearch = search => {
+    this.setState({search})
+    console.log(search)
+  }
+
+  showSearchPanel = () => {
+    this.setState({
+      showSearch: true
+    })
+  }
+
+  componentDidMount = () => {
+    var firestore = firebase.firestore()
+    var suppliersData = firestore.collection('suppliers')
+
+    this.props.navigation.setParams({ showSearchPanel: this.showSearchPanel }); 
+    this.setState({
+      firestore: firestore,
+      suppliersData: suppliersData
+    }, () => this.getDataFromDatabase(this.state.suppliersData,this.state.supplierID))
+
+  }
+
+ 
+
+  getDataFromDatabase = async (suppliersData, supplierID) => {
+    let supplierInventoryReference
+    let supplierInventoryData = []
+
+    await suppliersData.doc(supplierID).get().then((docRef) => {
+        supplierInventoryReference = docRef.data().inventory
+    }).catch((err) => {
+        console.log('Error getting documents', err);
+    })
+
+    //ready to proceed to get data 
+    await Utils.asyncForEach(supplierInventoryReference, async (inventory) => {
+      await inventory.get().then(async (inventoryData) => {
+          await supplierInventoryData.push(inventoryData.data())
+      }).catch((err) => {
+          console.log('Error getting documents', err);
+      })
+    })
+
+    this.setState({
+      inventory: supplierInventoryData,
+      loadingContent: false
+    })
   }
 }
 
