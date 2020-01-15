@@ -33,6 +33,7 @@ class SupplierInventoryScreen extends Component {
       inventory: undefined,
       search: '',
       showSearch: false,
+      searchInventory: [],
       dummyInventory: [
         {
           title: 'ALCOHOL', data: [
@@ -81,9 +82,19 @@ class SupplierInventoryScreen extends Component {
     }
   }
 
+  componentDidMount = () => {
+    var firestore = firebase.firestore()
+    var suppliersData = firestore.collection('suppliers')
+
+    this.props.navigation.setParams({ showSearchPanel: this.showSearchPanel });
+    this.setState({
+      firestore: firestore,
+      suppliersData: suppliersData
+    }, () => this.getDataFromDatabase(this.state.suppliersData, this.state.supplierID))
+
+  }
 
   render() {
-
     const headerHeight = this.state.scrollY.interpolate({
       inputRange: [0, HEADER_EXPANDED_HEIGHT - HEADER_COLLAPSED_HEIGHT],
       outputRange: [HEADER_EXPANDED_HEIGHT, HEADER_COLLAPSED_HEIGHT],
@@ -148,9 +159,10 @@ class SupplierInventoryScreen extends Component {
           contentContainerStyle={colors.colorAccent}
           value={this.state.search}
         /> : null}
+
         <SectionList
           contentContainerStyle={{ minHeight: SCREEN_HEIGHT + HEADER_COLLAPSED_HEIGHT }}
-          sections={this.state.dummyInventory}
+          sections={this.state.search ? this.state.searchInventory : this.state.dummyInventory}
           renderItem={({ item }) => SectionContent(item, this.props)}
           renderSectionHeader={({ section }) => SectionHeader(section, this.props)}
           keyExtractor={(item, index) => index}
@@ -203,28 +215,40 @@ class SupplierInventoryScreen extends Component {
 
   updateSearch = search => {
     this.setState({ search })
-    console.log(search)
+    if (search == ''){
+      this.setState({
+        searchInventory: this.state.dummyInventory
+      })
+    }
+    const searchEntered = search.toUpperCase()
+    const newListToShow = []
+    for(let index in this.state.dummyInventory){
+      const title = this.state.dummyInventory[index].title
+      let itemObject = this.state.dummyInventory[index]
+      const itemsToShow = []
+      for(let index in itemObject.data){
+        let item = itemObject.data[index]
+        if(item.name.toUpperCase().includes(searchEntered)){
+          itemsToShow.push(item)
+        }
+      }
+      let objectToShow = {}
+      objectToShow.title = title
+      objectToShow.data = itemsToShow
+      newListToShow.push(objectToShow)
+    }
+
+    this.setState({
+      searchInventory: newListToShow
+    })
   }
+
 
   showSearchPanel = () => {
     this.setState({
       showSearch: true
     })
   }
-
-  componentDidMount = () => {
-    var firestore = firebase.firestore()
-    var suppliersData = firestore.collection('suppliers')
-
-    this.props.navigation.setParams({ showSearchPanel: this.showSearchPanel });
-    this.setState({
-      firestore: firestore,
-      suppliersData: suppliersData
-    }, () => this.getDataFromDatabase(this.state.suppliersData, this.state.supplierID))
-
-  }
-
-
 
   getDataFromDatabase = async (suppliersData, supplierID) => {
     let supplierInventoryReference
@@ -442,7 +466,6 @@ const styles = StyleSheet.create({
     right: dimens.screenHorizontalMargin,
     marginTop: dimens.screenSafeUpperNotchDistance + 18
   }
-
 })
 
 
