@@ -83,15 +83,14 @@ class SupplierInventoryScreen extends Component {
   }
 
   componentDidMount = () => {
-    var firestore = firebase.firestore()
-    var suppliersData = firestore.collection('suppliers')
+    // var firestore = firebase.firestore()
+    // var suppliersData = firestore.collection('suppliers')
 
-    this.props.navigation.setParams({ showSearchPanel: this.showSearchPanel });
-    this.setState({
-      firestore: firestore,
-      suppliersData: suppliersData
-    }, () => this.getDataFromDatabase(this.state.suppliersData, this.state.supplierID))
-
+    // this.props.navigation.setParams({ showSearchPanel: this.showSearchPanel });
+    // this.setState({
+    //   firestore: firestore,
+    //   suppliersData: suppliersData
+    // }, () => this.getDataFromDatabase(this.state.suppliersData, this.state.supplierID))
   }
 
   render() {
@@ -365,7 +364,7 @@ const styles = StyleSheet.create({
   },
   sectionHeaderTitle: {
     color: colors.colorAccent,
-    fontSize: 19,
+    fontSize: 17,
     fontFamily: customFonts.semiBold
   },
   sectionContentContainerOuter: {
@@ -441,7 +440,7 @@ const styles = StyleSheet.create({
     paddingLeft: dimens.screenHorizontalMargin
   },
   subHeadingStyle: {
-    fontSize: 20,
+    fontSize: 19,
     fontFamily: customFonts.regular,
     marginTop: 10,
     width: '100%',

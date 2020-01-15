@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Text} from 'react-native'
-import { } from '../Components'
 import { dimens, colors } from '../constants'
 import { commonStyling } from '../common' 
 import Back from './Back';
