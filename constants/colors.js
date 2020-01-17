@@ -1,6 +1,6 @@
 const colors = {
   colorPrimary: 'rgb(188, 42, 141)',
-  colorSecondary: 'rgba(205, 72, 107)',
+  colorSecondary: 'rgb(205, 72, 107)',
   colorAccent: '#FFFFFF',
   blackTransluscent : 'rgba(0,0,0,0.6)',
   black : 'rgb(0,0,0)',

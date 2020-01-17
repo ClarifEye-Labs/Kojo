@@ -15,4 +15,5 @@ export {default as Header} from './Header'
 export {default as SearchIcon} from './SearchIcon'
 export {default as Forward} from './Forward'
 export {default as Edit} from './Edit'
+export {default as TextWithSubheading} from './TextWithSubheading'
 

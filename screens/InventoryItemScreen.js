@@ -10,9 +10,10 @@ import {
   Platform,
   ImageBackground
 } from 'react-native'
+import { LinearGradient } from 'expo-linear-gradient';
 import { dimens, colors, customFonts, strings } from '../constants'
 import { commonStyling } from '../common'
-import { Back, Edit, Card } from '../Components'
+import { Back, Edit, Card, TextWithSubheading } from '../Components'
 
 const HEADER_EXPANDED_HEIGHT = 350;
 const HEADER_COLLAPSED_HEIGHT = 100;
@@ -33,13 +34,15 @@ class InventoryItemScreen extends Component {
 
     const {
       mainContainer,
-      mainHeaderContainerStyle,
-      collapsableHeaderStyle,
       itemNameStyle,
       editButton,
       imageContainer,
       imageStyling,
-      headerContainerImage
+      gradientStyle,
+      headerContainer,
+      infoItemContainer,
+      subHeadingStyle,
+      textStyle
     } = styles
 
     const {
@@ -53,18 +56,47 @@ class InventoryItemScreen extends Component {
 
     return (
       <View style={mainContainer}>
-        <Back size={34} style={commonStyling.backButtonStyling} onPress={() => navigation.goBack()} />
-        <Edit size={34} style={editButton} />
-        <ImageBackground style={headerContainerImage} source={require('../assets/gradients/gray.jpg')}>
+        <Back size={34} style={commonStyling.backButtonStyling} color={colors.colorAccent} onPress={() => navigation.goBack()} />
+        <Edit size={34} style={editButton} color={colors.colorAccent} />
+        <View style={headerContainer}>
+          <LinearGradient 
+            colors={[colors.colorPrimary, colors.colorSecondary]}
+            style={gradientStyle}>
+          </LinearGradient>
           <View style={imageContainer}>
-            <Card width={280} height={280} elevation={dimens.defaultElevation + 10} >
-              <ImageBackground style={imageStyling} imageStyle={imageStyling} source={{ uri: itemImageURL }} />
-            </Card>
-            <Text style={itemNameStyle}>{itemName}</Text>
-          </View>
-        </ImageBackground>
+              <Card width={280} height={280} elevation={dimens.defaultElevation + 10} >
+                <ImageBackground style={imageStyling} imageStyle={imageStyling} source={{ uri: itemImageURL }} />
+              </Card>
+              <Text style={itemNameStyle}>{itemName}</Text>
+            </View>
+        </View>
 
-        
+        <View>
+          <TextWithSubheading 
+            containerStyle={infoItemContainer} 
+            subHeadingStyle={subHeadingStyle}
+            textStyle={textStyle}
+            subHeadingTitle='Category' 
+            textTitle={itemPrice}/>
+          <TextWithSubheading 
+            containerStyle={infoItemContainer} 
+            subHeadingStyle={subHeadingStyle}
+            textStyle={textStyle}
+            subHeadingTitle='Price per Unit' 
+            textTitle={itemPrice}/>
+          <TextWithSubheading 
+            containerStyle={infoItemContainer} 
+            subHeadingStyle={subHeadingStyle}
+            textStyle={textStyle}
+            subHeadingTitle='Units Available' 
+            textTitle={itemPrice}/>
+           <TextWithSubheading 
+            containerStyle={infoItemContainer} 
+            subHeadingStyle={subHeadingStyle}
+            textStyle={textStyle}
+            subHeadingTitle='Category' 
+            textTitle={itemPrice}/>
+        </View>
       </View>
     );
   }
@@ -79,6 +111,16 @@ const styles = StyleSheet.create({
     zIndex: -1,
     height: 290
   },
+  gradientStyle: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 280
+  },
+  headerContainer: {
+    zIndex: -1
+  },
   mainHeaderContainerStyle: {
     width: '100%',
   },
@@ -90,12 +132,10 @@ const styles = StyleSheet.create({
   imageContainer: {
     display: 'flex',
     alignItems: 'center',
-    height: 420,
+    height: 450,
     borderBottomColor: colors.grayTransluscent,
-    borderBottomWidth: 0.19,
+    borderBottomWidth: 1,
     paddingTop: 70,
-    marginLeft: 10,
-    marginRight: 10,
     justifyContent: 'center'
   },
   imageStyling: {
@@ -103,16 +143,10 @@ const styles = StyleSheet.create({
     height: 280,
     borderRadius: dimens.defaultBorderRadius,
   },
-  collapsableHeaderStyle: {
-    width: '100%',
-    height: 250,
-    alignItems: 'center',
-    paddingTop: dimens.screenVerticalMargin
-  },
   itemNameStyle: {
-    fontSize: 20,
-    marginTop: 12,
-    fontFamily: customFonts.semiBold,
+    fontSize: 22,
+    marginTop: 18,
+    fontFamily: customFonts.bold,
     color: colors.grayBlue,
     textTransform: 'uppercase'
   },
@@ -122,6 +156,25 @@ const styles = StyleSheet.create({
   headerEditStyle: {
     fontSize: 16,
     color: colors.facebookBlue
+  },
+  infoItemContainer: {
+    marginLeft: 10,
+    marginRight: 10,
+    paddingTop: 10,
+    paddingBottom: 10,
+    borderBottomColor: colors.grayTransluscent,
+    borderBottomWidth: 1
+  },
+  subHeadingStyle: {
+    fontSize: 18,
+    fontFamily: customFonts.semiBold,
+    color: colors.grayBlue
+  },
+  textStyle: {
+    fontFamily: customFonts.regular,
+    fontSize: 16,
+    marginTop: 8,
+    color: colors.blackTransluscent
   }
 })
 
