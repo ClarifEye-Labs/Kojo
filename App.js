@@ -32,7 +32,7 @@ SupplierAddInventoryScreen: SupplierAddInventoryScreen,
 EditItemScreen: EditItemScreen
 },
 {
-initialRouteName: 'SupplierInventoryScreen'
+initialRouteName: 'WelcomeScreen'
 })
 
 
