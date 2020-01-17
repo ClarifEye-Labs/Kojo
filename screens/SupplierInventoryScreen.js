@@ -12,6 +12,7 @@ import * as Animatable from 'react-native-animatable'
 import firebase from '../config/firebase'
 import Utils from '../utils/Utils';
 import { connect } from 'react-redux';
+import { LinearGradient } from 'expo-linear-gradient';
 
 
 const HEADER_EXPANDED_HEIGHT = 250;
@@ -115,7 +116,8 @@ class SupplierInventoryScreen extends Component {
       mainContainer,
       mainHeaderContainerStyle,
       headerBackStyling,
-      headerSearchStyling
+      headerSearchStyling,
+      gradientStyle
     } = styles
 
     const {
@@ -127,16 +129,22 @@ class SupplierInventoryScreen extends Component {
 
     const componentLoaded =
       <Animatable.View animation='fadeIn' style={mainContainer}>
-        <Animated.View style={[mainHeaderContainerStyle, { height: headerHeight }]}>
-          <Animated.View
-            style={{ flex: 1, opacity: heroTitleOpacity }}>
-            {this.getMainHeaderView()}
-          </Animated.View>
+        <Animated.View style={[mainHeaderContainerStyle, { height: headerHeight }]}> 
+          <LinearGradient 
+            style={gradientStyle} 
+            colors={[colors.colorPrimary, colors.colorSecondary]}>
 
-          <Animated.View
-            style={{ flex: 1, opacity: headerTitleOpacity }}>
-            {this.getCollapsedHeaderView(navigation)}
-          </Animated.View>
+            <Animated.View
+              style={{ flex: 1, opacity: heroTitleOpacity, zIndex: 1}}>
+              {this.getMainHeaderView()}
+            </Animated.View>
+
+            <Animated.View
+              style={{ flex: 1, opacity: headerTitleOpacity, zIndex: 1}}>
+              {this.getCollapsedHeaderView()}
+            </Animated.View>
+
+          </LinearGradient>
 
         </Animated.View>
 
@@ -198,7 +206,7 @@ class SupplierInventoryScreen extends Component {
     )
   }
 
-  getCollapsedHeaderView = (navigation) => {
+  getCollapsedHeaderView = () => {
     const {
       collpasedHeaderContainer,
       collpasedHeaderTitle,
@@ -357,9 +365,14 @@ const styles = StyleSheet.create({
   sectionHeaderContainer: {
     width: '100%',
     height: 44,
-    backgroundColor: colors.colorPrimary,
+    backgroundColor: colors.colorSecondary,
     justifyContent: 'center',
     paddingLeft: dimens.screenHorizontalMargin
+  },
+  gradientStyle: {
+    height: '100%', 
+    width: '100%', 
+    zIndex: -2
   },
   sectionHeaderTitle: {
     color: colors.colorAccent,
