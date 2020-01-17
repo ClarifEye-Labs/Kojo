@@ -16,6 +16,7 @@ const colors = {
   errorRed: 'red',
   gray: 'rgba(119,136,153, 1.0)',
   grayTransluscent: 'rgba(119,136,153, 0.4)',
+  grayBlue: '#434343',
 }
 
 // colorPrimary hex code -> #bc2a8d

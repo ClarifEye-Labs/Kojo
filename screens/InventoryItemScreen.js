@@ -1,28 +1,51 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Image, Text} from 'react-native'
+import {
+  SectionList, 
+  View, 
+  StyleSheet, 
+  Text, 
+  TouchableOpacity, 
+  Animated,
+  Dimensions,
+  Platform,
+  ImageBackground
+} from 'react-native'
 import { dimens, colors, customFonts, strings } from '../constants'
-import { commonStyling } from '../common' 
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { commonStyling } from '../common'
+import { Back, Edit, Card } from '../Components'
+
+const HEADER_EXPANDED_HEIGHT = 350;
+const HEADER_COLLAPSED_HEIGHT = 100;
+
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen")
 
 class InventoryItemScreen extends Component {
-  constructor(props){
+  constructor(props) {
     super(props)
     this.state = {
-      name:'InventoryItemScreen'
+      name: 'InventoryItemScreen',
+      scrollY: new Animated.Value(0),
     }
   }
+
+
   render() {
+
     const {
       mainContainer,
-      imageStyle,
+      mainHeaderContainerStyle,
       collapsableHeaderStyle,
-      itemNameStyle
+      itemNameStyle,
+      editButton,
+      imageContainer,
+      imageStyling,
+      headerContainerImage
     } = styles
 
     const {
       navigation,
     } = this.props
-    
+
     const itemName = navigation.getParam('item').name;
     const itemPrice = navigation.getParam('item').price_per_unit;
     const itemImageURL = navigation.getParam('item').imageURL;
@@ -30,10 +53,18 @@ class InventoryItemScreen extends Component {
 
     return (
       <View style={mainContainer}>
-        <View style={collapsableHeaderStyle}> 
-          <Image source= {{ uri: itemImageURL} }  style={imageStyle} />
-          <Text style={itemNameStyle}> {itemName} </Text>
-        </View>
+        <ImageBackground style={headerContainerImage} source={require('../assets/gradients/gray.jpg')}>
+          <Back size={34} style={commonStyling.backButtonStyling} onPress={() => navigation.goBack()} />
+          <Edit size={34} style={editButton} />
+          <View style={imageContainer}>
+            <Card width={280} height={280} elevation={dimens.defaultElevation + 10} >
+              <ImageBackground style={imageStyling} imageStyle={imageStyling} source={{ uri: itemImageURL }} />
+            </Card>
+            <Text style={itemNameStyle}>{itemName}</Text>
+          </View>
+        </ImageBackground>
+
+        
       </View>
     );
   }
@@ -43,38 +74,54 @@ const styles = StyleSheet.create({
   mainContainer: {
     ...commonStyling.mainContainer
   },
-  imageStyle:{
-    width: 150,
-    height: 150
+  headerContainerImage: {
+    width: '100%',
+    height: 290
   },
-  collapsableHeaderStyle:{
+  mainHeaderContainerStyle: {
+    width: '100%',
+  },
+  editButton: {
+    position: 'absolute',
+    right: dimens.screenHorizontalMargin,
+    marginTop: 44
+  },
+  imageContainer: {
+    width: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    marginTop: 120,
+    justifyContent: 'center'
+  },
+  imageStyling: {
+    width: 280,
+    height: 280,
+    borderRadius: dimens.defaultBorderRadius,
+  },
+  collapsableHeaderStyle: {
     width: '100%',
     height: 250,
     alignItems: 'center',
     paddingTop: dimens.screenVerticalMargin
   },
   itemNameStyle: {
-    fontSize: 20,
+    fontSize: 23,
     marginTop: 10,
     fontFamily: customFonts.semiBold,
-    color: colors.gray
+    color: colors.grayBlue,
+    textTransform: 'uppercase'
   },
-  headerEditContainerStyle:{
+  headerEditContainerStyle: {
     marginRight: dimens.screenHorizontalMargin
   },
-  headerEditStyle:{
+  headerEditStyle: {
     fontSize: 16,
     color: colors.facebookBlue
   }
 })
 
 InventoryItemScreen.navigationOptions = {
-  title: 'InventoryItemScreen',
-  headerRight: () => (
-    <TouchableOpacity style={styles.headerEditContainerStyle}>
-      <Text style={styles.headerEditStyle}>{strings.edit}</Text>
-    </TouchableOpacity>
-  )
+  header: null
 }
 
 export default InventoryItemScreen

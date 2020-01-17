@@ -8,7 +8,7 @@ const commonStyling = {
   },
   backButtonStyling:{
     position: 'absolute',
-    top: 40,
+    top: 44,
     left: 25
   },
   crossStyle:{
