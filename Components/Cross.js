@@ -23,7 +23,7 @@ const Cross = (props) => {
 
 
   const screen = 
-  <TouchableOpacity style={props.style} onPress={onPress}>
+  <TouchableOpacity style={style} onPress={onPress}>
     <Ionicons name={nameOfIcon} size={sizeOfIcon} color={colorOfIcon} />
   </TouchableOpacity>
   

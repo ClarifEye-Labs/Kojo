@@ -6,27 +6,34 @@ import {
   Animated,
   Dimensions,
   ImageBackground,
-  ScrollView
+  ScrollView,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  Alert,
+  Modal
 } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient';
 import { dimens, colors, customFonts, strings } from '../constants'
 import { commonStyling } from '../common'
-import { Back, Edit, Card, TextWithSubheading, Button } from '../Components'
-
-const HEADER_EXPANDED_HEIGHT = 350;
-const HEADER_COLLAPSED_HEIGHT = 100;
-
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen")
+import { Back, Edit, Card, TextWithSubheading, Button, Cross } from '../Components'
 
 class InventoryItemScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
       name: 'InventoryItemScreen',
-      scrollY: new Animated.Value(0),
+      deleteModalVisible: false,
+      item: props.navigation.getParam('item')
     }
   }
 
+  closeDeleteModal = () => {this.setState({deleteModalVisible: false})}
+
+  showDeleteModal = () => {this.setState({deleteModalVisible: true})}
+
+  deleteConfirm = () => {
+
+  }
 
   render() {
 
@@ -42,22 +49,27 @@ class InventoryItemScreen extends Component {
       subHeadingStyle,
       textStyle,
       buttonContainer,
-      deleteButtonStyle
+      deleteButtonStyle,
     } = styles
 
     const {
       navigation,
     } = this.props
 
-    const itemName = navigation.getParam('item').name;
-    const itemPrice = navigation.getParam('item').price_per_unit;
-    const itemImageURL = navigation.getParam('item').imageURL;
-    const quantityAvailable = navigation.getParam('item').quantityAvailable;
+
+    console.log(this.state.item)
+    
+    const itemName = this.state.item.name;
+    const itemPrice = this.state.item.price_per_unit;
+    const itemImageURL = this.state.item.imageURL;
+    const quantityAvailable = this.state.item.quantityAvailable;
 
     return (
       <View style={mainContainer}>
         <Back size={34} style={commonStyling.backButtonStyling} color={colors.colorAccent} onPress={() => navigation.goBack()} />
-        <Edit size={34} style={editButton} color={colors.colorAccent} onPress={() => navigation.navigate('EditItemScreen')} />
+        <Edit size={34} style={editButton} color={colors.colorAccent} onPress={() => navigation.navigate('EditItemScreen', {
+          item: this.state.item
+        })} />
         <View style={headerContainer}>
           <LinearGradient
             colors={[colors.colorPrimary, colors.colorSecondary]}
@@ -98,12 +110,62 @@ class InventoryItemScreen extends Component {
             textTitle={itemPrice} />
 
           <View style={buttonContainer}>
-            <Button title='Delete' textColor={colors.colorAccent} style={deleteButtonStyle}></Button>
+            <Button
+              title='Delete Item'
+              textColor={colors.colorAccent}
+              onPress={this.showDeleteModal}
+              style={deleteButtonStyle} />
           </View>
         </ScrollView>
+        {this.getDeleteAlert()}
       </View>
     );
   }
+
+
+  getDeleteAlert = () => {
+    const {
+      modalContentContainerStyle,
+      modalContainerStyle,
+      crossStyle,
+      textContainerModal,
+      headingModalStyle,
+      itemNameModal,  
+      deleteButtonModal,
+      cancelButtonModal
+    } = styles
+
+    return (
+      <Modal visible={this.state.deleteModalVisible} transparent={true} animationType='slide' onBackButtonPress={this.closeDeleteModal}>
+        <TouchableOpacity 
+          activeOpacity={1}  
+          onPressOut={this.closeDeleteModal} 
+          style={modalContainerStyle}>
+          <TouchableWithoutFeedback>
+            <View style={modalContentContainerStyle}>
+              <Cross style={crossStyle} onPress={this.closeDeleteModal} color={colors.grayBlue} size={42} />
+              <View style={textContainerModal}>
+                <Text style={headingModalStyle}> Ready to delete</Text>
+                <Text style={itemNameModal}>{this.state.item.name}</Text>
+              </View>
+
+              <Button
+                  title='Delete'
+                  textColor={colors.colorAccent}
+                  onPress={this.deleteConfirm}
+                  style={deleteButtonModal} />
+               <Button
+                  title='Back'
+                  textColor={colors.colorAccent}
+                  onPress={this.closeDeleteModal}
+                  style={cancelButtonModal} />
+            </View>
+          </TouchableWithoutFeedback>
+        </TouchableOpacity>
+      </Modal>
+    )
+  }
+
 }
 
 const styles = StyleSheet.create({
@@ -191,6 +253,62 @@ const styles = StyleSheet.create({
     height: dimens.buttonHeight,
     width: '80%',
     backgroundColor: colors.deleteRed
+  },
+  modalContainerStyle: {
+    flex: 1,
+    justifyContent: 'center', 
+    backgroundColor: colors.blackTransluscent, 
+    alignItems: 'center'
+  },
+  modalContentContainerStyle: {
+    width: 320,
+    height: 300,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.colorAccent,
+    borderRadius: dimens.defaultBorderRadius
+  },
+  crossStyle:{
+    position: 'absolute',
+    top: 10,
+    right: 20,
+  },
+  textContainerModal: {
+    flexDirection: 'column',
+    height: 100,
+    marginTop: 10,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  headingModalStyle: {
+    fontSize: 23,
+    textAlign: 'center',
+    fontFamily: customFonts.semiBold,
+    color: colors.grayBlue
+  },
+  itemNameModal: {
+    fontSize: 23,
+    textAlign: 'center',
+    fontFamily: customFonts.semiBold,
+    color: colors.colorPrimary,
+    marginTop: 8
+  },
+  modalButtonContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  deleteButtonModal: {
+    width: 250,
+    marginTop: 20,
+    height: dimens.buttonHeight,
+    backgroundColor: colors.deleteRed
+  },
+  cancelButtonModal: {
+    width: 250,
+    marginTop: 10,
+    height: dimens.buttonHeight,
+    backgroundColor: colors.facebookBlue
   }
 })
 
