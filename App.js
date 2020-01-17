@@ -16,7 +16,6 @@ import InventoryItemScreen from './screens/InventoryItemScreen'
 import SupplierInventoryScreen from './screens/SupplierInventoryScreen';
 import SupplierClientsScreen from './screens/SupplierClientsScreen';
 import SupplierAddInventoryScreen from './screens/SupplierAddInventory';
-import CollapsibleHeader from  './screens/CollapsibleHeader'
 
 const AppNavigator = createStackNavigator({
 LoginScreen: LoginScreen,
@@ -28,8 +27,7 @@ SupplierRestaurantScreen: SupplierRestaurantScreen,
 SupplierInventoryScreen: SupplierInventoryScreen,
 SupplierClientsScreen: SupplierClientsScreen,
 InventoryItemScreen: InventoryItemScreen,
-SupplierAddInventoryScreen: SupplierAddInventoryScreen,
-CollapsibleHeader: CollapsibleHeader
+SupplierAddInventoryScreen: SupplierAddInventoryScreen
 },
 {
 initialRouteName: 'WelcomeScreen'

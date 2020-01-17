@@ -5,7 +5,6 @@ import {
   Platform
 } from 'react-native'
 import { SearchBar } from 'react-native-elements'
-import str from './content';
 import { Loading, Card, SearchIcon, Back, Forward } from '../Components'
 import { dimens, colors, customFonts } from '../constants'
 import { commonStyling } from '../common'
