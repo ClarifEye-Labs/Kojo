@@ -146,7 +146,7 @@ class InventoryItemScreen extends Component {
               <Cross style={crossStyle} onPress={this.closeDeleteModal} color={colors.grayBlue} size={42} />
               <View style={textContainerModal}>
                 <Text style={headingModalStyle}> Ready to delete</Text>
-                <Text style={itemNameModal}>{this.state.item.name}</Text>
+                <Text numberOfLines={1} ellipsizeMode='tail' style={itemNameModal}>{this.state.item.name}</Text>
               </View>
 
               <Button
@@ -288,6 +288,7 @@ const styles = StyleSheet.create({
   },
   itemNameModal: {
     fontSize: 23,
+    width: 290,
     textAlign: 'center',
     fontFamily: customFonts.semiBold,
     color: colors.colorPrimary,
