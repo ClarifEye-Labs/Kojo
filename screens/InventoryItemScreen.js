@@ -53,9 +53,9 @@ class InventoryItemScreen extends Component {
 
     return (
       <View style={mainContainer}>
+        <Back size={34} style={commonStyling.backButtonStyling} onPress={() => navigation.goBack()} />
+        <Edit size={34} style={editButton} />
         <ImageBackground style={headerContainerImage} source={require('../assets/gradients/gray.jpg')}>
-          <Back size={34} style={commonStyling.backButtonStyling} onPress={() => navigation.goBack()} />
-          <Edit size={34} style={editButton} />
           <View style={imageContainer}>
             <Card width={280} height={280} elevation={dimens.defaultElevation + 10} >
               <ImageBackground style={imageStyling} imageStyle={imageStyling} source={{ uri: itemImageURL }} />
@@ -76,6 +76,7 @@ const styles = StyleSheet.create({
   },
   headerContainerImage: {
     width: '100%',
+    zIndex: -1,
     height: 290
   },
   mainHeaderContainerStyle: {
@@ -87,10 +88,14 @@ const styles = StyleSheet.create({
     marginTop: 44
   },
   imageContainer: {
-    width: '100%',
     display: 'flex',
     alignItems: 'center',
-    marginTop: 120,
+    height: 420,
+    borderBottomColor: colors.grayTransluscent,
+    borderBottomWidth: 0.19,
+    paddingTop: 70,
+    marginLeft: 10,
+    marginRight: 10,
     justifyContent: 'center'
   },
   imageStyling: {
@@ -105,8 +110,8 @@ const styles = StyleSheet.create({
     paddingTop: dimens.screenVerticalMargin
   },
   itemNameStyle: {
-    fontSize: 23,
-    marginTop: 10,
+    fontSize: 20,
+    marginTop: 12,
     fontFamily: customFonts.semiBold,
     color: colors.grayBlue,
     textTransform: 'uppercase'
