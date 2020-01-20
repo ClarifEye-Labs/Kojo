@@ -12,9 +12,10 @@ class EditItemScreen extends Component {
     this.state = {
       name: 'Edit Item Screen',
       item: this.props.navigation.getParam('item'),
-      newItemName: 'Milk',
-      newItemPrice: 200,
-      newItemCategory: 'Liquid'
+      newItemName: this.props.navigation.getParam('item').name,
+      newItemPrice: this.props.navigation.getParam('item').price_per_unit,
+      newItemCategory: this.props.navigation.getParam('item').category,
+      newItemImageURL: this.props.navigation.getParam('item').imageURL
     }
   }
 
@@ -46,7 +47,7 @@ class EditItemScreen extends Component {
     const {
       mainContainer,
       confirmStyle,
-      contentContainerStyle,
+      headingStyle,
       headingContainerStyle,
       topButtonsContainer,
       textContentContainerStyle,
@@ -61,10 +62,6 @@ class EditItemScreen extends Component {
       editImageIcon
     } = styles
 
-    const itemName = 'Milk'
-    const itemImageURL = 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQdQSfIj7XNtCjG7SH0AKUvOsz6sXkP9NiLZBUF_1ujrYM3A9B3'
-    const itemPrice = 200
-    const itemCategory = 'Liquids'
 
     const {
       navigation
@@ -72,14 +69,14 @@ class EditItemScreen extends Component {
 
     return (
       <View style={mainContainer}>
-         <View style={headerContainer}>
+        <View style={headerContainer}>
           <LinearGradient
             colors={[colors.colorPrimary, colors.colorSecondary]}
             style={gradientStyle}>
           </LinearGradient>
           <View style={imageContainer}>
             <Card width={280} height={280} elevation={dimens.defaultElevation + 10} >
-              <ImageBackground style={imageStyling} imageStyle={imageStyling} source={{ uri: itemImageURL }}>
+              <ImageBackground style={imageStyling} imageStyle={imageStyling} source={{ uri: this.state.newItemImageURL }}>
                 <View style={imageEditOverlay}>
                   <Edit style={editImageIcon} color={colors.colorAccent} size={32} />
                 </View>
@@ -89,12 +86,9 @@ class EditItemScreen extends Component {
         </View>
 
         <View style={topButtonsContainer}>
-          <Confirm style={confirmStyle} size={55} color={colors.colorAccent} />
-          <Back color={colors.colorAccent} style={commonStyling.backButtonStyling} size={34} onPress={ () => navigation.goBack() }/>
-        </View>
-
-        <View style={contentContainerStyle}>
-          <Heading containerStyle={headingContainerStyle} title='Edit item' />
+          <Heading containerStyle={headingContainerStyle} headingStyle={headingStyle} title='Edit item' />
+          <Confirm style={confirmStyle} size={60} color={colors.colorAccent} />
+          <Back color={colors.colorAccent} style={commonStyling.backButtonStyling} size={36} onPress={ () => navigation.goBack() }/>
         </View>
 
         <ScrollView style={textContentContainerStyle}>
@@ -151,18 +145,26 @@ const styles = StyleSheet.create({
     top: dimens.screenSafeUpperNotchDistance + 10
   },
   contentContainerStyle: {
-    marginTop: 25,
+    marginTop: 50,
   },
   headingContainerStyle: {
     width: '100%',
-    textAlign: 'left',
+    marginTop: dimens.screenSafeUpperNotchDistance + 10,
+    justifyContent: 'center',
+    alignItems: 'center',
     marginLeft: dimens.screenHorizontalMargin
+  },
+  headingStyle: {
+    color: colors.colorAccent,
+    fontSize: 25
   },
   topButtonsContainer:{
     width: '100%',
     height: 100,
     position: 'absolute',
     zIndex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     top: 0,
     left: 0,
     right: 0
@@ -170,7 +172,8 @@ const styles = StyleSheet.create({
   textContentContainerStyle: {
     marginLeft: dimens.screenHorizontalMargin,
     marginRight: dimens.screenHorizontalMargin,
-    padding: 8
+    padding: 8,
+    marginTop: 20
   },
   textInputContainerStyle: {
     marginTop: 20,
@@ -196,6 +199,7 @@ const styles = StyleSheet.create({
   gradientStyle: {
     position: 'absolute',
     top: 0,
+    zIndex: -100,
     left: 0,
     right: 0,
     height: 280
@@ -210,7 +214,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     height: 350,
-    paddingTop: 70,
+    paddingTop: 130,
     justifyContent: 'center'
   },
   imageStyling: {
@@ -232,7 +236,6 @@ const styles = StyleSheet.create({
   editImageIcon: {
     position: 'absolute',
     right: dimens.screenHorizontalMargin,
-
   }
 })
 
