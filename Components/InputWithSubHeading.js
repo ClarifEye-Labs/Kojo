@@ -31,7 +31,10 @@ class InputWithSubHeading extends React.Component {
       autoCorrect,
       autoCapitalize,
       errorStatus,
-      onChangeText
+      onChangeText,
+      keyboardType,
+      containerStyle,
+      inputValue
     } = this.props
   
     const subHeadingStyling = {
@@ -52,7 +55,7 @@ class InputWithSubHeading extends React.Component {
     }
   
     const component = 
-      <View>
+      <View style={containerStyle}>
         <Text style={subHeadingStyling}>{subHeadingTitle}</Text>
         <View style={inputContainerStyling}>
           <TextInput 
@@ -61,6 +64,8 @@ class InputWithSubHeading extends React.Component {
             autoCompleteType={autoCompleteType ? autoCompleteType: 'off'}
             autoCorrect={autoCorrect ? autoCorrect: true}
             onChangeText={onChangeText}
+            value={inputValue}
+            keyboardType={keyboardType ? keyboardType : 'default'}
             autoCapitalize={autoCapitalize ? autoCapitalize : 'none'}
             placeholder={placeholder}/>
         </View>

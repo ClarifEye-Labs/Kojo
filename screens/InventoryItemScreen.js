@@ -55,9 +55,6 @@ class InventoryItemScreen extends Component {
     const {
       navigation,
     } = this.props
-
-
-    console.log(this.state.item)
     
     const itemName = this.state.item.name;
     const itemPrice = this.state.item.price_per_unit;
