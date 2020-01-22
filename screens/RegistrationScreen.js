@@ -63,13 +63,15 @@ class RegistrationScreen extends React.Component {
     errors.password = this.performPasswordValidation(passwordEntered)
     errors.confirmPassword = this.performConfirmPasswordValidation(passwordEntered, confirmationPasswordEntered)
 
+
     if (errors.confirmPassword.errorReason === strings.passwordsDoNotMatch) {
       errors.password = {
         errorStatus: true,
-        errorReason: strings.passwordDoNotMatch
+        errorReason: strings.passwordsDoNotMatch
       }
     }
 
+    console.log(errors)
 
     this.setState({
       nameError: errors.name.errorReason,
@@ -93,6 +95,11 @@ class RegistrationScreen extends React.Component {
       return error
     }
 
+    if(! /^(([A-Za-z]+[\-\']?)*([A-Za-z]+)?\s)+([A-Za-z]+[\-\']?)*([A-Za-z]+)?$/.test(name)) {
+      error.errorStatus = true,
+      error.errorReason = strings.nameErrorMessage
+    }
+
     return error
     
   }
@@ -109,6 +116,12 @@ class RegistrationScreen extends React.Component {
       return error
     }
 
+    if( ! /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email)) {
+      error.errorStatus = true
+      error.errorReason = strings.emailErrorMessage
+    }
+
+
     return error
   }
 
@@ -123,6 +136,12 @@ class RegistrationScreen extends React.Component {
       error.errorStatus = true
       error.errorReason = strings.passwordCannotBeEmpty
       return error
+    }
+
+
+    if( password.length < 6) {
+      error.errorStatus = true
+      error.errorReason = strings.passwordErrorMessage
     }
 
     return error
@@ -156,17 +175,13 @@ class RegistrationScreen extends React.Component {
       confirmationPasswordError: errors.confirmPassword.errorStatus
     })
 
-    console.log("TCL: RegistrationScreen -> peformUIOperationsForShowingErrors -> errors", errors)
     if( !errors.name.errorStatus && !errors.email.errorStatus && !errors.password.errorStatus && !errors.confirmPassword.errorStatus){
-      // this.performRegitstration()
-      console.log('Proceed')
-    }else{
-      console.log('Please fix the errors!')
+      this.performRegistration()
     }
     
   }
 
-  performRegitstration(){
+  performRegistration(){
     const {
       emailEntered,
       passwordEntered,
@@ -178,8 +193,6 @@ class RegistrationScreen extends React.Component {
       .createUserWithEmailAndPassword(emailEntered, passwordEntered)
       .then((user) => console.log(user))
       .catch(error => console.log(error))
-
-
 
   }
   
@@ -222,6 +235,7 @@ class RegistrationScreen extends React.Component {
           errorTitle={this.state.nameError}
           onChangeText={this.setNameEntered}
           errorStatus={this.state.nameError}
+          containerStyle={{marginTop: 5, marginBottom: 5}}
           subHeadingStyle={subHeadingStyle}/>
         
 

@@ -50,7 +50,10 @@ const strings = {
   emailCannotBeEmpty: 'Email cannot be empty',
   passwordCannotBeEmpty: 'Password cannot be empty',
   confirmPasswordCannotBeEmpty: 'Either passwords cannot be empty',
-  passwordsDoNotMatch: 'Passwords do not match'
+  passwordsDoNotMatch: 'Passwords do not match',
+  nameErrorMessage: 'Please enter your full name with no special characters.',
+  emailErrorMessage: 'Please enter a properly formatted email address.',
+  passwordErrorMessage: 'Password must have at least 6 characters'
 }
 
 export default strings

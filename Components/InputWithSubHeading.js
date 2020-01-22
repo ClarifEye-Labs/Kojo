@@ -19,7 +19,8 @@ class InputWithSubHeading extends React.Component {
       subTextStyle,
       inputStyle,
       inputContainerStyle,
-      subHeadingContainerStyle
+      subHeadingContainerStyle,
+      errorStyle
     } = styles
 
     const {
@@ -36,8 +37,8 @@ class InputWithSubHeading extends React.Component {
       onChangeText,
       keyboardType,
       containerStyle,
-      errorTitle,
-      inputValue
+      inputValue,
+      errorTitle
     } = this.props
 
     const subHeadingStyling = {
@@ -47,7 +48,7 @@ class InputWithSubHeading extends React.Component {
 
     const subHeadingErrorStyling = {
       ...subTextStyle,
-      ...subHeadingStyle,
+      ...errorStyle,
       color: colors.errorRed
     }
 
@@ -62,11 +63,14 @@ class InputWithSubHeading extends React.Component {
       borderBottomColor: errorStatus ? colors.errorRed : colors.blackTransluscent
     }
 
+
     const component =
       <View style={containerStyle}>
         <View style={subHeadingContainerStyle}>
           <Text style={subHeadingStyling}>{subHeadingTitle}</Text>
-          <Text style={subHeadingErrorStyling}>{errorTitle}</Text>
+          {errorTitle
+          ? <Text style={subHeadingErrorStyling}>{errorTitle}</Text>
+          : null }
         </View>
         <View style={inputContainerStyling}>
           <TextInput
@@ -102,9 +106,10 @@ const styles = StyleSheet.create({
   },
   subHeadingContainerStyle: {
     width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center'
+    flexDirection: 'column'
+  },
+  errorStyle: {
+    marginTop: 8
   }
 })
 
