@@ -45,8 +45,12 @@ const strings = {
   addInventoryText: 'Add Inventory',
   inventoryDocumentName: 'Inventory Title',
   inventoryDocumentNamePlaceholderText: 'Add a unique title',
-  inventoryUploadImage: 'Upload Image'
-
+  inventoryUploadImage: 'Upload Image',
+  nameCannotBeEmpty: 'Name cannot be empty',
+  emailCannotBeEmpty: 'Email cannot be empty',
+  passwordCannotBeEmpty: 'Password cannot be empty',
+  confirmPasswordCannotBeEmpty: 'Either passwords cannot be empty',
+  passwordsDoNotMatch: 'Passwords do not match'
 }
 
 export default strings
