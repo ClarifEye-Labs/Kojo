@@ -1,5 +1,5 @@
 import React, {useRef, useEffect, Component} from 'react'
-import { View, StyleSheet, Text, TouchableOpacity, ScrollView, Alert } from 'react-native'
+import { View, StyleSheet, Text, TouchableOpacity, ScrollView, Alert, Picker } from 'react-native'
 import { Back, Heading, InputWithSubHeading, Button } from '../Components'
 import { dimens, colors, strings} from '../constants'
 import { commonStyling } from '../common' 
@@ -7,6 +7,10 @@ import firebase from '../config/firebase'
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
+import { RNS3 } from 'react-native-aws3'
+
+
+
 
 
 class SupplierAddInventoryScreen extends Component {
@@ -20,6 +24,8 @@ class SupplierAddInventoryScreen extends Component {
         pricePerUnit: '',
         imageUri : '',
         inventoryAddSuccess: false,
+        showImagePicker: false,
+        imagePickerValue : null
 
     }
   }
@@ -80,17 +86,30 @@ class SupplierAddInventoryScreen extends Component {
 
   uploadImageOnClick = async () => {
  
-    // let result = await ImagePicker.launchCameraAsync();  For using camera instead of library
-    let result = await ImagePicker.launchImageLibraryAsync({
+    // let result = await ImagePicker.launchCameraAsync(); 
+    var result = null
+    if(this.state.imagePickerValue == "library")
+    {
+      result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
         allowsEditing: true,
         aspect: [4, 3],
         quality: 1
       });
 
+    } 
+
+    else if(this.state.imagePickerValue == "camera")
+    {
+      result = await ImagePicker.launchCameraAsync(); 
+
+    }
+
+
+
 
     if(!result.cancelled) {
-        this.setState({imageUri: result.uri}, () => {this.uploadImageToFirebase()
+        this.setState({imageUri: result.uri}, () => {this.uploadImageToAWS()
             .then(()=>{Alert.alert("success")})
             .catch((error)=>{
                 Alert.alert(error)
@@ -100,12 +119,32 @@ class SupplierAddInventoryScreen extends Component {
 
   }
 
-  uploadImageToFirebase = async () => {
+  uploadImageToAWS = async () => {
 
     const response = await fetch(this.state.imageUri);
     const blob = await response.blob();
-    var ref = firebase.storage().ref().child("images/" + this.state.inventoryName);
-    return ref.put(blob);
+    const file = {
+      uri: this.state.imageUri,
+      name: this.state.inventoryName,
+      type: 'image/png'
+    }
+    const config = {
+      keyPrefix: 'imagess3/',
+      bucket: 'kojoinventoryimages',
+      region: 'ap-southeast-1',
+      accessKey: 'AKIA2QICFMTIA5K4EBOR',
+      secretKey: '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',
+      successActionStatus: 201
+    }
+
+    RNS3.put(file, config)
+    .then(
+      (response)=>{
+        console.log(response)
+      }
+    )
+    // var ref = firebase.storage().ref().child("images/" + this.state.inventoryName);
+    // return ref.put(blob);
     
   }
 
@@ -144,6 +183,23 @@ class SupplierAddInventoryScreen extends Component {
     
   }
 
+  updateImagePickerValue = (value) => {
+
+    this.setState({
+      showImagePicker: false
+    })
+
+    if(value != "")
+    {
+      this.setState({
+        imagePickerValue : value,
+      }, () => { this.uploadImageOnClick() })
+
+    }
+
+  }
+
+
 
 
   render() {
@@ -164,7 +220,21 @@ class SupplierAddInventoryScreen extends Component {
       navigation
     } = this.props
 
-    const screen = 
+    const renderImagePicker = () => {
+      if(this.state.showImagePicker)
+      {
+        return (
+          <Picker selectedValue = {this.state.imagePickerValue} onValueChange = {this.updateImagePickerValue}>
+          <Picker.Item label = "" value = "" />
+            <Picker.Item label = "Choose from library" value = "library" />
+            <Picker.Item label = "Click from camera" value = "camera" />
+          </Picker>
+  
+        );
+      }
+    }
+  
+    const screen = (
     <View style={mainContainer}>
       <Back 
         style={{...commonStyling.backButtonStyling}}
@@ -229,9 +299,12 @@ class SupplierAddInventoryScreen extends Component {
         <Button 
         title={strings.inventoryUploadImage}
         textColor={colors.colorAccent}
-        onPress = {this.uploadImageOnClick}
+        onPress = {()=> {this.setState({showImagePicker:true})}}
         style={uploadButtonStyle} />
+        {renderImagePicker()}
       </View>
+
+
     
 
       <Button 
@@ -240,7 +313,9 @@ class SupplierAddInventoryScreen extends Component {
         onPress = {this.submitButtonOnClick}
         style={buttonStyle} />
 
+      
     </View>
+    )
     
 
     return screen
