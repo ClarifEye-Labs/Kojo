@@ -38,7 +38,8 @@ class InputWithSubHeading extends React.Component {
       keyboardType,
       containerStyle,
       inputValue,
-      errorTitle
+      errorTitle,
+      editable
     } = this.props
 
     const subHeadingStyling = {
@@ -74,6 +75,7 @@ class InputWithSubHeading extends React.Component {
         </View>
         <View style={inputContainerStyling}>
           <TextInput
+            editable={editable}
             style={inputStyling}
             secureTextEntry={secureTextEntry}
             autoCompleteType={autoCompleteType ? autoCompleteType : 'off'}

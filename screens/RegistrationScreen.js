@@ -16,7 +16,10 @@ class RegistrationScreen extends React.Component {
       passwordError: false,
       passwordEntered: '',
       confirmationPasswordEntered: '',
-      confirmationPasswordError: false
+      confirmationPasswordError: false,
+      submitButtonClicked: false,
+      showLoadingDialog: false,
+      navigation: this.props.navigation
     }
   }
 
@@ -52,6 +55,11 @@ class RegistrationScreen extends React.Component {
       confirmationPasswordEntered
     } = this.state
 
+    this.setState({
+      showLoadingDialog: true,
+      submitButtonClicked: true
+    })
+
     const errors = {
       email: {},
       name: {},
@@ -71,13 +79,11 @@ class RegistrationScreen extends React.Component {
       }
     }
 
-    console.log(errors)
-
     this.setState({
       nameError: errors.name.errorReason,
       emailError: errors.email.errorReason,
       passwordError: errors.password.errorReason,
-      confirmPasswordError: errors.confirmPassword.errorReason,
+      confirmPasswordError: errors.confirmPassword.errorReason
     }, this.peformUIOperationsForShowingErrors(errors))
 
     
@@ -177,6 +183,11 @@ class RegistrationScreen extends React.Component {
 
     if( !errors.name.errorStatus && !errors.email.errorStatus && !errors.password.errorStatus && !errors.confirmPassword.errorStatus){
       this.performRegistration()
+    }else{
+      this.setState({
+        showLoadingDialog: false,
+        submitButtonClicked: false
+      })
     }
     
   }
@@ -191,9 +202,24 @@ class RegistrationScreen extends React.Component {
     firebase
       .auth()
       .createUserWithEmailAndPassword(emailEntered, passwordEntered)
-      .then((user) => console.log(user))
-      .catch(error => console.log(error))
+      .then((user) => this.successfulRegistration(user))
+      .catch((error) => this.registrationFailure(error))
 
+  }
+
+  successfulRegistration= (user) => {
+    console.log("TCL: successfulRegistration -> user", user)
+    this.setState({
+      showLoadingDialog: false
+    }, () => this.state.navigation.navigate('SupplierRestaurantScreen'))
+    
+  }
+
+  registrationFailure = (error) => {
+    this.setState({
+      showLoadingDialog: false
+    })
+    // console.log(error)
   }
   
 
@@ -235,6 +261,7 @@ class RegistrationScreen extends React.Component {
           errorTitle={this.state.nameError}
           onChangeText={this.setNameEntered}
           errorStatus={this.state.nameError}
+          editable={!this.state.submitButtonClicked}
           containerStyle={{marginTop: 5, marginBottom: 5}}
           subHeadingStyle={subHeadingStyle}/>
         
@@ -250,6 +277,7 @@ class RegistrationScreen extends React.Component {
           errorTitle={this.state.emailError}
           onChangeText={this.setEmailEntered}
           errorStatus={this.state.emailError}
+          editable={!this.state.submitButtonClicked}
           subHeadingStyle={subHeadingStyle}/>
 
         <InputWithSubHeading 
@@ -262,6 +290,7 @@ class RegistrationScreen extends React.Component {
           errorTitle={this.state.passwordError}
           onChangeText={this.setPasswordEntered}
           errorStatus={this.state.passwordError}
+          editable={!this.state.submitButtonClicked}
           subHeadingStyle={subHeadingStyle}/>
         
 
@@ -275,6 +304,7 @@ class RegistrationScreen extends React.Component {
           errorTitle={this.state.confirmPasswordError}
           onChangeText={this.setConfirmationPasswordEntered}
           errorStatus={this.state.confirmationPasswordError}
+          editable={!this.state.submitButtonClicked}
           subHeadingStyle={subHeadingStyle}/>
       </View>
     
@@ -283,6 +313,7 @@ class RegistrationScreen extends React.Component {
         title={strings.register}
         textColor={colors.colorAccent}
         style={buttonStyle} 
+        isLoading = {this.state.showLoadingDialog}
         onPress={this.submitButtonOnClick}/>
 
       <View style={termsContainer}>
