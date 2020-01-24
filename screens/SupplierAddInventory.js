@@ -304,11 +304,10 @@ class SupplierAddInventoryScreen extends Component {
         <InputWithSubHeading 
           secureTextEntry={false}
           placeholder = {strings.inventoryDocumentNamePlaceholderText}
-          autoCompleteType='name'
           subHeadingTitle={strings.inventoryDocumentName}
           autoCorrect={false}
           onChangeText={this.setInventoryDocumentName}
-          autoCapitalize='none'
+          autoCapitalize='words'
           subHeadingStyle={subHeadingStyle}/>
 
 

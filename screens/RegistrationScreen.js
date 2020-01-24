@@ -16,7 +16,10 @@ class RegistrationScreen extends React.Component {
       passwordError: false,
       passwordEntered: '',
       confirmationPasswordEntered: '',
-      confirmationPasswordError: false
+      confirmationPasswordError: false,
+      submitButtonClicked: false,
+      showLoadingDialog: false,
+      navigation: this.props.navigation
     }
   }
 
@@ -52,6 +55,11 @@ class RegistrationScreen extends React.Component {
       confirmationPasswordEntered
     } = this.state
 
+    this.setState({
+      showLoadingDialog: true,
+      submitButtonClicked: true
+    })
+
     const errors = {
       email: {},
       name: {},
@@ -63,19 +71,39 @@ class RegistrationScreen extends React.Component {
     errors.password = this.performPasswordValidation(passwordEntered)
     errors.confirmPassword = this.performConfirmPasswordValidation(passwordEntered, confirmationPasswordEntered)
 
-    this.peformUIOperationsForShowingErrors(errors)
+
+    if (errors.confirmPassword.errorReason === strings.passwordsDoNotMatch) {
+      errors.password = {
+        errorStatus: true,
+        errorReason: strings.passwordsDoNotMatch
+      }
+    }
+
+    this.setState({
+      nameError: errors.name.errorReason,
+      emailError: errors.email.errorReason,
+      passwordError: errors.password.errorReason,
+      confirmPasswordError: errors.confirmPassword.errorReason
+    }, this.peformUIOperationsForShowingErrors(errors))
+
+    
   }
 
   performNameValidation = (name) => { 
     var error = {
       errorStatus : false,
-      errorReason : 'No Error'
+      errorReason : null
     }
 
-    if(name == ''){
+    if(name.length === 0){
       error.errorStatus = true
-      error.errorReason = 'Name cannot be empty'
+      error.errorReason = strings.nameCannotBeEmpty
       return error
+    }
+
+    if(! /^(([A-Za-z]+[\-\']?)*([A-Za-z]+)?\s)+([A-Za-z]+[\-\']?)*([A-Za-z]+)?$/.test(name)) {
+      error.errorStatus = true,
+      error.errorReason = strings.nameErrorMessage
     }
 
     return error
@@ -85,14 +113,20 @@ class RegistrationScreen extends React.Component {
   performEmailValidation = (email) => {
     var error = {
       errorStatus : false,
-      errorReason : 'No Error'
+      errorReason : null
     }
 
-    if(email == ''){
+    if(email.length === 0){
+      error.errorReason = strings.emailCannotBeEmpty
       error.errorStatus = true
-      error.errorReason = 'Email cannot be empty'
       return error
     }
+
+    if( ! /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email)) {
+      error.errorStatus = true
+      error.errorReason = strings.emailErrorMessage
+    }
+
 
     return error
   }
@@ -101,13 +135,19 @@ class RegistrationScreen extends React.Component {
   performPasswordValidation = (password) => {
     var error = {
       errorStatus : false,
-      errorReason : 'No Error'
+      errorReason : null
     }
 
-    if(password == ''){
+    if(password.length === 0){
       error.errorStatus = true
-      error.errorReason = 'Password cannot be empty'
+      error.errorReason = strings.passwordCannotBeEmpty
       return error
+    }
+
+
+    if( password.length < 6) {
+      error.errorStatus = true
+      error.errorReason = strings.passwordErrorMessage
     }
 
     return error
@@ -116,39 +156,23 @@ class RegistrationScreen extends React.Component {
   performConfirmPasswordValidation = (oldpassword, newpassword) => {
     var error = {
       errorStatus : false,
-      errorReason : 'No Error'
+      errorReason : null
     }
 
-    if(oldpassword == '' || newpassword==''){
+    if(oldpassword.length === 0|| newpassword.length === 0){
       error.errorStatus = true
-      error.errorReason = 'Either Passwords cannot be empty'
+      error.errorReason = strings.confirmPasswordCannotBeEmpty
       return error
     }
 
     if(oldpassword !== newpassword){
       error.errorStatus = true
-      error.errorReason = 'Passwords do not match'
+      error.errorReason = strings.passwordsDoNotMatch
     }
 
     return error
   }
   
-
-  performEmailValidation = (email) => {
-    var error = {
-      errorStatus : false,
-      errorReason : 'No Error'
-    }
-
-    if(email == ''){
-      error.errorStatus = 'Email cannot be empty'
-      error.errorReason = false
-      return error
-    }
-
-    return error
-  }
-
   peformUIOperationsForShowingErrors(errors){
     this.setState({
       nameError: errors.name.errorStatus,
@@ -157,14 +181,18 @@ class RegistrationScreen extends React.Component {
       confirmationPasswordError: errors.confirmPassword.errorStatus
     })
 
-    if( ! (errors.name.errorStatus && errors.email.errorStatus && errors.password.errorStatus && errors.confirmationPasswordError) ){
-      this.performRegitstration()
+    if( !errors.name.errorStatus && !errors.email.errorStatus && !errors.password.errorStatus && !errors.confirmPassword.errorStatus){
+      this.performRegistration()
+    }else{
+      this.setState({
+        showLoadingDialog: false,
+        submitButtonClicked: false
+      })
     }
     
   }
 
-  performRegitstration(){
-    
+  performRegistration(){
     const {
       emailEntered,
       passwordEntered,
@@ -174,11 +202,24 @@ class RegistrationScreen extends React.Component {
     firebase
       .auth()
       .createUserWithEmailAndPassword(emailEntered, passwordEntered)
-      .then((user) => console.log(user))
-      .catch(error => console.log(error))
+      .then((user) => this.successfulRegistration(user))
+      .catch((error) => this.registrationFailure(error))
 
+  }
 
+  successfulRegistration= (user) => {
+    console.log("TCL: successfulRegistration -> user", user)
+    this.setState({
+      showLoadingDialog: false
+    }, () => this.state.navigation.navigate('SupplierRestaurantScreen'))
+    
+  }
 
+  registrationFailure = (error) => {
+    this.setState({
+      showLoadingDialog: false
+    })
+    // console.log(error)
   }
   
 
@@ -217,8 +258,11 @@ class RegistrationScreen extends React.Component {
           autoCompleteType='name'
           subHeadingTitle={strings.fullNameSubHeading}
           autoCapitalize='words'
+          errorTitle={this.state.nameError}
           onChangeText={this.setNameEntered}
           errorStatus={this.state.nameError}
+          editable={!this.state.submitButtonClicked}
+          containerStyle={{marginTop: 5, marginBottom: 5}}
           subHeadingStyle={subHeadingStyle}/>
         
 
@@ -229,8 +273,11 @@ class RegistrationScreen extends React.Component {
           subHeadingTitle={strings.emailSubHeading}
           autoCorrect={false}
           autoCapitalize='none'
+          keyboardType='email-address'
+          errorTitle={this.state.emailError}
           onChangeText={this.setEmailEntered}
           errorStatus={this.state.emailError}
+          editable={!this.state.submitButtonClicked}
           subHeadingStyle={subHeadingStyle}/>
 
         <InputWithSubHeading 
@@ -240,8 +287,10 @@ class RegistrationScreen extends React.Component {
           subHeadingTitle={strings.passwordSubHeading}
           autoCorrect={false}
           autoCapitalize='none'
+          errorTitle={this.state.passwordError}
           onChangeText={this.setPasswordEntered}
           errorStatus={this.state.passwordError}
+          editable={!this.state.submitButtonClicked}
           subHeadingStyle={subHeadingStyle}/>
         
 
@@ -252,8 +301,10 @@ class RegistrationScreen extends React.Component {
           subHeadingTitle={strings.confirmPasswordSubHeading}
           autoCorrect={false}
           autoCapitalize='none'
+          errorTitle={this.state.confirmPasswordError}
           onChangeText={this.setConfirmationPasswordEntered}
           errorStatus={this.state.confirmationPasswordError}
+          editable={!this.state.submitButtonClicked}
           subHeadingStyle={subHeadingStyle}/>
       </View>
     
@@ -262,6 +313,7 @@ class RegistrationScreen extends React.Component {
         title={strings.register}
         textColor={colors.colorAccent}
         style={buttonStyle} 
+        isLoading = {this.state.showLoadingDialog}
         onPress={this.submitButtonOnClick}/>
 
       <View style={termsContainer}>
@@ -298,7 +350,7 @@ const styles = StyleSheet.create({
   headingContainerStyle:{
     width: '100%',
     textAlign: 'left',
-    marginTop: dimens.screenSafeUpperNotchDistance + 60
+    marginTop: dimens.screenSafeUpperNotchDistance + 70
   },
   buttonStyle:{
     width: '90%',
