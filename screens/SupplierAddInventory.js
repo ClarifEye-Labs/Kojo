@@ -1,6 +1,6 @@
 import React, {useRef, useEffect, Component} from 'react'
 import { View, StyleSheet, Text, TouchableOpacity, ScrollView, Alert, Picker } from 'react-native'
-import { Back, Heading, InputWithSubHeading, Button } from '../Components'
+import { Back, Heading, InputWithSubHeading, Button, DropDownWithSubHeading } from '../Components'
 import { dimens, colors, strings} from '../constants'
 import { commonStyling } from '../common' 
 import firebase from '../config/firebase'
@@ -25,7 +25,10 @@ class SupplierAddInventoryScreen extends Component {
         imageUri : '',
         inventoryAddSuccess: false,
         showImagePicker: false,
-        imagePickerValue : null
+        showInventoryTypePicker: false,
+        imagePickerValue : null,
+        inventoryTypePickerValue: null,
+        inventoryCategories: null
 
     }
   }
@@ -33,12 +36,40 @@ class SupplierAddInventoryScreen extends Component {
 
   componentDidMount() {
     this.getPermissionAsync();
+    this.getInventoryTypes();
 
     }
 
-  setInventoryType = (text) => {
+
+  getInventoryTypes = async () => {
+
+    let inventoryTypes = []
+    const firestore = firebase.firestore()
+    const inventoryTypeCollection = firestore.collection('product_type')
+    await inventoryTypeCollection
+    .get()
+    .then(
+      function(querySnapShot){
+        querySnapShot.forEach(function(doc){
+          inventoryTypes.push(doc.data().type)
+        })
+      }
+    )
+
+    inventoryTypes.push("Other")
+
     this.setState({
-        inventoryType: text
+      inventoryCategories: inventoryTypes
+    })
+
+
+
+  }
+
+  setInventoryType = (typeIndex) => {
+    
+    this.setState({
+        inventoryType: this.state.inventoryCategories[typeIndex]
     })
   }
 
@@ -123,17 +154,18 @@ class SupplierAddInventoryScreen extends Component {
 
     const response = await fetch(this.state.imageUri);
     const blob = await response.blob();
+
     const file = {
       uri: this.state.imageUri,
       name: this.state.inventoryName,
       type: 'image/png'
     }
     const config = {
-      keyPrefix: 'imagess3/',
-      bucket: 'kojoinventoryimages',
-      region: 'ap-southeast-1',
-      accessKey: 'AKIA2QICFMTIA5K4EBOR',
-      secretKey: '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',
+      keyPrefix: 's3/',
+      bucket: 'testbuckettutoriall',
+      region: 'us-east-1',
+      accessKey: 'AKIA2QICFMTIIBYNRIAN',
+      secretKey: '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',
       successActionStatus: 201
     }
 
@@ -199,6 +231,21 @@ class SupplierAddInventoryScreen extends Component {
 
   }
 
+  updateInventoryTypePickerValue = (value) => {
+
+    this.setState({
+      showInventoryTypePicker: false
+    })
+
+    if(value != "")
+    {
+      this.setState({
+        inventoryTypePickerValue: value  
+      })
+    }
+
+  }
+
 
 
 
@@ -245,15 +292,14 @@ class SupplierAddInventoryScreen extends Component {
         containerStyle={headingContainerStyle} />
         
       <View style={allInputsContainer}>
-        <InputWithSubHeading 
-          secureTextEntry={false}
-          placeholder={strings.inventoryTypeText}
-          subHeadingTitle={strings.inventoryTypeSubheading}
-          autoCorrect={false}
-          autoCompleteType='name'
-          autoCapitalize='words'
-          onChangeText={this.setInventoryType}
-          />
+        
+        <DropDownWithSubHeading
+          subHeadingStyle={subHeadingStyle}
+          subHeadingTitle= "Inventory Type"
+          disabled = {false}
+          options = {this.state.inventoryCategories}
+          onSelect = {(typeIndex) => {this.setInventoryType(typeIndex)}}
+        />
 
         <InputWithSubHeading 
           secureTextEntry={false}
