@@ -30,7 +30,7 @@ class SupplierAddInventoryScreen extends Component {
         imagePickerValue : null,
         inventoryTypePickerValue: null,
         inventoryCategories: null,
-        showCategoryModal: true
+        showCategoryModal: false
 
     }
   }
@@ -301,7 +301,7 @@ class SupplierAddInventoryScreen extends Component {
           activeOpacity={1}  
           onPressOut={this.closeCategoryModal} 
           style={styles.modalContainerStyle}>
-            
+
           <TouchableWithoutFeedback>
             <View style={styles.mainContainer}>
 
