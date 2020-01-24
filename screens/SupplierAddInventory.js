@@ -1,13 +1,14 @@
 import React, {useRef, useEffect, Component} from 'react'
-import { View, StyleSheet, Text, TouchableOpacity, ScrollView, Alert, Picker } from 'react-native'
+import { View, StyleSheet, Text, TouchableOpacity, Modal, Alert, Picker, TouchableWithoutFeedback, FlatList } from 'react-native'
 import { Back, Heading, InputWithSubHeading, Button, DropDownWithSubHeading } from '../Components'
-import { dimens, colors, strings} from '../constants'
+import { dimens, colors, strings, customFonts} from '../constants'
 import { commonStyling } from '../common' 
 import firebase from '../config/firebase'
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import { RNS3 } from 'react-native-aws3'
+import { ScrollView } from 'react-native-gesture-handler'
 
 
 
@@ -28,7 +29,8 @@ class SupplierAddInventoryScreen extends Component {
         showInventoryTypePicker: false,
         imagePickerValue : null,
         inventoryTypePickerValue: null,
-        inventoryCategories: null
+        inventoryCategories: null,
+        showCategoryModal: true
 
     }
   }
@@ -83,6 +85,12 @@ class SupplierAddInventoryScreen extends Component {
   setInventoryName = (text) => {
     this.setState({
         inventoryName: text
+    })
+  }
+
+  setInventoryCategory = (category) => {
+    this.setState({
+      inventoryCategory: category
     })
   }
 
@@ -180,6 +188,205 @@ class SupplierAddInventoryScreen extends Component {
     
   }
 
+  closeCategoryModal = () => {
+    this.setState({
+      showCategoryModal: false
+    })
+  }
+
+  openCategoryModal = () => {
+    this.setState({
+      showCategoryModal: true
+    })
+  }
+
+  getCategoryModal = () => {
+    const styles = {
+      modalContainerStyle: {
+        flex: 1,
+        justifyContent: 'center', 
+        backgroundColor: colors.blackTransluscent, 
+        alignItems: 'center'
+      },
+      mainContainer: {
+        width: '100%',
+        height: '100%',
+        marginTop: 120,
+        backgroundColor: '#f2f2f2',
+        borderTopLeftRadius: dimens.defaultBorderRadius,
+        borderTopRightRadius: dimens.defaultBorderRadius
+      },
+      headingContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row',
+        paddingTop: 20,
+        borderTopLeftRadius: dimens.defaultBorderRadius,
+        borderTopRightRadius: dimens.defaultBorderRadius,
+        zIndex: -1,
+        paddingBottom: 20,
+        backgroundColor: colors.whiteTransluscent,
+        borderBottomWidth: dimens.inputTextBorderWidth,
+        borderBottomColor: colors.grayTransluscent,
+      },
+      subHeadingButtons: {
+        color: colors.colorPrimary,
+        fontSize: 16,
+        fontFamily: customFonts.semiBold,
+      },
+      headingStyle: {
+        fontSize: 20,
+        color: colors.black,
+        fontFamily: customFonts.bold
+      },
+      cancelButton: {
+        position: 'absolute',
+        top: 22,
+        left: 20
+      },
+      setButton: {
+        position: 'absolute',
+        top: 22,
+        right: 20
+      },
+      addCategoryContainer: {
+        width: '100%',
+        marginTop: 35,
+      },
+      pickCategoryContainer: {
+        width: '100%',
+        marginTop: 35,
+      },
+      sectionHeading: {
+        color: colors.colorPrimary,
+        fontFamily: customFonts.semiBold,
+        fontSize: 18,
+        marginLeft: dimens.screenHorizontalMargin
+      },
+      inputContainerStyle: {
+        paddingHorizontal: dimens.screenHorizontalMargin,
+        paddingVertical: 18,
+        marginTop: 8,
+        backgroundColor: colors.whiteTransluscent,
+        borderTopWidth: dimens.inputTextBorderWidth,
+        borderTopColor: colors.grayTransluscent,
+        borderBottomWidth: dimens.inputTextBorderWidth,
+        borderBottomColor: colors.grayTransluscent,
+      },
+      categoryListContainer: {
+        paddingHorizontal: dimens.screenHorizontalMargin,
+        marginTop: 8,
+        marginBottom: 20,
+        height: 3000,
+        backgroundColor: colors.whiteTransluscent,
+        borderTopWidth: dimens.inputTextBorderWidth,
+        borderTopColor: colors.grayTransluscent,
+        borderBottomWidth: dimens.inputTextBorderWidth,
+        borderBottomColor: colors.grayTransluscent,
+      },
+      eachCategoryContainer: {
+        height: dimens.textInputHeight,
+        borderBottomWidth: dimens.inputTextBorderWidth,
+        borderBottomColor: colors.grayTransluscent,
+        justifyContent: 'center'
+      }
+    }
+    return (
+      <Modal 
+        visible={this.state.showCategoryModal} 
+        transparent={true} 
+        animationType='slide' 
+        onBackButtonPress={this.closeDeleteModal}>
+        <TouchableOpacity 
+          activeOpacity={1}  
+          onPressOut={this.closeCategoryModal} 
+          style={styles.modalContainerStyle}>
+            
+          <TouchableWithoutFeedback>
+            <View style={styles.mainContainer}>
+
+              <TouchableOpacity style={styles.cancelButton} onPress={this.closeCategoryModal}>
+                <Text style={styles.subHeadingButtons}>Cancel</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.setButton} onPress={this.closeCategoryModal}>
+                  <Text style={styles.subHeadingButtons}>Set</Text>
+              </TouchableOpacity>
+
+              <View style={styles.headingContainer}>
+                <Text style={styles.headingStyle}>Choose Category</Text>
+              </View>
+
+              <ScrollView>
+                <View style={styles.addCategoryContainer}>
+                  <Text style={styles.sectionHeading}>ADD</Text>
+                  <InputWithSubHeading 
+                    containerStyle={styles.inputContainerStyle}
+                    secureTextEntry={false}
+                    placeholder = {'Enter Item Category'}
+                    subHeadingTitle={strings.inventoryDocumentCategory}
+                    autoCorrect={false}
+                    onChangeText={this.setInventoryCategory}
+                    autoCapitalize='words'/>
+                </View>
+
+                <View style={styles.pickCategoryContainer}>
+                  <Text style={styles.sectionHeading}>PICK</Text>
+                  <View
+                    style={styles.categoryListContainer}>
+                    {this.getInventoryCategories().map(
+                      item => {
+                        return(<View style={styles.eachCategoryContainer}>
+                          <Text>{item.title}</Text>
+                        </View> )
+                      }) }
+                    {/* <FlatList
+                      contentContainerStyle={styles.categoryListContainer}
+                      data={this.getInventoryCategories()}
+                      renderItem={({ item }) => (
+                       }
+                      keyExtractor={item => item.id}
+                    /> */}
+                  </View>
+
+                </View>
+              </ScrollView>
+            </View>
+          </TouchableWithoutFeedback>
+        </TouchableOpacity>
+      </Modal>
+    )
+  }
+
+  getInventoryCategories = () => {
+    return [
+      {id: 'Alocohol', title: 'Alcohol'},
+      {id: 'Dairy', title: 'Dairy'},
+      {id: 'Alocohol', title: 'Alcohol'},
+      {id: 'Dairy', title: 'Dairy'},
+      {id: 'Alocohol', title: 'Alcohol'},
+      {id: 'Dairy', title: 'Dairy'},
+      {id: 'Alocohol', title: 'Alcohol'},
+      {id: 'Dairy', title: 'Dairy'},
+      {id: 'Alocohol', title: 'Alcohol'},
+      {id: 'Dairy', title: 'Dairy'},
+      {id: 'Alocohol', title: 'Alcohol'},
+      {id: 'Dairy', title: 'Dairy'},
+      {id: 'Alocohol', title: 'Alcohol'},
+      {id: 'Dairy', title: 'Dairy'},
+      {id: 'Alocohol', title: 'Alcohol'},
+      {id: 'Dairy', title: 'Dairy'},
+      {id: 'Alocohol', title: 'Alcohol'},
+      {id: 'Dairy', title: 'Dairy'},
+      {id: 'Alocohol', title: 'Alcohol'},
+      {id: 'Dairy', title: 'Dairy'},
+      {id: 'Alocohol', title: 'Alcohol'},
+      {id: 'Dairy', title: 'Dairy'},
+      {id: 'Alocohol', title: 'Alcohol'},
+      {id: 'Dairy', title: 'Dairy'},
+    ]
+  }
+
   addInvetorytoFirestore = () => {
     const {
         inventoryType,
@@ -250,18 +457,7 @@ class SupplierAddInventoryScreen extends Component {
 
 
   render() {
-    const {
-      mainContainer,
-      headingContainerStyle,
-      buttonStyle,
-      allInputsContainer,
-      subHeadingStyle,
-      termsStyle,
-      tandcContainer,
-      termsContainer,
-      tandcText,
-      uploadButtonStyle
-    } = styles
+  
 
     const {
       navigation
@@ -281,6 +477,18 @@ class SupplierAddInventoryScreen extends Component {
       }
     }
   
+
+    const {
+      mainContainer,
+      headingContainerStyle,
+      allInputsContainer,
+      subHeadingStyle,
+      categoryInputContainer,
+      categoryContainer,
+      categoryTextStyle,
+      inputContainerStyle
+    } = styles
+
     const screen = (
     <View style={mainContainer}>
       <Back 
@@ -288,78 +496,60 @@ class SupplierAddInventoryScreen extends Component {
         onPress={()=> navigation.goBack()}/>
 
       <Heading 
-        title="Add Inventory"
+        title='Add Inventory'
         containerStyle={headingContainerStyle} />
         
       <View style={allInputsContainer}>
-        
-        <DropDownWithSubHeading
-          subHeadingStyle={subHeadingStyle}
-          subHeadingTitle= "Inventory Type"
-          disabled = {false}
-          options = {this.state.inventoryCategories}
-          onSelect = {(typeIndex) => {this.setInventoryType(typeIndex)}}
-        />
+          <View style={categoryContainer}>
+            <Text style={subHeadingStyle}>Inventory Category</Text>
+            <TouchableOpacity style={categoryInputContainer} onPress={this.openCategoryModal}>
+              <Text style={categoryTextStyle}>Touch to add category</Text>
+            </TouchableOpacity>
+          </View>
 
-        <InputWithSubHeading 
-          secureTextEntry={false}
-          placeholder = {strings.inventoryDocumentNamePlaceholderText}
-          subHeadingTitle={strings.inventoryDocumentName}
-          autoCorrect={false}
-          onChangeText={this.setInventoryDocumentName}
-          autoCapitalize='words'
-          subHeadingStyle={subHeadingStyle}/>
+          {this.getCategoryModal()}
 
-
-        <InputWithSubHeading 
-          secureTextEntry={false}
-          placeholder = {strings.inventoryNamePlaceholderText}
-          autoCompleteType='name'
-          subHeadingTitle={strings.inventoryName}
-          autoCorrect={false}
-          onChangeText={this.setInventoryName}
-          autoCapitalize='none'
-          subHeadingStyle={subHeadingStyle}/>
-
-         <InputWithSubHeading 
-          secureTextEntry={false}
-          placeholder = {strings.inventoryQuantityAvailablePlaceholderText}
-          autoCompleteType='name'
-          subHeadingTitle={strings.inventoryQuantityAvailable}
-          autoCorrect={false}
-          onChangeText={this.setInventoryQuantity}
-          autoCapitalize='none'
-          subHeadingStyle={subHeadingStyle}/>
+          <InputWithSubHeading 
+            containerStyle={inputContainerStyle}
+            secureTextEntry={false}
+            placeholder = {'Enter Item Title.'}
+            subHeadingTitle={strings.inventoryDocumentName}
+            autoCorrect={false}
+            onChangeText={this.setInventoryName}
+            autoCapitalize='words'
+            subHeadingStyle={subHeadingStyle}/>
           
           <InputWithSubHeading 
-          secureTextEntry={false}
-          placeholder = {strings.inventoryPricePerUnit}
-          autoCompleteType='name'
-          onChangeText={this.setInventoryPrice}
-          subHeadingTitle={strings.inventoryPricePerUnitPlaceholderText}
-          autoCorrect={false}
-          autoCapitalize='none'
-          subHeadingStyle={subHeadingStyle}/>  
+            containerStyle={inputContainerStyle}
+            secureTextEntry={false}
+            placeholder = {'Enter Item Name.'}
+            subHeadingTitle={strings.inventoryDocumentName}
+            autoCorrect={false}
+            onChangeText={this.setInventoryName}
+            autoCapitalize='words'
+            subHeadingStyle={subHeadingStyle}/>
 
-        <Button 
-        title={strings.inventoryUploadImage}
-        textColor={colors.colorAccent}
-        onPress = {()=> {this.setState({showImagePicker:true})}}
-        style={uploadButtonStyle} />
-        {renderImagePicker()}
+          
+
+
       </View>
 
 
-    
 
-      <Button 
+      {/* <Button 
+      title={strings.inventoryUploadImage}
+      textColor={colors.colorAccent}
+      onPress = {()=> {this.setState({showImagePicker:true})}}
+      style= />
+      {renderImagePicker()} */}
+      
+      {/* <Button 
         title={strings.addInventoryText}
         textColor={colors.colorAccent}
         onPress = {this.submitButtonOnClick}
-        style={buttonStyle} />
+        style={buttonStyle} />  */}
 
-      
-    </View>
+      </View>
     )
     
 
@@ -368,59 +558,42 @@ class SupplierAddInventoryScreen extends Component {
 }
 
 const styles = StyleSheet.create({
-    mainContainer: {
-      ...commonStyling.mainContainer,
-      alignItems: 'center',
-      paddingLeft: dimens.screenHorizontalMargin,
-      paddingRight: dimens.screenHorizontalMargin
-    },
-    backButtonStyle: {
-      ...commonStyling.backButtonStyling
-    },
-    headingContainerStyle:{
-      width: '100%',
-      textAlign: 'left',
-      marginTop: dimens.screenSafeUpperNotchDistance + 60
-    },
-    buttonStyle:{
-      width: '90%',
-      backgroundColor: colors.colorPrimary,
-      marginTop: 35
-    },
-    uploadButtonStyle:{
-        width: '51%',
-        backgroundColor: colors.facebookBlue,
-        marginTop: 35,
+  mainContainer: {
+    ...commonStyling.mainContainer,
+  },
+  backButtonStyle: {
+    ...commonStyling.backButtonStyling
+  },
+  headingContainerStyle:{
+    width: '100%',
+    textAlign: 'left',
+    marginTop: dimens.screenSafeUpperNotchDistance + 70,
+    marginLeft: dimens.screenHorizontalMargin
+  },
+  categoryInputContainer: {
+    height: dimens.textInputHeight,
+    justifyContent: 'center'
+  }, 
+  allInputsContainer: {
+    marginLeft: dimens.screenHorizontalMargin + 8,
+    marginRight: dimens.screenHorizontalMargin + 8,
+  },
+  categoryContainer: {
+    flexDirection: 'column',
+    marginTop: 18,
+    borderBottomColor: colors.blackTransluscent,
+    borderBottomWidth: dimens.inputTextBorderWidth,
+  },
+  categoryTextStyle: {
+    color: colors.grayTransluscent,
+    fontFamily: customFonts.regular,
+    fontSize: dimens.inputTextFontSize
+  },
+  inputContainerStyle: {
+    marginTop: 18
+  }
 
-    },
-    subHeadingStyle: {
-      marginTop: 16
-    },
-    termsStyle: {
-      textAlign: 'center',
-      fontSize: 15,
-      color: colors.blackTransluscent
-    },
-    allInputsContainer:{
-      width: '100%',
-      padding: 8,
-      marginTop: 20,
-      marginBottom: 10
-    },
-    tandcContainer:{
-      flexDirection: 'row',
-      width: '100%',
-      marginTop: 2,
-      alignItems: 'center'
-    },
-    tandcText:{
-      fontSize: 15,
-      color: colors.colorPrimary
-    },
-    termsContainer: {
-      marginTop: 8
-    }
-  })
+})
 
 SupplierAddInventoryScreen.navigationOptions = {
   header: null

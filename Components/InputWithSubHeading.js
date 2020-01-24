@@ -84,6 +84,7 @@ class InputWithSubHeading extends React.Component {
             value={inputValue}
             keyboardType={keyboardType ? keyboardType : 'default'}
             autoCapitalize={autoCapitalize ? autoCapitalize : 'none'}
+            placeholderTextColor = {colors.grayTransluscent}
             placeholder={placeholder} />
         </View>
       </View>
