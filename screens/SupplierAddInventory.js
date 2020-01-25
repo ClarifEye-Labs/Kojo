@@ -1,6 +1,6 @@
 import React, {useRef, useEffect, Component} from 'react'
 import { View, StyleSheet, Text, TouchableOpacity, Modal, Alert, Picker, TouchableWithoutFeedback, FlatList } from 'react-native'
-import { Back, Heading, InputWithSubHeading, Button, DropDownWithSubHeading } from '../Components'
+import { Back, Heading, InputWithSubHeading, Button, DropDownWithSubHeading, Icon } from '../Components'
 import { dimens, colors, strings, customFonts} from '../constants'
 import { commonStyling } from '../common' 
 import firebase from '../config/firebase'
@@ -8,11 +8,12 @@ import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import { RNS3 } from 'react-native-aws3'
-import { ScrollView } from 'react-native-gesture-handler'
+import * as Animatable from 'react-native-animatable'
 
 
 
 
+const refs = { categoryList: 'categoryList' }
 
 class SupplierAddInventoryScreen extends Component {
   constructor(props){
@@ -30,8 +31,10 @@ class SupplierAddInventoryScreen extends Component {
         imagePickerValue : null,
         inventoryTypePickerValue: null,
         inventoryCategories: null,
-        showCategoryModal: false
-
+        showCategoryModal: false,
+        showAddCategorySection: false,
+        categorySelected: undefined,
+        categoryTyped: ''
     }
   }
 
@@ -66,6 +69,13 @@ class SupplierAddInventoryScreen extends Component {
 
 
 
+  }
+
+
+  setCategoryTyped = (text) => {
+    this.setState({
+      categoryTyped: text
+    })
   }
 
   setInventoryType = (typeIndex) => {
@@ -204,14 +214,12 @@ class SupplierAddInventoryScreen extends Component {
     const styles = {
       modalContainerStyle: {
         flex: 1,
-        justifyContent: 'center', 
         backgroundColor: colors.blackTransluscent, 
-        alignItems: 'center'
       },
       mainContainer: {
-        width: '100%',
-        height: '100%',
-        marginTop: 120,
+        flex: 1,
+        marginTop: 50,
+        flexDirection: 'column',
         backgroundColor: '#f2f2f2',
         borderTopLeftRadius: dimens.defaultBorderRadius,
         borderTopRightRadius: dimens.defaultBorderRadius
@@ -252,10 +260,13 @@ class SupplierAddInventoryScreen extends Component {
       addCategoryContainer: {
         width: '100%',
         marginTop: 35,
+        height: 120,
       },
       pickCategoryContainer: {
-        width: '100%',
+        flex: 1,
+        overflow: 'hidden',
         marginTop: 35,
+        marginBottom: 35
       },
       sectionHeading: {
         color: colors.colorPrimary,
@@ -274,51 +285,41 @@ class SupplierAddInventoryScreen extends Component {
         borderBottomColor: colors.grayTransluscent,
       },
       categoryListContainer: {
-        paddingHorizontal: dimens.screenHorizontalMargin,
         marginTop: 8,
-        marginBottom: 20,
-        height: 3000,
-        backgroundColor: colors.whiteTransluscent,
-        borderTopWidth: dimens.inputTextBorderWidth,
-        borderTopColor: colors.grayTransluscent,
-        borderBottomWidth: dimens.inputTextBorderWidth,
-        borderBottomColor: colors.grayTransluscent,
+        paddingVertical: 8,
+        backgroundColor: colors.whiteTransluscent
       },
-      eachCategoryContainer: {
-        height: dimens.textInputHeight,
-        borderBottomWidth: dimens.inputTextBorderWidth,
-        borderBottomColor: colors.grayTransluscent,
-        justifyContent: 'center'
+      flatListStyle: {
+        width: '100%',
+        paddingBottom: 20,
       }
     }
+
     return (
       <Modal 
         visible={this.state.showCategoryModal} 
         transparent={true} 
         animationType='slide' 
         onBackButtonPress={this.closeDeleteModal}>
-        <TouchableOpacity 
-          activeOpacity={1}  
-          onPressOut={this.closeCategoryModal} 
-          style={styles.modalContainerStyle}>
+          <View style={styles.modalContainerStyle}> 
 
-          <TouchableWithoutFeedback>
             <View style={styles.mainContainer}>
-
               <TouchableOpacity style={styles.cancelButton} onPress={this.closeCategoryModal}>
                 <Text style={styles.subHeadingButtons}>Cancel</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.setButton} onPress={this.closeCategoryModal}>
-                  <Text style={styles.subHeadingButtons}>Set</Text>
+              <TouchableOpacity style={styles.setButton} onPress={this.confirmInventoryCategory}>
+                <Text style={styles.subHeadingButtons}>Set</Text>
               </TouchableOpacity>
 
               <View style={styles.headingContainer}>
                 <Text style={styles.headingStyle}>Choose Category</Text>
               </View>
 
-              <ScrollView>
-                <View style={styles.addCategoryContainer}>
+              {/* this is add section, hidden buy default */}
+
+              {this.state.showAddCategorySection
+              ? <Animatable.View animation='fadeIn' easing='ease-in-out' style={styles.addCategoryContainer}>
                   <Text style={styles.sectionHeading}>ADD</Text>
                   <InputWithSubHeading 
                     containerStyle={styles.inputContainerStyle}
@@ -326,64 +327,125 @@ class SupplierAddInventoryScreen extends Component {
                     placeholder = {'Enter Item Category'}
                     subHeadingTitle={strings.inventoryDocumentCategory}
                     autoCorrect={false}
-                    onChangeText={this.setInventoryCategory}
+                    onChangeText={this.setCategoryTyped}
                     autoCapitalize='words'/>
-                </View>
+                </Animatable.View>
+              : null}
 
-                <View style={styles.pickCategoryContainer}>
+              {/* pick category section  */}
+              <View style={styles.pickCategoryContainer}>
                   <Text style={styles.sectionHeading}>PICK</Text>
                   <View
-                    style={styles.categoryListContainer}>
-                    {this.getInventoryCategories().map(
-                      item => {
-                        return(<View style={styles.eachCategoryContainer}>
-                          <Text>{item.title}</Text>
-                        </View> )
-                      }) }
-                    {/* <FlatList
-                      contentContainerStyle={styles.categoryListContainer}
+                    style={styles.categoryListContainer}>                      
+                    <FlatList
+                      contentContainerStyle={styles.flatListStyle}
                       data={this.getInventoryCategories()}
-                      renderItem={({ item }) => (
-                       }
-                      keyExtractor={item => item.id}
-                    /> */}
+                      renderItem={item => this.InventoryCategoryItem(item)}
+                      keyExtractor={ item => item.id }
+                    />
                   </View>
+              </View>
 
-                </View>
-              </ScrollView>
             </View>
-          </TouchableWithoutFeedback>
-        </TouchableOpacity>
-      </Modal>
+
+
+
+          </View>
+      </Modal> 
     )
+  }
+
+  confirmInventoryCategory = () => {
+    if(this.state.categorySelected.item.id === 'other') {
+      //then check for empty category entered 
+      console.log(this.state.categoryTyped)
+    }else{
+      console.log(this.state.categorySelected)
+    }
+  }
+
+  InventoryCategoryItem = (toRenderItem) => {
+    const styles = {
+      eachCategoryContainer: {
+        height: dimens.textInputHeight,
+        borderBottomWidth: dimens.inputTextBorderWidth,
+        borderBottomColor: colors.grayTransluscent,
+        borderBottomColor: colors.grayTransluscent,
+        borderBottomWidth: dimens.inputTextBorderWidth,
+        marginHorizontal: dimens.screenHorizontalMargin
+      },
+      iconStyle: {
+        marginLeft: 8,
+        marginRight: 8
+      },
+      contentContainerStyle: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+      }
+    }
+
+    let toRenderTickIcon = false
+    if(this.state.categorySelected){
+      toRenderTickIcon = this.state.categorySelected.item.id === toRenderItem.item.id
+    }
+    
+    const component =  
+    <View style={styles.eachCategoryContainer}>
+      <TouchableOpacity  style={styles.contentContainerStyle} onPress={()=>this.selectInventoryCategoryItem(toRenderItem)}>
+        {toRenderTickIcon 
+        ? <Icon nameIOS='ios-checkmark' nameAndroid='md-checkmark' style={styles.iconStyle} />
+        : null }
+        <Text>{toRenderItem.item.title}</Text>
+      </TouchableOpacity>
+    </View>
+     
+
+    return component
+  }
+
+
+  selectInventoryCategoryItem = (itemObject) => {
+    console.log("TCL: selectInventoryCategoryItem -> itemObject", itemObject)
+    if(itemObject.item.id === 'other') {
+      this.setState({
+        showAddCategorySection: true,
+        categorySelected: itemObject,
+      })
+    }else{
+      this.setState({
+        showAddCategorySection: false,
+        categorySelected: itemObject
+      })
+    }
+    
   }
 
   getInventoryCategories = () => {
     return [
-      {id: 'Alocohol', title: 'Alcohol'},
+      {id: 'other', title: 'Other'},
       {id: 'Dairy', title: 'Dairy'},
-      {id: 'Alocohol', title: 'Alcohol'},
-      {id: 'Dairy', title: 'Dairy'},
-      {id: 'Alocohol', title: 'Alcohol'},
-      {id: 'Dairy', title: 'Dairy'},
-      {id: 'Alocohol', title: 'Alcohol'},
-      {id: 'Dairy', title: 'Dairy'},
-      {id: 'Alocohol', title: 'Alcohol'},
-      {id: 'Dairy', title: 'Dairy'},
-      {id: 'Alocohol', title: 'Alcohol'},
-      {id: 'Dairy', title: 'Dairy'},
-      {id: 'Alocohol', title: 'Alcohol'},
-      {id: 'Dairy', title: 'Dairy'},
-      {id: 'Alocohol', title: 'Alcohol'},
-      {id: 'Dairy', title: 'Dairy'},
-      {id: 'Alocohol', title: 'Alcohol'},
-      {id: 'Dairy', title: 'Dairy'},
-      {id: 'Alocohol', title: 'Alcohol'},
-      {id: 'Dairy', title: 'Dairy'},
-      {id: 'Alocohol', title: 'Alcohol'},
-      {id: 'Dairy', title: 'Dairy'},
-      {id: 'Alocohol', title: 'Alcohol'},
-      {id: 'Dairy', title: 'Dairy'},
+      {id: '1', title: 'Alcohol'},
+      {id: '2', title: 'Dairy'},
+      {id: '4', title: 'Alcohol'},
+      {id: '3', title: 'Dairy'},
+      {id: '42', title: 'Alcohol'},
+      {id: '23', title: 'Dairy'},
+      {id: '1234', title: 'Alcohol'},
+      {id: '123142', title: 'Dairy'},
+      {id: '12414512', title: 'Alcohol'},
+      {id: '312314', title: 'Dairy'},
+      {id: '2434534', title: 'Alcohol'},
+      {id: '14342114', title: 'Dairy'},
+      {id: '123424214', title: 'Alcohol'},
+      {id: '1234141', title: 'Dairy'},
+      {id: '123442', title: 'Alcohol'},
+      {id: '12342141241', title: 'Dairy'},
+      {id: '124141', title: 'Alcohol'},
+      {id: '4123424245', title: 'Dairy'},
+      {id: '21441', title: 'Alcohol'},
+      {id: '1241241', title: 'Dairy'},
+      {id: '21414', title: 'Alcohol'},
     ]
   }
 

@@ -18,4 +18,5 @@ export {default as Forward} from './Forward'
 export {default as Edit} from './Edit'
 export {default as TextWithSubheading} from './TextWithSubheading'
 export {default as Confirm} from './Confirm'
+export {default as Icon} from './Icon'
 
