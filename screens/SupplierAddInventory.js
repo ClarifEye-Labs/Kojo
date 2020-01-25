@@ -8,7 +8,12 @@ import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import { RNS3 } from 'react-native-aws3'
+import awsConfig from '../config/aws'
 import * as Animatable from 'react-native-animatable'
+
+
+
+
 
 
 
@@ -175,26 +180,18 @@ class SupplierAddInventoryScreen extends Component {
 
     const file = {
       uri: this.state.imageUri,
-      name: this.state.inventoryName,
+      name: this.state.inventoryName + ".png",
       type: 'image/png'
     }
-    const config = {
-      keyPrefix: 's3/',
-      bucket: 'testbuckettutoriall',
-      region: 'us-east-1',
-      accessKey: 'AKIA2QICFMTIIBYNRIAN',
-      secretKey: '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',
-      successActionStatus: 201
-    }
 
-    RNS3.put(file, config)
+    RNS3.put(file, awsConfig)
     .then(
       (response)=>{
-        console.log(response)
+        console.log(response.headers.Location)
       }
     )
-    // var ref = firebase.storage().ref().child("images/" + this.state.inventoryName);
-    // return ref.put(blob);
+    // var storage = firebase.storage()
+    // // return ref.put(blob);
     
   }
 
@@ -548,7 +545,8 @@ class SupplierAddInventoryScreen extends Component {
       categoryInputContainer,
       categoryContainer,
       categoryTextStyle,
-      inputContainerStyle
+      inputContainerStyle,
+      UploadButtonStyle
     } = styles
 
     const screen = (
@@ -598,12 +596,13 @@ class SupplierAddInventoryScreen extends Component {
 
 
 
-      {/* <Button 
+      <Button 
       title={strings.inventoryUploadImage}
       textColor={colors.colorAccent}
       onPress = {()=> {this.setState({showImagePicker:true})}}
-      style= />
-      {renderImagePicker()} */}
+      style = {UploadButtonStyle}
+      />
+      {renderImagePicker()}
       
       {/* <Button 
         title={strings.addInventoryText}
@@ -625,6 +624,13 @@ const styles = StyleSheet.create({
   },
   backButtonStyle: {
     ...commonStyling.backButtonStyling
+  },
+  UploadButtonStyle:{
+    width: '50%',
+    backgroundColor: colors.colorPrimary,
+    marginTop: dimens.screenSafeUpperNotchDistance,
+    marginLeft: dimens.screenHorizontalMargin
+
   },
   headingContainerStyle:{
     width: '100%',
