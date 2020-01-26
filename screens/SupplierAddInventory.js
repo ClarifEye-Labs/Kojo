@@ -31,7 +31,8 @@ class SupplierAddInventoryScreen extends Component {
       showCategoryModal: false,
       showAddCategorySection: false,
       categorySelected: undefined,
-      categoryTyped: ''
+      categoryTyped: '',
+      showCategoryError: null
     }
   }
 
@@ -162,7 +163,8 @@ class SupplierAddInventoryScreen extends Component {
 
   closeCategoryModal = () => {
     this.setState({
-      showCategoryModal: false
+      showCategoryModal: false,
+      showCategoryError: null
     })
   }
 
@@ -254,6 +256,10 @@ class SupplierAddInventoryScreen extends Component {
       flatListStyle: {
         width: '100%',
         paddingBottom: 20,
+      },
+      categoryError: {
+        color: colors.errorRed,
+        fontFamily: customFonts.regular
       }
     }
 
@@ -278,6 +284,15 @@ class SupplierAddInventoryScreen extends Component {
               <Text style={styles.headingStyle}>Choose Category</Text>
             </View>
 
+            {/*Error checking for category type selection */}
+
+            {this.state.showCategoryError ?
+            <View style={styles.categoryError}>
+            <Text style={styles.categoryError}>Please select a category</Text>
+            </View>
+            : null
+            }
+
             {/* this is add section, hidden buy default */}
 
             {this.state.showAddCategorySection
@@ -296,6 +311,8 @@ class SupplierAddInventoryScreen extends Component {
 
             {/* pick category section  */}
             <View style={styles.pickCategoryContainer}>
+               
+
               <Text style={styles.sectionHeading}>PICK</Text>
               <View
                 style={styles.categoryListContainer}>
@@ -318,8 +335,23 @@ class SupplierAddInventoryScreen extends Component {
   }
 
   confirmInventoryCategory = () => {
-    if (this.state.categorySelected.item.id === 'other') {
+
+    if(this.state.categorySelected == null)
+    {
+      this.setState({
+        showCategoryError:true
+      })
+    }
+
+    else if (this.state.categorySelected.item.id === 'other') {
       //then check for empty category entered 
+      if(this.state.categorySelected.item.title === 'Other')
+      {
+        this.setState({
+          showCategoryError:true
+        })
+      }
+
       console.log(this.state.categoryTyped)
     } else {
       console.log(this.state.categorySelected)
@@ -370,6 +402,7 @@ class SupplierAddInventoryScreen extends Component {
   selectInventoryCategoryItem = (itemObject) => {
     console.log("TCL: selectInventoryCategoryItem -> itemObject", itemObject)
     if (itemObject.item.id === 'other') {
+      console.log(itemObject)
       this.setState({
         showAddCategorySection: true,
         categorySelected: itemObject,
@@ -566,6 +599,16 @@ class SupplierAddInventoryScreen extends Component {
             autoCapitalize='words'
             subHeadingStyle={subHeadingStyle} />
 
+          <InputWithSubHeading 
+            containerStyle={inputContainerStyle}
+            secureTextEntry={false}
+            placeholder = {'Enter Price Per Unit.'}
+            subHeadingTitle={'Price Per Unit'}
+            autoCorrect={false}
+            onChangeText={this.setInventoryPrice}
+            autoCapitalize='words'
+            subHeadingStyle={subHeadingStyle} />
+
         </View>
 
         <View style={addImageContainer}>
@@ -584,7 +627,7 @@ class SupplierAddInventoryScreen extends Component {
         </View>
 
         {renderImagePicker()}
-        
+
         <View style={buttonContainer}>
           <Button   
             title={strings.addInventoryText} 
