@@ -1,5 +1,5 @@
 import React, {useRef, useEffect, Component} from 'react'
-import { View, StyleSheet, Text, TouchableOpacity, Modal, Alert, Picker, TouchableWithoutFeedback, FlatList } from 'react-native'
+import { View, StyleSheet, Text, TouchableOpacity, Modal, Alert, Picker, TouchableWithoutFeedback, FlatList, ImageBackground, Image} from 'react-native'
 import { Back, Heading, InputWithSubHeading, Cross, Button, DropDownWithSubHeading, Icon } from '../Components'
 import { dimens, colors, strings, customFonts} from '../constants'
 import { commonStyling } from '../common' 
@@ -21,7 +21,7 @@ class SupplierAddInventoryScreen extends Component {
       inventoryName: '',
       quantityAvailable: '',
       pricePerUnit: '',
-      imageUri: '',
+      imageUri: null,
       inventoryAddSuccess: false,
       showImagePicker: false,
       showInventoryTypePicker: false,
@@ -556,7 +556,6 @@ class SupplierAddInventoryScreen extends Component {
 
           {this.getCategoryModal()}
 
-          
           <InputWithSubHeading 
             containerStyle={inputContainerStyle}
             secureTextEntry={false}
@@ -567,17 +566,20 @@ class SupplierAddInventoryScreen extends Component {
             autoCapitalize='words'
             subHeadingStyle={subHeadingStyle} />
 
-
-
-
         </View>
 
         <View style={addImageContainer}>
           <Text style={subHeadingStyle}>Add Image</Text>
           <View style={imageContainer}>  
-            <ImageBackground style={imageStyle} imageStyle={imageStyle}>
+            {this.state.imageUri!=null ? (
+              <ImageBackground style={imageStyle} imageStyle={imageStyle} source={{uri: this.state.imageUri}}>
               <Icon onPress={this.openImagePickerModal}nameIOS='ios-add' nameAndroid='md-add' size={60}/>
-            </ImageBackground>
+              </ImageBackground>
+            ) : (
+              <ImageBackground style={imageStyle} imageStyle={imageStyle}>
+              <Icon onPress={this.openImagePickerModal}nameIOS='ios-add' nameAndroid='md-add' size={60}/>
+              </ImageBackground>
+            )}
           </View>
         </View>
 
