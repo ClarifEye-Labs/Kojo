@@ -46,35 +46,9 @@ class SupplierAddInventoryScreen extends Component {
 
   componentDidMount() {
     this.getPermissionAsync();
-    this.getInventoryTypes();
+    this.getInventoryCategories();
 
     }
-
-
-  getInventoryTypes = async () => {
-
-    let inventoryTypes = []
-    const firestore = firebase.firestore()
-    const inventoryTypeCollection = firestore.collection('product_type')
-    await inventoryTypeCollection
-    .get()
-    .then(
-      function(querySnapShot){
-        querySnapShot.forEach(function(doc){
-          inventoryTypes.push(doc.data().type)
-        })
-      }
-    )
-
-    inventoryTypes.push("Other")
-
-    this.setState({
-      inventoryCategories: inventoryTypes
-    })
-
-
-
-  }
 
 
   setCategoryTyped = (text) => {
@@ -336,7 +310,7 @@ class SupplierAddInventoryScreen extends Component {
                     style={styles.categoryListContainer}>                      
                     <FlatList
                       contentContainerStyle={styles.flatListStyle}
-                      data={this.getInventoryCategories()}
+                      data={this.state.inventoryCategories}
                       renderItem={item => this.InventoryCategoryItem(item)}
                       keyExtractor={ item => item.id }
                     />
@@ -418,32 +392,25 @@ class SupplierAddInventoryScreen extends Component {
     
   }
 
-  getInventoryCategories = () => {
-    return [
-      {id: 'other', title: 'Other'},
-      {id: 'Dairy', title: 'Dairy'},
-      {id: '1', title: 'Alcohol'},
-      {id: '2', title: 'Dairy'},
-      {id: '4', title: 'Alcohol'},
-      {id: '3', title: 'Dairy'},
-      {id: '42', title: 'Alcohol'},
-      {id: '23', title: 'Dairy'},
-      {id: '1234', title: 'Alcohol'},
-      {id: '123142', title: 'Dairy'},
-      {id: '12414512', title: 'Alcohol'},
-      {id: '312314', title: 'Dairy'},
-      {id: '2434534', title: 'Alcohol'},
-      {id: '14342114', title: 'Dairy'},
-      {id: '123424214', title: 'Alcohol'},
-      {id: '1234141', title: 'Dairy'},
-      {id: '123442', title: 'Alcohol'},
-      {id: '12342141241', title: 'Dairy'},
-      {id: '124141', title: 'Alcohol'},
-      {id: '4123424245', title: 'Dairy'},
-      {id: '21441', title: 'Alcohol'},
-      {id: '1241241', title: 'Dairy'},
-      {id: '21414', title: 'Alcohol'},
-    ]
+  getInventoryCategories = async() => {
+    
+    var inventoryCategoryList = [{'id' : 'other' , title : 'Other'}]
+    const inventoryCategoryCollection = firebase.firestore().collection('product_type')
+    await inventoryCategoryCollection
+    .get()
+    .then(function(querySnapShot) {
+      querySnapShot.forEach(function(doc) {
+        let categoryObject = {}
+        categoryObject.id = doc.id
+        categoryObject.title = doc.data().title
+        inventoryCategoryList.push(categoryObject)
+      })
+    })
+    
+    this.setState({
+      inventoryCategories : inventoryCategoryList
+    })
+
   }
 
   addInvetorytoFirestore = () => {
