@@ -54,7 +54,8 @@ const strings = {
   passwordsDoNotMatch: 'Passwords do not match',
   nameErrorMessage: 'Please enter your full name with no special characters.',
   emailErrorMessage: 'Please enter a properly formatted email address.',
-  passwordErrorMessage: 'Password must have at least 6 characters'
+  passwordErrorMessage: 'Password must have at least 6 characters',
+  add: 'Add'
 }
 
 export default strings
