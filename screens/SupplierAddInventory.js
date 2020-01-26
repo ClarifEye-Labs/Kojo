@@ -1,6 +1,6 @@
 import React, {useRef, useEffect, Component} from 'react'
 import { View, StyleSheet, Text, TouchableOpacity, Modal, Alert, Picker, TouchableWithoutFeedback, FlatList } from 'react-native'
-import { Back, Heading, InputWithSubHeading, Button, DropDownWithSubHeading, Icon } from '../Components'
+import { Back, Heading, InputWithSubHeading, Cross, Button, DropDownWithSubHeading, Icon } from '../Components'
 import { dimens, colors, strings, customFonts} from '../constants'
 import { commonStyling } from '../common' 
 import firebase from '../config/firebase'
@@ -118,7 +118,7 @@ class SupplierAddInventoryScreen extends Component {
     var result = null
     if(this.state.imagePickerValue == "library")
     {
-      result = await ImagePicker.launchImageLibraryAsync({
+        result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
         allowsEditing: true,
         aspect: [4, 3],
@@ -134,15 +134,9 @@ class SupplierAddInventoryScreen extends Component {
     }
 
 
-
-
     if(!result.cancelled) {
-        this.setState({imageUri: result.uri}, () => {this.uploadImageToAWS()
-            .then(()=>{Alert.alert("success")})
-            .catch((error)=>{
-                Alert.alert(error)
-            })
-        })
+        console.log(result.uri)
+        this.setState({imageUri: result.uri}, () => { Alert.alert("Image successfully selected")})
     }
 
   }
@@ -393,7 +387,7 @@ class SupplierAddInventoryScreen extends Component {
   }
 
   getInventoryCategories = async() => {
-    
+
     var inventoryCategoryList = [{'id' : 'other' , title : 'Other'}]
     const inventoryCategoryCollection = firebase.firestore().collection('product_type')
     await inventoryCategoryCollection
@@ -450,9 +444,6 @@ class SupplierAddInventoryScreen extends Component {
 
   updateImagePickerValue = (value) => {
 
-    this.setState({
-      showImagePicker: false
-    })
 
     if(value != "")
     {
@@ -492,14 +483,44 @@ class SupplierAddInventoryScreen extends Component {
     const renderImagePicker = () => {
       if(this.state.showImagePicker)
       {
-        return (
-          <Picker selectedValue = {this.state.imagePickerValue} onValueChange = {this.updateImagePickerValue}>
-          <Picker.Item label = "" value = "" />
-            <Picker.Item label = "Choose from library" value = "library" />
-            <Picker.Item label = "Click from camera" value = "camera" />
-          </Picker>
-  
-        );
+        const {
+            modalContentContainerStyle,
+            modalContainerStyle,
+            crossStyle,
+            textContainerModal,
+            headingModalStyle,
+            itemNameModal,  
+            deleteButtonModal,
+            cancelButtonModal
+          } = styles
+
+          return (
+            <Modal visible={this.state.showImagePicker}transparent={true} animationType='slide' onBackButtonPress={() => {this.setState({showImagePicker:false})}}>
+              <TouchableOpacity 
+                activeOpacity={1}  
+                onPressOut={() => {this.setState({showImagePicker:false})}} 
+                style={modalContainerStyle}>
+                <TouchableWithoutFeedback>
+                  <View style={modalContentContainerStyle}>
+                    <Cross style={crossStyle} onPress={() => {this.setState({showImagePicker:false})}} color={colors.grayBlue} size={42} />
+                    <View style={textContainerModal}>
+                      <Text style={headingModalStyle}>Choose upload option</Text>
+                    </View>
+                    <Button
+                        title='Upload from library'
+                        textColor={colors.colorAccent}
+                        onPress={() => {this.updateImagePickerValue('library')}}
+                        style={deleteButtonModal} />
+                    <Button
+                        title='Click from camera'
+                        textColor={colors.colorAccent}
+                        onPress={()=> {this.updateImagePickerValue('camera')}}
+                        style={cancelButtonModal} />
+                  </View>
+                </TouchableWithoutFeedback>
+              </TouchableOpacity>
+            </Modal>
+    )
       }
     }
   
@@ -536,20 +557,11 @@ class SupplierAddInventoryScreen extends Component {
 
           {this.getCategoryModal()}
 
-          <InputWithSubHeading 
-            containerStyle={inputContainerStyle}
-            secureTextEntry={false}
-            placeholder = {'Enter Item Title.'}
-            subHeadingTitle={strings.inventoryDocumentName}
-            autoCorrect={false}
-            onChangeText={this.setInventoryName}
-            autoCapitalize='words'
-            subHeadingStyle={subHeadingStyle}/>
           
           <InputWithSubHeading 
             containerStyle={inputContainerStyle}
             secureTextEntry={false}
-            placeholder = {'Enter Item Name.'}
+            placeholder = {'Enter Item Title.'}
             subHeadingTitle={strings.inventoryDocumentName}
             autoCorrect={false}
             onChangeText={this.setInventoryName}
@@ -623,6 +635,63 @@ const styles = StyleSheet.create({
     color: colors.grayTransluscent,
     fontFamily: customFonts.regular,
     fontSize: dimens.inputTextFontSize
+  },
+  modalContainerStyle: {
+    flex: 1,
+    justifyContent: 'center', 
+    backgroundColor: colors.blackTransluscent, 
+    alignItems: 'center'
+  },
+  modalContentContainerStyle: {
+    width: 320,
+    height: 300,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.colorAccent,
+    borderRadius: dimens.defaultBorderRadius
+  },
+  crossStyle:{
+    position: 'absolute',
+    top: 10,
+    right: 20,
+  },
+  textContainerModal: {
+    flexDirection: 'column',
+    height: 100,
+    marginTop: 10,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  headingModalStyle: {
+    fontSize: 23,
+    textAlign: 'center',
+    fontFamily: customFonts.semiBold,
+    color: colors.grayBlue
+  },
+  itemNameModal: {
+    fontSize: 23,
+    width: 290,
+    textAlign: 'center',
+    fontFamily: customFonts.semiBold,
+    color: colors.colorPrimary,
+    marginTop: 8
+  },
+  modalButtonContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  deleteButtonModal: {
+    width: 250,
+    marginTop: 20,
+    height: dimens.buttonHeight,
+    backgroundColor: colors.deleteRed
+  },
+  cancelButtonModal: {
+    width: 250,
+    marginTop: 10,
+    height: dimens.buttonHeight,
+    backgroundColor: colors.facebookBlue
   },
   inputContainerStyle: {
     marginTop: 18
