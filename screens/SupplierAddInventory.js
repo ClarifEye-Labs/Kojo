@@ -36,7 +36,8 @@ class SupplierAddInventoryScreen extends Component {
       showLoadingDialog: false,
       submitButtonClicked: false,
       inventoryTitleError: null,
-      pricePerUnitError: null
+      pricePerUnitError: null,
+      inventoryCategorySelectionError: null
     }
   }
 
@@ -107,19 +108,23 @@ class SupplierAddInventoryScreen extends Component {
 
     const errors = {
       inventoryTitle: {},
-      pricePerUnit: {}
+      pricePerUnit: {},
+      inventoryCategorySelection: {}
     }
 
     errors.inventoryTitle = this.performInventoryTitleValidation(inventoryName)
     errors.pricePerUnit = this.performPricePerUnitValidation(pricePerUnit)
+    errors.inventoryCategorySelection = this.performInventoryCategorySelectionValidation(inventoryType)
 
     this.setState({
       inventoryTitleError: errors.inventoryTitle.errorReason,
-      pricePerUnitError: errors.pricePerUnit.errorReason
+      pricePerUnitError: errors.pricePerUnit.errorReason,
+      inventoryCategorySelectionError: errors.inventoryCategorySelection.errorReason
     })
 
-    if( !errors.inventoryTitle.errorStatus && !errors.pricePerUnit.errorStatus){
+    if( !errors.inventoryTitle.errorStatus && !errors.pricePerUnit.errorStatus && !errors.inventoryCategorySelection.errorStatus){
       //Do Something
+
     }else{
       this.setState({
         showLoadingDialog: false,
@@ -156,7 +161,7 @@ class SupplierAddInventoryScreen extends Component {
 
     if (pricePerUnit.length === 0) {
       error.errorStatus = true
-      error.errorReason = strings.pricePerUnitErrorMessage
+      error.errorReason = strings.pricePerUnitCannotBeEmpty
       return error
     }
 
@@ -167,6 +172,20 @@ class SupplierAddInventoryScreen extends Component {
 
     return error
 
+  }
+
+  performInventoryCategorySelectionValidation = (inventoryType) => {
+    var error = {
+      errorStatus: false,
+      errorReason: null
+    }
+
+    if (inventoryType.length === 0) {
+      error.errorStatus = true
+      error.errorReason = strings.inventoryCategoryCannotBeEmpty
+    }
+
+    return error
   }
 
   getPermissionAsync = async () => {
@@ -334,7 +353,21 @@ class SupplierAddInventoryScreen extends Component {
       categoryError: {
         color: colors.errorRed,
         fontFamily: customFonts.regular
+      },
+      errorStyle: {
+        marginTop: 8
+      },
+      subTextStyle: {
+        fontSize: 13,
+        fontFamily: customFonts.regular
       }
+
+    }
+
+    const subHeadingErrorStyling = {
+      ...styles.errorStyle,
+      ...styles.subTextStyle,
+      color: colors.errorRed
     }
 
     return (
@@ -355,6 +388,7 @@ class SupplierAddInventoryScreen extends Component {
             </TouchableOpacity>
 
             <View style={styles.headingContainer}>
+            
               <Text style={styles.headingStyle}>Choose Category</Text>
             </View>
 
@@ -433,9 +467,10 @@ class SupplierAddInventoryScreen extends Component {
       console.log(this.state.categoryTyped)
     } else {
       console.log(this.state.categorySelected)
+      this.closeCategoryModal()
     }
 
-    this.closeCategoryModal()
+    
   }
 
   InventoryCategoryItem = (toRenderItem) => {
@@ -599,7 +634,8 @@ class SupplierAddInventoryScreen extends Component {
             headingModalStyle,
             itemNameModal,  
             deleteButtonModal,
-            cancelButtonModal
+            cancelButtonModal,
+            
           } = styles
 
           return (
@@ -647,8 +683,16 @@ class SupplierAddInventoryScreen extends Component {
       imageStyle,
       addButtonStyle,
       buttonContainer,
-      quantityContainer
+      quantityContainer,
+      errorStyle,
+      subTextStyle
     } = styles
+
+    const subHeadingErrorStyling = {
+      ...subTextStyle,
+      ...errorStyle,
+      color: colors.errorRed
+    }
 
     const screen = (
       <View style={mainContainer}>
@@ -663,6 +707,9 @@ class SupplierAddInventoryScreen extends Component {
         <View style={allInputsContainer}>
           <View style={categoryContainer}>
             <Text style={subHeadingStyle}>Inventory Category</Text>
+            {this.state.inventoryCategorySelectionError
+            ? <Text style={subHeadingErrorStyling}>{this.state.inventoryCategorySelectionError}</Text>
+            : null }
             <TouchableOpacity style={categoryInputContainer} onPress={this.openCategoryModal}>
               <Text style={categoryTextStyle}>Touch to add category</Text>
             </TouchableOpacity>
@@ -869,6 +916,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
+  errorStyle: {
+    marginTop: 8
+  },
+  subTextStyle: {
+    fontSize: 13,
+    fontFamily: customFonts.regular
+  }
 
 
 })
