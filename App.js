@@ -17,22 +17,25 @@ import SupplierInventoryScreen from './screens/SupplierInventoryScreen';
 import SupplierClientsScreen from './screens/SupplierClientsScreen';
 import SupplierAddInventoryScreen from './screens/SupplierAddInventory';
 import EditItemScreen from './screens/EditItemScreen'
+import ForgotPasswordScreen from './screens/ForgotPasswordScreen';
+import screens from './constants/screens';
 
 const AppNavigator = createStackNavigator({
-LoginScreen: LoginScreen,
-WelcomeScreen: WelcomeScreen,
-RegistrationScreen: RegistrationScreen,
-SupplierWelcomeScreen: SupplierWelcomeScreen,
-EmailScreen: EmailScreen,
-SupplierRestaurantScreen: SupplierRestaurantScreen,
-SupplierInventoryScreen: SupplierInventoryScreen,
-SupplierClientsScreen: SupplierClientsScreen,
-InventoryItemScreen: InventoryItemScreen,
-SupplierAddInventoryScreen: SupplierAddInventoryScreen,
-EditItemScreen: EditItemScreen
+  LoginScreen: LoginScreen,
+  WelcomeScreen: WelcomeScreen,
+  RegistrationScreen: RegistrationScreen,
+  SupplierWelcomeScreen: SupplierWelcomeScreen,
+  EmailScreen: EmailScreen,
+  SupplierRestaurantScreen: SupplierRestaurantScreen,
+  SupplierInventoryScreen: SupplierInventoryScreen,
+  SupplierClientsScreen: SupplierClientsScreen,
+  InventoryItemScreen: InventoryItemScreen,
+  SupplierAddInventoryScreen: SupplierAddInventoryScreen,
+  ForgotPasswordScreen: ForgotPasswordScreen,
+  EditItemScreen: EditItemScreen
 },
 {
-initialRouteName: 'SupplierAddInventoryScreen'
+  initialRouteName: screens.ForgotPasswordScreen
 })
 
 
@@ -108,19 +111,11 @@ class App extends Component {
       navigation
     } = this.props
 
-    if(this.state.isAppReady)
-    {
-      return (
-        <Provider store = {store}>
-          <AppContainer  />
-        </Provider>
-      )
-
-    }
-
-    else {
-      return null
-    }
+    { return this.state.isAppReady
+    ? <Provider store = {store}>
+        <AppContainer  />
+      </Provider>
+    : null }
 
   }
 }
@@ -134,7 +129,7 @@ const styles = StyleSheet.create({
 })
 
 App.navigationOptions = {
-  title: 'Title'
+  header: null
 }
 
 export default App

@@ -4,6 +4,7 @@ import { Back, Heading, InputWithSubHeading, Button } from '../Components'
 import { dimens, colors, strings} from '../constants'
 import { commonStyling } from '../common'
 import firebase from '../config/firebase'
+import screens from '../constants/screens'
 
 class RegistrationScreen extends React.Component { 
   constructor(props){
@@ -211,7 +212,7 @@ class RegistrationScreen extends React.Component {
     console.log("TCL: successfulRegistration -> user", user)
     this.setState({
       showLoadingDialog: false
-    }, () => this.state.navigation.navigate('SupplierRestaurantScreen'))
+    }, () => this.state.navigation.navigate(screens.SupplierRestaurantScreen))
     
   }
 
@@ -321,7 +322,7 @@ class RegistrationScreen extends React.Component {
           {strings.registeringWithKojoHeadline}
         </Text>
         <View style={tandcContainer}>
-          <TouchableOpacity onPress={() => navigation.navigate('SupplierRestaurantScreen')}>
+          <TouchableOpacity onPress={() => navigation.navigate(screens.SupplierRestaurantScreen)}>
             <Text style={tandcText}> {strings.termsAndConditions} </Text>
           </TouchableOpacity>
           <Text style={termsStyle}> {strings.and} </Text>

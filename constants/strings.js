@@ -55,7 +55,9 @@ const strings = {
   nameErrorMessage: 'Please enter your full name with no special characters.',
   emailErrorMessage: 'Please enter a properly formatted email address.',
   passwordErrorMessage: 'Password must have at least 6 characters',
-  add: 'Add'
+  pleaseTryAgain: 'Please try again!',
+  enterYourEmailForgotPassword: 'Enter the email used for registration : ',
+  sendEmail: 'Send Email'
 }
 
 export default strings

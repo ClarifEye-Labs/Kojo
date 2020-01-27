@@ -14,10 +14,12 @@ import {
   SocialButton, 
   InputWithSubHeading,
   Back} from '../Components'
+  
 import { dimens, colors, customFonts, strings } from '../constants'
 import { commonStyling } from '../common'
 import facebookConstants from '../config/facebook';
 import firebase from '../config/firebase'
+import screens from '../constants/screens';
 
 class LoginScreen extends React.Component { 
   constructor(props){
@@ -54,7 +56,6 @@ class LoginScreen extends React.Component {
     } = this.props
 
     const screen =
-  
       <KeyboardAvoidingView behavior="padding" enabled style={mainContainer} >
         <ScrollView style={mainContainer}>
 
@@ -118,7 +119,7 @@ class LoginScreen extends React.Component {
            textInputContainerStyle={textInputContainer} />
  
  
-         <TouchableOpacity onPress={()=>navigation.navigate('EmailScreen')}>
+         <TouchableOpacity onPress={()=>navigation.navigate(screens.ForgotPasswordScreen)}>
            <Text style={forgotPasswordText}> {strings.forgotPassword} </Text>
          </TouchableOpacity>
  
@@ -130,7 +131,7 @@ class LoginScreen extends React.Component {
  
           <View style={registerContainer}>
          <Text style={registerTextSubtext}>{strings.dontHaveAnAccount}</Text>
-         <TouchableOpacity onPress={()=>navigation.navigate('RegistrationScreen')}>
+         <TouchableOpacity onPress={()=>navigation.navigate(screens.RegistrationScreen)}>
            <Text style={registerText}> {strings.registerNow}</Text>
          </TouchableOpacity>
        </View>
@@ -166,7 +167,8 @@ async function loginWithFacebook(){
     return Promise.resolve({type: 'success'});
 
   } else {
-    alert(type)
+    console.log(type)
+    alert(strings.pleaseTryAgain)
   } 
 }
 

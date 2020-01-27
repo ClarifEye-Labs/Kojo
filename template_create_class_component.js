@@ -3,6 +3,7 @@ import { View, StyleSheet, Text} from 'react-native'
 import { } from '../Components'
 import { dimens, colors } from '../constants'
 import { commonStyling } from '../common' 
+import {PropTypes} from 'prop-types'
 
 class Name extends Component {
   constructor(props){
@@ -39,4 +40,8 @@ Name.navigationOptions = {
   title: 'Title'
 }
 
-export default Name
+Name.propTypes = {
+  navigation: PropTypes.object
+}
+
+export default N
