@@ -18,6 +18,7 @@ import SupplierClientsScreen from './screens/SupplierClientsScreen';
 import SupplierAddInventoryScreen from './screens/SupplierAddInventory';
 import EditItemScreen from './screens/EditItemScreen'
 import ForgotPasswordScreen from './screens/ForgotPasswordScreen';
+import SplashScreen from './screens/SplashScreen'
 import screens from './constants/screens';
 
 const AppNavigator = createStackNavigator({
@@ -32,10 +33,11 @@ const AppNavigator = createStackNavigator({
   InventoryItemScreen: InventoryItemScreen,
   SupplierAddInventoryScreen: SupplierAddInventoryScreen,
   ForgotPasswordScreen: ForgotPasswordScreen,
-  EditItemScreen: EditItemScreen
+  EditItemScreen: EditItemScreen,
+  SplashScreen: SplashScreen
 },
 {
-  initialRouteName: screens.SupplierAddInventoryScreen
+  initialRouteName: screens.SplashScreen
 })
 
 

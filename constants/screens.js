@@ -10,7 +10,8 @@ const screens = {
   InventoryItemScreen: 'InventoryItemScreen',
   SupplierAddInventoryScreen: 'SupplierAddInventoryScreen',
   ForgotPasswordScreen: 'ForgotPasswordScreen',
-  EditItemScreen: 'EditItemScreen'
+  EditItemScreen: 'EditItemScreen',
+  SplashScreen: 'SplashScreen'
 }
 
 export default screens;
