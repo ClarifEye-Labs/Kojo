@@ -32,7 +32,11 @@ class SupplierAddInventoryScreen extends Component {
       showAddCategorySection: false,
       categorySelected: undefined,
       categoryTyped: '',
-      showCategoryError: null
+      showCategoryError: null,
+      showLoadingDialog: false,
+      submitButtonClicked: false,
+      inventoryTitleError: null,
+      pricePerUnitError: null
     }
   }
 
@@ -89,10 +93,80 @@ class SupplierAddInventoryScreen extends Component {
   }
 
   submitButtonOnClick = async () => {
-    await this.addInvetorytoFirestore()
+
+    const {
+      inventoryType,
+      inventoryName,
+      pricePerUnit
+    } = this.state
+  
     this.setState({
-      inventoryAddSuccess: true
+      showLoadingDialog: true,
+      submitButtonClicked: true
+    })  
+
+    const errors = {
+      inventoryTitle: {},
+      pricePerUnit: {}
+    }
+
+    errors.inventoryTitle = this.performInventoryTitleValidation(inventoryName)
+    errors.pricePerUnit = this.performPricePerUnitValidation(pricePerUnit)
+
+    this.setState({
+      inventoryTitleError: errors.inventoryTitle.errorReason,
+      pricePerUnitError: errors.pricePerUnit.errorReason
     })
+
+    if( !errors.inventoryTitle.errorStatus && !errors.pricePerUnit.errorStatus){
+      //Do Something
+    }else{
+      this.setState({
+        showLoadingDialog: false,
+        submitButtonClicked: false
+      })
+    }
+    
+    // await this.addInvetorytoFirestore()
+    // this.setState({
+    //   inventoryAddSuccess: true
+    // })
+  }
+
+  performInventoryTitleValidation = (inventoryName) => {
+    var error = {
+      errorStatus: false,
+      errorReason: null
+    }
+
+    if (inventoryName.length === 0) {
+      error.errorStatus = true
+      error.errorReason = strings.inventoryTitleCannotBeEmpty
+    }
+
+    return error
+
+  }
+
+  performPricePerUnitValidation = (pricePerUnit) => {
+    var error = {
+      errorStatus: false,
+      errorReason: null
+    }
+
+    if (pricePerUnit.length === 0) {
+      error.errorStatus = true
+      error.errorReason = strings.pricePerUnitErrorMessage
+      return error
+    }
+
+    if(! /^\d+$/.test(pricePerUnit)) {
+      error.errorStatus = true
+      error.errorReason = strings.pricePerUnitErrorMessage
+    }
+
+    return error
+
   }
 
   getPermissionAsync = async () => {
@@ -305,7 +379,9 @@ class SupplierAddInventoryScreen extends Component {
                   subHeadingTitle={strings.inventoryDocumentCategory}
                   autoCorrect={false}
                   onChangeText={this.setCategoryTyped}
-                  autoCapitalize='words' />
+                  autoCapitalize='words'
+                  editable = {!this.state.submitButtonClicked}
+                  />
               </Animatable.View>
               : null}
 
@@ -336,6 +412,8 @@ class SupplierAddInventoryScreen extends Component {
 
   confirmInventoryCategory = () => {
 
+    
+
     if(this.state.categorySelected == null)
     {
       this.setState({
@@ -356,6 +434,8 @@ class SupplierAddInventoryScreen extends Component {
     } else {
       console.log(this.state.categorySelected)
     }
+
+    this.closeCategoryModal()
   }
 
   InventoryCategoryItem = (toRenderItem) => {
@@ -566,7 +646,8 @@ class SupplierAddInventoryScreen extends Component {
       imageContainer,
       imageStyle,
       addButtonStyle,
-      buttonContainer
+      buttonContainer,
+      quantityContainer
     } = styles
 
     const screen = (
@@ -597,7 +678,9 @@ class SupplierAddInventoryScreen extends Component {
             autoCorrect={false}
             onChangeText={this.setInventoryName}
             autoCapitalize='words'
-            subHeadingStyle={subHeadingStyle} />
+            subHeadingStyle={subHeadingStyle}
+            errorTitle = {this.state.inventoryTitleError}
+            errorStatus = {this.state.inventoryTitleError} />
 
           <InputWithSubHeading 
             containerStyle={inputContainerStyle}
@@ -607,7 +690,11 @@ class SupplierAddInventoryScreen extends Component {
             autoCorrect={false}
             onChangeText={this.setInventoryPrice}
             autoCapitalize='words'
-            subHeadingStyle={subHeadingStyle} />
+            subHeadingStyle={subHeadingStyle}
+            errorTitle = {this.state.pricePerUnitError}
+            errorStatus = {this.state.pricePerUnitError} />
+
+
 
         </View>
 
@@ -628,12 +715,16 @@ class SupplierAddInventoryScreen extends Component {
 
         {renderImagePicker()}
 
+
+
+
         <View style={buttonContainer}>
           <Button   
             title={strings.addInventoryText} 
             onPress={this.submitButtonOnClick}
             style={addButtonStyle}
-            textColor={colors.colorAccent} />
+            textColor={colors.colorAccent}
+            isLoading={this.state.showLoadingDialog} />
         </View>
        
 
@@ -777,7 +868,8 @@ const styles = StyleSheet.create({
     marginTop: 40,
     justifyContent: 'center',
     alignItems: 'center'
-  }
+  },
+
 
 })
 

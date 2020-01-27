@@ -55,7 +55,11 @@ const strings = {
   nameErrorMessage: 'Please enter your full name with no special characters.',
   emailErrorMessage: 'Please enter a properly formatted email address.',
   passwordErrorMessage: 'Password must have at least 6 characters',
+  inventoryTitleCannotBeEmpty: 'Inventory title cannot be empty',
+  pricePerUnitCannotBeEmpty: 'Price per unit cannot be empty',
+  pricePerUnitErrorMessage: 'Price per unit has to be a number.',
   add: 'Add'
+
 }
 
 export default strings
