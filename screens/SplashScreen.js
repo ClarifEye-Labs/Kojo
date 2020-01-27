@@ -4,13 +4,20 @@ import { LogoPlaceholder, Loading } from '../Components'
 import { dimens, colors, customFonts } from '../constants'
 import { commonStyling } from '../common'
 import { PropTypes } from 'prop-types'
+import screens from '../constants/screens';
 
 class SplashScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      name: 'SplashScreen'
+      name: 'SplashScreen',
+      navigation: props.navigation
     }
+  }
+
+
+  navigateToScreenLogic = () => {
+    setTimeout( () => this.state.navigation.navigate(screens.WelcomeScreen), 2000)
   }
 
   render() {
@@ -25,6 +32,9 @@ class SplashScreen extends Component {
     const {
       navigation
     } = this.props
+
+    this.navigateToScreenLogic()
+
     return (
       <ImageBackground
         style={mainContainer}
