@@ -28,7 +28,7 @@ class EmailScreen extends Component {
 
     const screen = 
     <View style={mainContainer}>
-      <Cross style={commonStyling.crossStyle} size={40} onPress={() => navigation.goBack()} />
+      <Cross style={commonStyling.crossStyle} size={50} onPress={() => navigation.goBack()} />
       <Image style={imageStyle} source={require('../assets/Onboarding/emailSent.png')}/>
       <View style={textContainer}>
         <Text style={mainText}>{strings.checkYourEmail}</Text>

@@ -61,7 +61,6 @@ class ForgotPasswordScreen extends Component {
   }
 
   uploadInfoToDatabase = () => {
-    console.log('Entering firebase')
     this.setState({
       buttonLoading: false
     }, () => {this.animation.play()})
