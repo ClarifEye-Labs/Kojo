@@ -66,7 +66,7 @@ const strings = {
   enterYourEmailForgotPassword: 'Enter the email used for registration : ',
   sendEmail: 'Send Email',
   sorryWeNeedPermissions: 'Sorry, we need camera roll permissions to make this work!',
-  chooseUploadImageOption: 'Choose image upload option'
+  chooseUploadImageOption: 'Choose Image Upload Option'
 }
 
 export default strings

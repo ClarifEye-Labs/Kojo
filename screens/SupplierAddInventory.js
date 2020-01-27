@@ -840,7 +840,7 @@ class SupplierAddInventoryScreen extends Component {
           style={modalContainerStyle}>
           <TouchableWithoutFeedback>
             <View style={modalContentContainerStyle}>
-              <Cross style={crossStyle} onPress={() => { this.setState({ showImagePicker: false }) }} color={colors.grayBlue} size={35} />
+              <Cross style={crossStyle} onPress={() => { this.setState({ showImagePicker: false }) }} color={colors.grayBlue} size={38} />
               <View style={textContainerModal}>
                 <Text style={headingModalStyle}>{strings.chooseUploadImageOption}</Text>
               </View>
@@ -964,6 +964,18 @@ class SupplierAddInventoryScreen extends Component {
             errorTitle={this.state.inventoryTitleError}
             errorStatus={this.state.inventoryTitleError} />
 
+          <View style={{ ...categoryContainer }}>
+            <Text style={subHeadingStyle}>Unit</Text>
+            {this.state.unitSelectionError
+              ? <Text style={subHeadingErrorStyling}>{this.state.inventoryCategorySelectionError}</Text>
+              : null}
+            <TouchableOpacity style={{...categoryInputContainer}} onPress={this.openUnitModal}>
+              <Text style={{...categoryTextStyle}}>{this.state.unitToRender}</Text>
+            </TouchableOpacity>
+          </View>
+
+          {this.getUnitModal()}
+
           <InputWithSubHeading
             containerStyle={inputContainerStyle}
             secureTextEntry={false}
@@ -976,17 +988,7 @@ class SupplierAddInventoryScreen extends Component {
             errorTitle={this.state.pricePerUnitError}
             errorStatus={this.state.pricePerUnitError} />
 
-          <View style={{ ...categoryContainer }}>
-            <Text style={subHeadingStyle}>Unit</Text>
-            {this.state.unitSelectionError
-              ? <Text style={subHeadingErrorStyling}>{this.state.inventoryCategorySelectionError}</Text>
-              : null}
-            <TouchableOpacity style={{...categoryInputContainer}} onPress={this.openUnitModal}>
-              <Text style={{...categoryTextStyle}}>{this.state.unitToRender}</Text>
-            </TouchableOpacity>
-          </View>
-
-          {this.getUnitModal()}
+         
 
 
         </View>
