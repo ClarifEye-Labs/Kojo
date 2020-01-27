@@ -6,8 +6,7 @@ import {
   TextInput
 } from 'react-native'
 import { dimens, colors, customFonts } from '../constants'
-import { Ionicons } from '@expo/vector-icons';
-import { commonStyling } from '../common'
+import { PropTypes } from 'prop-types'
 
 class InputWithSubHeading extends React.Component {
   constructor(props) {
@@ -70,8 +69,8 @@ class InputWithSubHeading extends React.Component {
         <View style={subHeadingContainerStyle}>
           <Text style={subHeadingStyling}>{subHeadingTitle}</Text>
           {errorTitle
-          ? <Text style={subHeadingErrorStyling}>{errorTitle}</Text>
-          : null }
+            ? <Text style={subHeadingErrorStyling}>{errorTitle}</Text>
+            : null}
         </View>
         <View style={inputContainerStyling}>
           <TextInput
@@ -84,7 +83,7 @@ class InputWithSubHeading extends React.Component {
             value={inputValue}
             keyboardType={keyboardType ? keyboardType : 'default'}
             autoCapitalize={autoCapitalize ? autoCapitalize : 'none'}
-            placeholderTextColor = {colors.grayTransluscent}
+            placeholderTextColor={colors.grayTransluscent}
             placeholder={placeholder} />
         </View>
       </View>
@@ -115,6 +114,25 @@ const styles = StyleSheet.create({
     marginTop: 8
   }
 })
+
+InputWithSubHeading.propTypes = {
+  secureTextEntry: PropTypes.bool,
+  placeholder: PropTypes.string,
+  subHeadingTitle: PropTypes.string,
+  subHeadingStyle: PropTypes.object,
+  textInputStyle: PropTypes.object,
+  textInputContainerStyle: PropTypes.object,
+  autoCompleteType: PropTypes.string,
+  autoCorrect: PropTypes.bool,
+  autoCapitalize: PropTypes.string,
+  errorStatus: PropTypes.bool,
+  onChangeText: PropTypes.func,
+  keyboardType: PropTypes.string,
+  containerStyle: PropTypes.object,
+  inputValue: PropTypes.string,
+  errorTitle: PropTypes.string,
+  editable: PropTypes.bool
+}
 
 export default InputWithSubHeading
 

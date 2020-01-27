@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, Component } from 'react'
-import { View, StyleSheet, Text, TouchableOpacity, Modal, Alert, Picker, TouchableWithoutFeedback, FlatList, ImageBackground, Image } from 'react-native'
+import { View, StyleSheet, Text, TouchableOpacity, Modal, Alert, ScrollView, TouchableWithoutFeedback, FlatList, ImageBackground, Image } from 'react-native'
 import { Back, Heading, InputWithSubHeading, Cross, Button, DropDownWithSubHeading, Icon } from '../Components'
 import { dimens, colors, strings, customFonts } from '../constants'
 import { commonStyling } from '../common'
@@ -23,13 +23,14 @@ class SupplierAddInventoryScreen extends Component {
       pricePerUnit: '',
       imageUri: null,
       inventoryAddSuccess: false,
-      showImagePicker: true,
+      showImagePicker: false,
       showInventoryTypePicker: false,
       imagePickerValue: null,
       inventoryTypePickerValue: null,
       inventoryCategories: null,
       showCategoryModal: false,
       showAddCategorySection: false,
+      showAddUnitSection: false,
       categorySelected: undefined,
       categoryTyped: '',
       showCategoryError: null,
@@ -38,7 +39,12 @@ class SupplierAddInventoryScreen extends Component {
       inventoryTitleError: null,
       pricePerUnitError: null,
       inventoryCategorySelectionError: null,
-      categoryNameToRender: 'Touch to add category'
+      unitSelectionError: null,
+      categoryNameToRender: 'Touch to add category',
+      unitToRender: 'Touch to add Unit',
+      showUnitModal: false,
+      showUnitError: false,
+      unitTyped: ''
     }
   }
 
@@ -49,18 +55,13 @@ class SupplierAddInventoryScreen extends Component {
   }
 
 
-  setCategoryTyped = (text) => {
-    this.setState({
-      categoryTyped: text
-    })
-  }
 
+  // ----------- STATE SETTERS ------------------
   setInventoryType = (typeIndex) => {
     this.setState({
       inventoryType: this.state.inventoryCategories[typeIndex]
     })
   }
-
 
   setInventoryDocumentName = (text) => {
     this.setState({
@@ -91,6 +92,9 @@ class SupplierAddInventoryScreen extends Component {
       pricePerUnit: text
     })
   }
+
+
+  // --------- VALIDATION AND ONCLICK LISTENERS -------------
 
   submitButtonOnClick = async () => {
     const {
@@ -196,70 +200,8 @@ class SupplierAddInventoryScreen extends Component {
   }
 
 
-  uploadImageOnClick = async () => {
-    let result = null
-    if (this.state.imagePickerValue == "library") {
-      result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1
-      });
-    } else if (this.state.imagePickerValue == "camera") {
-      result = await ImagePicker.launchCameraAsync();
+  // --------------- CATEGORY MODAL -----------------
 
-    }
-
-
-    if (!result.cancelled) {
-      this.setState({ imageUri: result.uri }, () => { Alert.alert("Image successfully selected") })
-    }
-
-  }
-
-  uploadImageToAWS = async () => {
-    const response = await fetch(this.state.imageUri);
-    const blob = await response.blob();
-
-    const file = {
-      uri: this.state.imageUri,
-      name: this.state.inventoryName + ".png",
-      type: 'image/png'
-    }
-
-    RNS3.put(file, awsConfig)
-      .then(
-        (response) => {
-          console.log(response.headers.Location)
-        }
-      )
-  }
-
-  openImagePickerModal = () => {
-    this.setState({
-      showImagePicker: true
-    })
-  }
-
-  closeImagePickerModal = () => {
-    this.setState({
-      showImagePicker: false
-    })
-  }
-
-
-  closeCategoryModal = () => {
-    this.setState({
-      showCategoryModal: false,
-      showCategoryError: null
-    })
-  }
-
-  openCategoryModal = () => {
-    this.setState({
-      showCategoryModal: true
-    })
-  }
 
   getCategoryModal = () => {
     const styles = {
@@ -441,6 +383,19 @@ class SupplierAddInventoryScreen extends Component {
     )
   }
 
+  openCategoryModal = () => {
+    this.setState({
+      showCategoryModal: true
+    })
+  }
+
+  closeCategoryModal = () => {
+    this.setState({
+      showCategoryModal: false,
+      showCategoryError: null
+    })
+  }
+
   confirmInventoryCategory = () => {
     const { categorySelected } = this.state
 
@@ -458,7 +413,7 @@ class SupplierAddInventoryScreen extends Component {
       } else {
         this.setState({
           showCategoryError: false
-        }, this.writeCategoryToDatabase() )
+        }, this.writeCategoryToDatabase())
       }
     } else {
       this.showCategoryOnUI(categorySelected.item.title)
@@ -467,9 +422,8 @@ class SupplierAddInventoryScreen extends Component {
 
   }
 
-
   writeCategoryToDatabase = () => {
-    const {categoryTyped} = this.state
+    const { categoryTyped } = this.state
 
     //write this category to database and refresh loadout of categories 
 
@@ -482,6 +436,48 @@ class SupplierAddInventoryScreen extends Component {
     this.setState({
       categoryNameToRender: categoryNameToShow
     })
+  }
+
+  selectInventoryCategoryItem = (itemObject) => {
+    if (itemObject.item.id === 'other') {
+      this.setState({
+        showAddCategorySection: true,
+        categorySelected: itemObject,
+      })
+    } else {
+      this.setState({
+        showAddCategorySection: false,
+        categorySelected: itemObject
+      })
+    }
+
+  }
+
+  setCategoryTyped = (text) => {
+    this.setState({
+      categoryTyped: text
+    })
+  }
+
+  getInventoryCategories = async () => {
+
+    var inventoryCategoryList = [{ 'id': 'other', title: 'Other' }]
+    const inventoryCategoryCollection = firebase.firestore().collection('product_type')
+    await inventoryCategoryCollection
+      .get()
+      .then(function (querySnapShot) {
+        querySnapShot.forEach(function (doc) {
+          let categoryObject = {}
+          categoryObject.id = doc.id
+          categoryObject.title = doc.data().title
+          inventoryCategoryList.push(categoryObject)
+        })
+      })
+
+    this.setState({
+      inventoryCategories: inventoryCategoryList
+    })
+
   }
 
 
@@ -526,96 +522,373 @@ class SupplierAddInventoryScreen extends Component {
   }
 
 
-  selectInventoryCategoryItem = (itemObject) => {
+  // -------------------   UNIT MODAL --------------------
+
+  getUnitModal = () => {
+    const styles = {
+      modalContainerStyle: {
+        flex: 1,
+        backgroundColor: colors.blackTransluscent,
+      },
+      mainContainer: {
+        flex: 1,
+        marginTop: 50,
+        flexDirection: 'column',
+        backgroundColor: '#f2f2f2',
+        borderTopLeftRadius: dimens.defaultBorderRadius,
+        borderTopRightRadius: dimens.defaultBorderRadius
+      },
+      headingContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row',
+        paddingTop: 20,
+        borderTopLeftRadius: dimens.defaultBorderRadius,
+        borderTopRightRadius: dimens.defaultBorderRadius,
+        zIndex: -1,
+        paddingBottom: 20,
+        backgroundColor: colors.whiteTransluscent,
+        borderBottomWidth: dimens.inputTextBorderWidth,
+        borderBottomColor: colors.grayTransluscent,
+      },
+      subHeadingButtons: {
+        color: colors.colorPrimary,
+        fontSize: 16,
+        fontFamily: customFonts.semiBold,
+      },
+      headingStyle: {
+        fontSize: 20,
+        color: colors.black,
+        fontFamily: customFonts.bold
+      },
+      cancelButton: {
+        position: 'absolute',
+        top: 22,
+        left: 20
+      },
+      setButton: {
+        position: 'absolute',
+        top: 22,
+        right: 20
+      },
+      addUnitContainer: {
+        width: '100%',
+        marginTop: 35,
+        height: 120,
+      },
+      pickUnitContainer: {
+        flex: 1,
+        overflow: 'hidden',
+        marginTop: 35,
+        marginBottom: 35
+      },
+      sectionHeading: {
+        color: colors.colorPrimary,
+        fontFamily: customFonts.semiBold,
+        fontSize: 18,
+        marginLeft: dimens.screenHorizontalMargin
+      },
+      inputContainerStyle: {
+        paddingHorizontal: dimens.screenHorizontalMargin,
+        paddingVertical: 18,
+        marginTop: 8,
+        backgroundColor: colors.whiteTransluscent,
+        borderTopWidth: dimens.inputTextBorderWidth,
+        borderTopColor: colors.grayTransluscent,
+        borderBottomWidth: dimens.inputTextBorderWidth,
+        borderBottomColor: colors.grayTransluscent,
+      },
+      unitListContainer: {
+        marginTop: 8,
+        paddingVertical: 8,
+        backgroundColor: colors.whiteTransluscent
+      },
+      flatListStyle: {
+        width: '100%',
+        paddingBottom: 20,
+      },
+      unitError: {
+        marginTop: 8,
+        width: '100%',
+        fontSize: 17,
+        fontFamily: customFonts.regular,
+        color: colors.errorRed,
+        textAlign: 'center'
+      },
+      errorStyle: {
+        marginTop: 8
+      },
+      subTextStyle: {
+        fontSize: 13,
+        fontFamily: customFonts.regular
+      },
+      subHeadingErrorStyling: {
+        marginTop: 8,
+        width: '100%',
+        fontSize: 17,
+        fontFamily: customFonts.regular,
+        color: colors.errorRed,
+        textAlign: 'center'
+      }
+
+    }
+    return (
+      <Modal
+        visible={this.state.showUnitModal}
+        transparent={true}
+        animationType='slide'
+        onBackButtonPress={this.closeUnitModal}>
+        <View style={styles.modalContainerStyle}>
+
+          <View style={styles.mainContainer}>
+            <TouchableOpacity style={styles.cancelButton} onPress={this.closeUnitModal}>
+              <Text style={styles.subHeadingButtons}>Cancel</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.setButton} onPress={this.confirmUnitSelection}>
+              <Text style={styles.subHeadingButtons}>Set</Text>
+            </TouchableOpacity>
+
+            <View style={styles.headingContainer}>
+              <Text style={styles.headingStyle}>Choose Unit</Text>
+            </View>
+
+            {/*Error checking for unit type selection */}
+
+            {this.state.showUnitError ?
+              <Text style={styles.unitError}>{strings.pleaseChooseUnit}</Text>
+              : null
+            }
+
+            {/* this is add section, hidden buy default */}
+
+            {this.state.showAddUnitSection
+              ? <Animatable.View animation='fadeIn' easing='ease-in-out' style={styles.addUnitContainer}>
+                <Text style={styles.sectionHeading}>ADD</Text>
+                <InputWithSubHeading
+                  containerStyle={styles.inputContainerStyle}
+                  secureTextEntry={false}
+                  placeholder={'Enter Unit'}
+                  subHeadingTitle={strings.inventoryDocumentUnit}
+                  autoCorrect={false}
+                  onChangeText={this.setUnitTyped}
+                  autoCapitalize='words'
+                  editable={!this.state.submitButtonClicked}
+                />
+              </Animatable.View>
+              : null}
+
+            {/* pick unit section  */}
+            <View style={styles.pickUnitContainer}>
+              <Text style={styles.sectionHeading}>PICK</Text>
+              <View
+                style={styles.unitListContainer}>
+                <FlatList
+                  contentContainerStyle={styles.flatListStyle}
+                  data={this.state.inventoryCategories}
+                  renderItem={item => this.UnitItem(item)}
+                  keyExtractor={item => item.id}
+                />
+              </View>
+            </View>
+
+          </View>
+
+
+
+        </View>
+      </Modal>)
+  }
+
+  confirmUnitSelection = () => {
+    const { unitSelected } = this.state
+    
+
+    if (unitSelected === null) {
+      this.setState({
+        showUnitError: true
+      })
+    } else if (unitSelected.item.id === 'other') {
+      const { unitTyped } = this.state
+      console.log("TCL: confirmUnitSelection -> unitTyped", unitTyped)
+
+      if (unitTyped.length === 0) {
+        this.setState({
+          showUnitError: true
+        })
+      } else {
+        this.setState({
+          showUnitError: false
+        }, this.writeUnitToDatabase())
+      }
+    } else {
+      this.showUnitOnUI(unitSelected.item.title)
+      this.closeUnitModal()
+    }
+  }
+
+  writeUnitToDatabase = () => {
+    const { unitTyped } = this.state
+
+    //write this category to database and refresh loadout of categories 
+
+    this.showUnitOnUI(unitTyped)
+    this.closeUnitModal()
+  }
+
+  showUnitOnUI = (unit) => {
+    this.setState({
+      unitToRender: unit
+    })
+  }
+
+  getUnits = async () => {
+
+  }
+
+  selectUnitItem = (itemObject) => {
     if (itemObject.item.id === 'other') {
       this.setState({
-        showAddCategorySection: true,
-        categorySelected: itemObject,
+        showAddUnitSection: true,
+        unitSelected: itemObject,
       })
     } else {
       this.setState({
-        showAddCategorySection: false,
-        categorySelected: itemObject
+        showAddUnitSection: false,
+        unitSelected: itemObject
       })
     }
-
   }
 
-  getInventoryCategories = async () => {
+  UnitItem = (toRenderItem) => {
+    const styles = {
+      eachUnitContainer: {
+        height: dimens.textInputHeight,
+        borderBottomWidth: dimens.inputTextBorderWidth,
+        borderBottomColor: colors.grayTransluscent,
+        borderBottomColor: colors.grayTransluscent,
+        borderBottomWidth: dimens.inputTextBorderWidth,
+        marginHorizontal: dimens.screenHorizontalMargin
+      },
+      iconStyle: {
+        marginLeft: 8,
+        marginRight: 8
+      },
+      contentContainerStyle: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+      }
+    }
 
-    var inventoryCategoryList = [{ 'id': 'other', title: 'Other' }]
-    const inventoryCategoryCollection = firebase.firestore().collection('product_type')
-    await inventoryCategoryCollection
-      .get()
-      .then(function (querySnapShot) {
-        querySnapShot.forEach(function (doc) {
-          let categoryObject = {}
-          categoryObject.id = doc.id
-          categoryObject.title = doc.data().title
-          inventoryCategoryList.push(categoryObject)
-        })
-      })
+    let toRenderTickIcon = false
+    if (this.state.unitSelected) {
+      toRenderTickIcon = this.state.unitSelected.item.id === toRenderItem.item.id
+    }
 
+    const component =
+      <View style={styles.eachUnitContainer}>
+        <TouchableOpacity style={styles.contentContainerStyle} onPress={() => this.selectUnitItem(toRenderItem)} >
+          {toRenderTickIcon
+            ? <Icon nameIOS='ios-checkmark' nameAndroid='md-checkmark' style={styles.iconStyle} />
+            : null}
+          <Text>{toRenderItem.item.title}</Text>
+        </TouchableOpacity>
+      </View>
+
+
+    return component
+  }
+
+  openUnitModal = () => {
     this.setState({
-      inventoryCategories: inventoryCategoryList
+      showUnitModal: true
     })
-
   }
 
-  addInvetorytoFirestore = () => {
+  closeUnitModal = () => {
+    this.setState({
+      showUnitModal: false
+    })
+  }
+
+  setUnitTyped = (text) => {
+    this.setState({
+      unitTyped: text
+    })
+  } 
+
+  // ----------------- IMAGE MODAL -------------------------
+
+  getImageModal = () => {
     const {
-      inventoryType,
-      documentName,
-      inventoryName,
-      quantityAvailable,
-      pricePerUnit
-    } = this.state
+      modalContentContainerStyle,
+      modalContainerStyle,
+      crossStyle,
+      textContainerModal,
+      headingModalStyle,
+      uploadButtonModal: deleteButtonModal,
+      clickButtonModal: cancelButtonModal,
+      modalButtonContainer
+    } = styles
 
-    const inventoryObject = {
-      name: inventoryName,
-      price_per_unit: pricePerUnit,
-      quantity_available: quantityAvailable,
-      type: inventoryType
-    }
+    return (
+      <Modal visible={this.state.showImagePicker} transparent={true} animationType='slide' onBackButtonPress={() => { this.setState({ showImagePicker: false }) }}>
+        <TouchableOpacity
+          activeOpacity={1}
+          onPressOut={() => { this.setState({ showImagePicker: false }) }}
+          style={modalContainerStyle}>
+          <TouchableWithoutFeedback>
+            <View style={modalContentContainerStyle}>
+              <Cross style={crossStyle} onPress={() => { this.setState({ showImagePicker: false }) }} color={colors.grayBlue} size={35} />
+              <View style={textContainerModal}>
+                <Text style={headingModalStyle}>{strings.chooseUploadImageOption}</Text>
+              </View>
+              <View style={modalButtonContainer}>
+                <Button
+                  title='Upload from library'
+                  textColor={colors.colorAccent}
+                  onPress={() => { this.updateImagePickerValue('library') }}
+                  style={deleteButtonModal} />
+                <Button
+                  title='Click from camera'
+                  textColor={colors.colorAccent}
+                  onPress={() => { this.updateImagePickerValue('camera') }}
+                  style={cancelButtonModal} />
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </TouchableOpacity>
+      </Modal>
+    )
+  }
 
-    const firestore = firebase.firestore()
+  openImagePickerModal = () => {
+    this.setState({
+      showImagePicker: true
+    })
+  }
 
-    firestore
-      .collection("products")
-      .doc(documentName)
-      .set(inventoryObject, { merge: true })
-
-    const inventoryReference = "/products/" + documentName
-
-    firestore
-      .collection("suppliers")
-      .doc("carlsberg") //Will be dynamic based on the logged in user
-      .update({
-        inventory: firebase.firestore.FieldValue.arrayUnion(firebase.firestore().doc(inventoryReference))
-      })
-
-
+  closeImagePickerModal = () => {
+    this.setState({
+      showImagePicker: false
+    })
   }
 
   updateImagePickerValue = (value) => {
-
-
-    if (value != "") {
+    if (value !== "") {
       this.setState({
         imagePickerValue: value,
       }, () => { this.uploadImageOnClick() })
-
     }
-
   }
 
   updateInventoryTypePickerValue = (value) => {
-
     this.setState({
       showInventoryTypePicker: false
     })
 
-    if (value != "") {
+    if (value !== "") {
       this.setState({
         inventoryTypePickerValue: value
       })
@@ -625,57 +898,12 @@ class SupplierAddInventoryScreen extends Component {
 
 
 
+  // ---------------- MAIN SCREEN --------------------------
 
   render() {
     const {
       navigation
     } = this.props
-
-    const renderImagePicker = () => {
-      if (this.state.showImagePicker) {
-        const {
-          modalContentContainerStyle,
-          modalContainerStyle,
-          crossStyle,
-          textContainerModal,
-          headingModalStyle,
-          uploadButtonModal: deleteButtonModal,
-          clickButtonModal: cancelButtonModal,
-          modalButtonContainer
-        } = styles
-
-        return (
-          <Modal visible={this.state.showImagePicker} transparent={true} animationType='slide' onBackButtonPress={() => { this.setState({ showImagePicker: false }) }}>
-            <TouchableOpacity
-              activeOpacity={1}
-              onPressOut={() => { this.setState({ showImagePicker: false }) }}
-              style={modalContainerStyle}>
-              <TouchableWithoutFeedback>
-                <View style={modalContentContainerStyle}>
-                  <Cross style={crossStyle} onPress={() => { this.setState({ showImagePicker: false }) }} color={colors.grayBlue} size={35} />
-                  <View style={textContainerModal}>
-                    <Text style={headingModalStyle}>{strings.chooseUploadImageOption}</Text>
-                  </View>
-                  <View style={modalButtonContainer}>
-                    <Button
-                      title='Upload from library'
-                      textColor={colors.colorAccent}
-                      onPress={() => { this.updateImagePickerValue('library') }}
-                      style={deleteButtonModal} />
-                    <Button
-                      title='Click from camera'
-                      textColor={colors.colorAccent}
-                      onPress={() => { this.updateImagePickerValue('camera') }}
-                      style={cancelButtonModal} />
-                  </View>
-                </View>
-              </TouchableWithoutFeedback>
-            </TouchableOpacity>
-          </Modal>
-        )
-      }
-    }
-
 
     const {
       mainContainer,
@@ -702,7 +930,7 @@ class SupplierAddInventoryScreen extends Component {
     }
 
     const screen = (
-      <View style={mainContainer}>
+      <ScrollView style={mainContainer}>
         <Back
           style={{ ...commonStyling.backButtonStyling }}
           onPress={() => navigation.goBack()} />
@@ -739,14 +967,27 @@ class SupplierAddInventoryScreen extends Component {
           <InputWithSubHeading
             containerStyle={inputContainerStyle}
             secureTextEntry={false}
-            placeholder={'Enter Price Per Unit.'}
-            subHeadingTitle={'Price Per Unit'}
+            placeholder={'Enter Price'}
+            subHeadingTitle={'Price'}
             autoCorrect={false}
+            keyboardType='number-pad'
             onChangeText={this.setInventoryPrice}
-            autoCapitalize='words'
             subHeadingStyle={subHeadingStyle}
             errorTitle={this.state.pricePerUnitError}
             errorStatus={this.state.pricePerUnitError} />
+
+          <View style={{ ...categoryContainer }}>
+            <Text style={subHeadingStyle}>Unit</Text>
+            {this.state.unitSelectionError
+              ? <Text style={subHeadingErrorStyling}>{this.state.inventoryCategorySelectionError}</Text>
+              : null}
+            <TouchableOpacity style={{...categoryInputContainer}} onPress={this.openUnitModal}>
+              <Text style={{...categoryTextStyle}}>{this.state.unitToRender}</Text>
+            </TouchableOpacity>
+          </View>
+
+          {this.getUnitModal()}
+
 
         </View>
 
@@ -765,7 +1006,7 @@ class SupplierAddInventoryScreen extends Component {
           </View>
         </View>
 
-        {renderImagePicker()}
+        {this.getImageModal()}
 
         <View style={buttonContainer}>
           <Button
@@ -775,12 +1016,91 @@ class SupplierAddInventoryScreen extends Component {
             textColor={colors.colorAccent}
             isLoading={this.state.showLoadingDialog} />
         </View>
-      </View>
+      </ScrollView>
     )
 
 
     return screen
   }
+
+
+  // ----------------- DATABASE FUNCTIONS -------------------
+
+  addInvetorytoFirestore = () => {
+    const {
+      inventoryType,
+      documentName,
+      inventoryName,
+      quantityAvailable,
+      pricePerUnit
+    } = this.state
+
+    const inventoryObject = {
+      name: inventoryName,
+      price_per_unit: pricePerUnit,
+      quantity_available: quantityAvailable,
+      type: inventoryType
+    }
+
+    const firestore = firebase.firestore()
+
+    firestore
+      .collection("products")
+      .doc(documentName)
+      .set(inventoryObject, { merge: true })
+
+    const inventoryReference = "/products/" + documentName
+
+    firestore
+      .collection("suppliers")
+      .doc("carlsberg") //Will be dynamic based on the logged in user
+      .update({
+        inventory: firebase.firestore.FieldValue.arrayUnion(firebase.firestore().doc(inventoryReference))
+      })
+
+
+  }
+
+  uploadImageOnClick = async () => {
+    let result = null
+    if (this.state.imagePickerValue == "library") {
+      result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1
+      });
+    } else if (this.state.imagePickerValue == "camera") {
+      result = await ImagePicker.launchCameraAsync();
+
+    }
+
+
+    if (!result.cancelled) {
+      this.setState({ imageUri: result.uri }, () => { Alert.alert("Image successfully selected") })
+    }
+
+  }
+
+  uploadImageToAWS = async () => {
+    const response = await fetch(this.state.imageUri);
+    const blob = await response.blob();
+
+    const file = {
+      uri: this.state.imageUri,
+      name: this.state.inventoryName + ".png",
+      type: 'image/png'
+    }
+
+    RNS3.put(file, awsConfig)
+      .then(
+        (response) => {
+          console.log(response.headers.Location)
+        }
+      )
+  }
+
+
 }
 
 const styles = StyleSheet.create({
@@ -910,6 +1230,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginTop: 40,
+    marginBottom: 40,
     justifyContent: 'center',
     alignItems: 'center'
   },
