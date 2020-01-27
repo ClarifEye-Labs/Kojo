@@ -23,7 +23,7 @@ class SupplierAddInventoryScreen extends Component {
       pricePerUnit: '',
       imageUri: null,
       inventoryAddSuccess: false,
-      showImagePicker: false,
+      showImagePicker: true,
       showInventoryTypePicker: false,
       imagePickerValue: null,
       inventoryTypePickerValue: null,
@@ -190,16 +190,14 @@ class SupplierAddInventoryScreen extends Component {
     if (Constants.platform.ios) {
       const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
       if (status !== 'granted') {
-        alert('Sorry, we need camera roll permissions to make this work!');
+        alert(strings.sorryWeNeedPermissions);
       }
     }
   }
 
 
   uploadImageOnClick = async () => {
-
-    // let result = await ImagePicker.launchCameraAsync(); 
-    var result = null
+    let result = null
     if (this.state.imagePickerValue == "library") {
       result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -641,8 +639,9 @@ class SupplierAddInventoryScreen extends Component {
           crossStyle,
           textContainerModal,
           headingModalStyle,
-          deleteButtonModal,
-          cancelButtonModal,
+          uploadButtonModal: deleteButtonModal,
+          clickButtonModal: cancelButtonModal,
+          modalButtonContainer
         } = styles
 
         return (
@@ -653,20 +652,22 @@ class SupplierAddInventoryScreen extends Component {
               style={modalContainerStyle}>
               <TouchableWithoutFeedback>
                 <View style={modalContentContainerStyle}>
-                  <Cross style={crossStyle} onPress={() => { this.setState({ showImagePicker: false }) }} color={colors.grayBlue} size={42} />
+                  <Cross style={crossStyle} onPress={() => { this.setState({ showImagePicker: false }) }} color={colors.grayBlue} size={35} />
                   <View style={textContainerModal}>
-                    <Text style={headingModalStyle}>Choose upload option</Text>
+                    <Text style={headingModalStyle}>{strings.chooseUploadImageOption}</Text>
                   </View>
-                  <Button
-                    title='Upload from library'
-                    textColor={colors.colorAccent}
-                    onPress={() => { this.updateImagePickerValue('library') }}
-                    style={deleteButtonModal} />
-                  <Button
-                    title='Click from camera'
-                    textColor={colors.colorAccent}
-                    onPress={() => { this.updateImagePickerValue('camera') }}
-                    style={cancelButtonModal} />
+                  <View style={modalButtonContainer}>
+                    <Button
+                      title='Upload from library'
+                      textColor={colors.colorAccent}
+                      onPress={() => { this.updateImagePickerValue('library') }}
+                      style={deleteButtonModal} />
+                    <Button
+                      title='Click from camera'
+                      textColor={colors.colorAccent}
+                      onPress={() => { this.updateImagePickerValue('camera') }}
+                      style={cancelButtonModal} />
+                  </View>
                 </View>
               </TouchableWithoutFeedback>
             </TouchableOpacity>
@@ -766,9 +767,6 @@ class SupplierAddInventoryScreen extends Component {
 
         {renderImagePicker()}
 
-
-
-
         <View style={buttonContainer}>
           <Button
             title={strings.addInventoryText}
@@ -777,8 +775,6 @@ class SupplierAddInventoryScreen extends Component {
             textColor={colors.colorAccent}
             isLoading={this.state.showLoadingDialog} />
         </View>
-
-
       </View>
     )
 
@@ -834,28 +830,23 @@ const styles = StyleSheet.create({
   },
   modalContentContainerStyle: {
     width: 320,
-    height: 300,
-    alignItems: 'center',
-    justifyContent: 'center',
+    height: 260,
     backgroundColor: colors.colorAccent,
     borderRadius: dimens.defaultBorderRadius
   },
   crossStyle: {
     position: 'absolute',
-    top: 10,
+    top: 5,
     right: 20,
   },
   textContainerModal: {
-    flexDirection: 'column',
-    height: 100,
-    marginTop: 10,
-    justifyContent: 'center',
-    alignItems: 'center'
+    marginTop: 45,
+    width: '100%'
   },
   headingModalStyle: {
-    fontSize: 23,
+    fontSize: 18,
     textAlign: 'center',
-    fontFamily: customFonts.semiBold,
+    fontFamily: customFonts.regular,
     color: colors.grayBlue
   },
   itemNameModal: {
@@ -867,21 +858,23 @@ const styles = StyleSheet.create({
     marginTop: 8
   },
   modalButtonContainer: {
+    marginTop: 30,
     flexDirection: 'column',
     alignItems: 'center',
+    width: '100%',
     justifyContent: 'center'
   },
-  deleteButtonModal: {
-    width: 250,
-    marginTop: 20,
+  uploadButtonModal: {
+    width: '80%',
+    marginTop: 15,
     height: dimens.buttonHeight,
-    backgroundColor: colors.deleteRed
+    backgroundColor: colors.submitGreen
   },
-  cancelButtonModal: {
-    width: 250,
-    marginTop: 10,
+  clickButtonModal: {
+    width: '80%',
+    marginTop: 15,
     height: dimens.buttonHeight,
-    backgroundColor: colors.facebookBlue
+    backgroundColor: colors.darkBlue
   },
   inputContainerStyle: {
     marginTop: 18
@@ -927,8 +920,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontFamily: customFonts.regular
   }
-
-
 })
 
 SupplierAddInventoryScreen.navigationOptions = {

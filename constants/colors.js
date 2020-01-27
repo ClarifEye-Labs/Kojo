@@ -18,7 +18,8 @@ const colors = {
   grayTransluscent: 'rgba(0, 0, 0.0980392, 0.22)',
   grayBlue: '#434343',
   deleteRed: '#db3056',
-  submitGreen: '#2c7873'
+  submitGreen: '#2c7873',
+  darkBlue: '#35495e'
 }
 
 // colorPrimary hex code -> #bc2a8d

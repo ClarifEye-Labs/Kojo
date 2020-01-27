@@ -35,7 +35,7 @@ const AppNavigator = createStackNavigator({
   EditItemScreen: EditItemScreen
 },
 {
-  initialRouteName: screens.WelcomeScreen
+  initialRouteName: screens.SupplierAddInventoryScreen
 })
 
 

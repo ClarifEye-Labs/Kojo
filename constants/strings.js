@@ -62,7 +62,9 @@ const strings = {
   pleaseChooseCategory: 'Please choose/type category',
   pleaseTryAgain: 'Please try again!',
   enterYourEmailForgotPassword: 'Enter the email used for registration : ',
-  sendEmail: 'Send Email'
+  sendEmail: 'Send Email',
+  sorryWeNeedPermissions: 'Sorry, we need camera roll permissions to make this work!',
+  chooseUploadImageOption: 'Choose image upload option'
 }
 
 export default strings
