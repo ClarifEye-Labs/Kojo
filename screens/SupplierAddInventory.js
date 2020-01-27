@@ -1,8 +1,8 @@
-import React, {useRef, useEffect, Component} from 'react'
-import { View, StyleSheet, Text, TouchableOpacity, Modal, Alert, Picker, TouchableWithoutFeedback, FlatList, ImageBackground, Image} from 'react-native'
+import React, { useRef, useEffect, Component } from 'react'
+import { View, StyleSheet, Text, TouchableOpacity, Modal, Alert, Picker, TouchableWithoutFeedback, FlatList, ImageBackground, Image } from 'react-native'
 import { Back, Heading, InputWithSubHeading, Cross, Button, DropDownWithSubHeading, Icon } from '../Components'
-import { dimens, colors, strings, customFonts} from '../constants'
-import { commonStyling } from '../common' 
+import { dimens, colors, strings, customFonts } from '../constants'
+import { commonStyling } from '../common'
 import firebase from '../config/firebase'
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
@@ -37,7 +37,8 @@ class SupplierAddInventoryScreen extends Component {
       submitButtonClicked: false,
       inventoryTitleError: null,
       pricePerUnitError: null,
-      inventoryCategorySelectionError: null
+      inventoryCategorySelectionError: null,
+      categoryNameToRender: 'Touch to add category'
     }
   }
 
@@ -45,7 +46,6 @@ class SupplierAddInventoryScreen extends Component {
   componentDidMount() {
     this.getPermissionAsync();
     this.getInventoryCategories();
-
   }
 
 
@@ -56,7 +56,6 @@ class SupplierAddInventoryScreen extends Component {
   }
 
   setInventoryType = (typeIndex) => {
-
     this.setState({
       inventoryType: this.state.inventoryCategories[typeIndex]
     })
@@ -94,17 +93,16 @@ class SupplierAddInventoryScreen extends Component {
   }
 
   submitButtonOnClick = async () => {
-
     const {
       inventoryType,
       inventoryName,
       pricePerUnit
     } = this.state
-  
+
     this.setState({
       showLoadingDialog: true,
       submitButtonClicked: true
-    })  
+    })
 
     const errors = {
       inventoryTitle: {},
@@ -122,16 +120,16 @@ class SupplierAddInventoryScreen extends Component {
       inventoryCategorySelectionError: errors.inventoryCategorySelection.errorReason
     })
 
-    if( !errors.inventoryTitle.errorStatus && !errors.pricePerUnit.errorStatus && !errors.inventoryCategorySelection.errorStatus){
+    if (!errors.inventoryTitle.errorStatus && !errors.pricePerUnit.errorStatus && !errors.inventoryCategorySelection.errorStatus) {
       //Do Something
 
-    }else{
+    } else {
       this.setState({
         showLoadingDialog: false,
         submitButtonClicked: false
       })
     }
-    
+
     // await this.addInvetorytoFirestore()
     // this.setState({
     //   inventoryAddSuccess: true
@@ -165,7 +163,7 @@ class SupplierAddInventoryScreen extends Component {
       return error
     }
 
-    if(! /^\d+$/.test(pricePerUnit)) {
+    if (! /^\d+$/.test(pricePerUnit)) {
       error.errorStatus = true
       error.errorReason = strings.pricePerUnitErrorMessage
     }
@@ -202,23 +200,21 @@ class SupplierAddInventoryScreen extends Component {
 
     // let result = await ImagePicker.launchCameraAsync(); 
     var result = null
-    if(this.state.imagePickerValue == "library")
-    {
-        result = await ImagePicker.launchImageLibraryAsync({
+    if (this.state.imagePickerValue == "library") {
+      result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
         allowsEditing: true,
         aspect: [4, 3],
         quality: 1
       });
-    }else if (this.state.imagePickerValue == "camera") {
+    } else if (this.state.imagePickerValue == "camera") {
       result = await ImagePicker.launchCameraAsync();
 
     }
 
 
-    if(!result.cancelled) {
-        console.log(result.uri)
-        this.setState({imageUri: result.uri}, () => { Alert.alert("Image successfully selected")})
+    if (!result.cancelled) {
+      this.setState({ imageUri: result.uri }, () => { Alert.alert("Image successfully selected") })
     }
 
   }
@@ -351,8 +347,12 @@ class SupplierAddInventoryScreen extends Component {
         paddingBottom: 20,
       },
       categoryError: {
+        marginTop: 8,
+        width: '100%',
+        fontSize: 17,
+        fontFamily: customFonts.regular,
         color: colors.errorRed,
-        fontFamily: customFonts.regular
+        textAlign: 'center'
       },
       errorStyle: {
         marginTop: 8
@@ -360,16 +360,17 @@ class SupplierAddInventoryScreen extends Component {
       subTextStyle: {
         fontSize: 13,
         fontFamily: customFonts.regular
+      },
+      subHeadingErrorStyling: {
+        marginTop: 8,
+        width: '100%',
+        fontSize: 17,
+        fontFamily: customFonts.regular,
+        color: colors.errorRed,
+        textAlign: 'center'
       }
 
     }
-
-    const subHeadingErrorStyling = {
-      ...styles.errorStyle,
-      ...styles.subTextStyle,
-      color: colors.errorRed
-    }
-
     return (
       <Modal
         visible={this.state.showCategoryModal}
@@ -388,17 +389,15 @@ class SupplierAddInventoryScreen extends Component {
             </TouchableOpacity>
 
             <View style={styles.headingContainer}>
-            
+
               <Text style={styles.headingStyle}>Choose Category</Text>
             </View>
 
             {/*Error checking for category type selection */}
 
             {this.state.showCategoryError ?
-            <View style={styles.categoryError}>
-            <Text style={styles.categoryError}>Please select a category</Text>
-            </View>
-            : null
+              <Text style={styles.categoryError}>{strings.pleaseChooseCategory}</Text>
+              : null
             }
 
             {/* this is add section, hidden buy default */}
@@ -414,14 +413,14 @@ class SupplierAddInventoryScreen extends Component {
                   autoCorrect={false}
                   onChangeText={this.setCategoryTyped}
                   autoCapitalize='words'
-                  editable = {!this.state.submitButtonClicked}
-                  />
+                  editable={!this.state.submitButtonClicked}
+                />
               </Animatable.View>
               : null}
 
             {/* pick category section  */}
             <View style={styles.pickCategoryContainer}>
-               
+
 
               <Text style={styles.sectionHeading}>PICK</Text>
               <View
@@ -445,33 +444,48 @@ class SupplierAddInventoryScreen extends Component {
   }
 
   confirmInventoryCategory = () => {
+    const { categorySelected } = this.state
 
-    
-
-    if(this.state.categorySelected == null)
-    {
+    if (categorySelected === null) {
       this.setState({
-        showCategoryError:true
+        showCategoryError: true
       })
-    }
+    } else if (categorySelected.item.id === 'other') {
+      const { categoryTyped } = this.state
 
-    else if (this.state.categorySelected.item.id === 'other') {
-      //then check for empty category entered 
-      if(this.state.categorySelected.item.title === 'Other')
-      {
+      if (categoryTyped.length === 0) {
         this.setState({
-          showCategoryError:true
+          showCategoryError: true
         })
+      } else {
+        this.setState({
+          showCategoryError: false
+        }, this.writeCategoryToDatabase() )
       }
-
-      console.log(this.state.categoryTyped)
     } else {
-      console.log(this.state.categorySelected)
+      this.showCategoryOnUI(categorySelected.item.title)
       this.closeCategoryModal()
     }
 
-    
   }
+
+
+  writeCategoryToDatabase = () => {
+    const {categoryTyped} = this.state
+
+    //write this category to database and refresh loadout of categories 
+
+
+    this.showCategoryOnUI(categoryTyped)
+    this.closeCategoryModal()
+  }
+
+  showCategoryOnUI = (categoryNameToShow) => {
+    this.setState({
+      categoryNameToRender: categoryNameToShow
+    })
+  }
+
 
   InventoryCategoryItem = (toRenderItem) => {
     const styles = {
@@ -515,9 +529,7 @@ class SupplierAddInventoryScreen extends Component {
 
 
   selectInventoryCategoryItem = (itemObject) => {
-    console.log("TCL: selectInventoryCategoryItem -> itemObject", itemObject)
     if (itemObject.item.id === 'other') {
-      console.log(itemObject)
       this.setState({
         showAddCategorySection: true,
         categorySelected: itemObject,
@@ -531,9 +543,9 @@ class SupplierAddInventoryScreen extends Component {
 
   }
 
-  getInventoryCategories = async() => {
+  getInventoryCategories = async () => {
 
-    var inventoryCategoryList = [{'id' : 'other' , title : 'Other'}]
+    var inventoryCategoryList = [{ 'id': 'other', title: 'Other' }]
     const inventoryCategoryCollection = firebase.firestore().collection('product_type')
     await inventoryCategoryCollection
       .get()
@@ -617,54 +629,49 @@ class SupplierAddInventoryScreen extends Component {
 
 
   render() {
-
-
     const {
       navigation
     } = this.props
 
     const renderImagePicker = () => {
-      if(this.state.showImagePicker)
-      {
+      if (this.state.showImagePicker) {
         const {
-            modalContentContainerStyle,
-            modalContainerStyle,
-            crossStyle,
-            textContainerModal,
-            headingModalStyle,
-            itemNameModal,  
-            deleteButtonModal,
-            cancelButtonModal,
-            
-          } = styles
+          modalContentContainerStyle,
+          modalContainerStyle,
+          crossStyle,
+          textContainerModal,
+          headingModalStyle,
+          deleteButtonModal,
+          cancelButtonModal,
+        } = styles
 
-          return (
-            <Modal visible={this.state.showImagePicker}transparent={true} animationType='slide' onBackButtonPress={() => {this.setState({showImagePicker:false})}}>
-              <TouchableOpacity 
-                activeOpacity={1}  
-                onPressOut={() => {this.setState({showImagePicker:false})}} 
-                style={modalContainerStyle}>
-                <TouchableWithoutFeedback>
-                  <View style={modalContentContainerStyle}>
-                    <Cross style={crossStyle} onPress={() => {this.setState({showImagePicker:false})}} color={colors.grayBlue} size={42} />
-                    <View style={textContainerModal}>
-                      <Text style={headingModalStyle}>Choose upload option</Text>
-                    </View>
-                    <Button
-                        title='Upload from library'
-                        textColor={colors.colorAccent}
-                        onPress={() => {this.updateImagePickerValue('library')}}
-                        style={deleteButtonModal} />
-                    <Button
-                        title='Click from camera'
-                        textColor={colors.colorAccent}
-                        onPress={()=> {this.updateImagePickerValue('camera')}}
-                        style={cancelButtonModal} />
+        return (
+          <Modal visible={this.state.showImagePicker} transparent={true} animationType='slide' onBackButtonPress={() => { this.setState({ showImagePicker: false }) }}>
+            <TouchableOpacity
+              activeOpacity={1}
+              onPressOut={() => { this.setState({ showImagePicker: false }) }}
+              style={modalContainerStyle}>
+              <TouchableWithoutFeedback>
+                <View style={modalContentContainerStyle}>
+                  <Cross style={crossStyle} onPress={() => { this.setState({ showImagePicker: false }) }} color={colors.grayBlue} size={42} />
+                  <View style={textContainerModal}>
+                    <Text style={headingModalStyle}>Choose upload option</Text>
                   </View>
-                </TouchableWithoutFeedback>
-              </TouchableOpacity>
-            </Modal>
-    )
+                  <Button
+                    title='Upload from library'
+                    textColor={colors.colorAccent}
+                    onPress={() => { this.updateImagePickerValue('library') }}
+                    style={deleteButtonModal} />
+                  <Button
+                    title='Click from camera'
+                    textColor={colors.colorAccent}
+                    onPress={() => { this.updateImagePickerValue('camera') }}
+                    style={cancelButtonModal} />
+                </View>
+              </TouchableWithoutFeedback>
+            </TouchableOpacity>
+          </Modal>
+        )
       }
     }
 
@@ -683,7 +690,6 @@ class SupplierAddInventoryScreen extends Component {
       imageStyle,
       addButtonStyle,
       buttonContainer,
-      quantityContainer,
       errorStyle,
       subTextStyle
     } = styles
@@ -708,55 +714,53 @@ class SupplierAddInventoryScreen extends Component {
           <View style={categoryContainer}>
             <Text style={subHeadingStyle}>Inventory Category</Text>
             {this.state.inventoryCategorySelectionError
-            ? <Text style={subHeadingErrorStyling}>{this.state.inventoryCategorySelectionError}</Text>
-            : null }
+              ? <Text style={subHeadingErrorStyling}>{this.state.inventoryCategorySelectionError}</Text>
+              : null}
             <TouchableOpacity style={categoryInputContainer} onPress={this.openCategoryModal}>
-              <Text style={categoryTextStyle}>Touch to add category</Text>
+              <Text style={categoryTextStyle}>{this.state.categoryNameToRender}</Text>
             </TouchableOpacity>
           </View>
 
           {this.getCategoryModal()}
 
-          <InputWithSubHeading 
+          <InputWithSubHeading
             containerStyle={inputContainerStyle}
             secureTextEntry={false}
-            placeholder = {'Enter Item Title.'}
+            placeholder={'Enter Item Title.'}
             subHeadingTitle={strings.inventoryDocumentName}
             autoCorrect={false}
             onChangeText={this.setInventoryName}
             autoCapitalize='words'
             subHeadingStyle={subHeadingStyle}
-            errorTitle = {this.state.inventoryTitleError}
-            errorStatus = {this.state.inventoryTitleError} />
+            errorTitle={this.state.inventoryTitleError}
+            errorStatus={this.state.inventoryTitleError} />
 
-          <InputWithSubHeading 
+          <InputWithSubHeading
             containerStyle={inputContainerStyle}
             secureTextEntry={false}
-            placeholder = {'Enter Price Per Unit.'}
+            placeholder={'Enter Price Per Unit.'}
             subHeadingTitle={'Price Per Unit'}
             autoCorrect={false}
             onChangeText={this.setInventoryPrice}
             autoCapitalize='words'
             subHeadingStyle={subHeadingStyle}
-            errorTitle = {this.state.pricePerUnitError}
-            errorStatus = {this.state.pricePerUnitError} />
-
-
+            errorTitle={this.state.pricePerUnitError}
+            errorStatus={this.state.pricePerUnitError} />
 
         </View>
 
         <View style={addImageContainer}>
           <Text style={subHeadingStyle}>Add Image</Text>
-          <View style={imageContainer}>  
-            {this.state.imageUri!=null ? (
-              <ImageBackground style={imageStyle} imageStyle={imageStyle} source={{uri: this.state.imageUri}}>
-              <Icon onPress={this.openImagePickerModal}nameIOS='ios-add' nameAndroid='md-add' size={60}/>
+          <View style={imageContainer}>
+            {this.state.imageUri != null ? (
+              <ImageBackground style={imageStyle} imageStyle={imageStyle} source={{ uri: this.state.imageUri }}>
+                <Icon onPress={this.openImagePickerModal} nameIOS='ios-add' nameAndroid='md-add' size={60} />
               </ImageBackground>
             ) : (
-              <ImageBackground style={imageStyle} imageStyle={imageStyle}>
-              <Icon onPress={this.openImagePickerModal}nameIOS='ios-add' nameAndroid='md-add' size={60}/>
-              </ImageBackground>
-            )}
+                <ImageBackground style={imageStyle} imageStyle={imageStyle}>
+                  <Icon onPress={this.openImagePickerModal} nameIOS='ios-add' nameAndroid='md-add' size={60} />
+                </ImageBackground>
+              )}
           </View>
         </View>
 
@@ -766,14 +770,14 @@ class SupplierAddInventoryScreen extends Component {
 
 
         <View style={buttonContainer}>
-          <Button   
-            title={strings.addInventoryText} 
+          <Button
+            title={strings.addInventoryText}
             onPress={this.submitButtonOnClick}
             style={addButtonStyle}
             textColor={colors.colorAccent}
             isLoading={this.state.showLoadingDialog} />
         </View>
-       
+
 
       </View>
     )
@@ -824,8 +828,8 @@ const styles = StyleSheet.create({
   },
   modalContainerStyle: {
     flex: 1,
-    justifyContent: 'center', 
-    backgroundColor: colors.blackTransluscent, 
+    justifyContent: 'center',
+    backgroundColor: colors.blackTransluscent,
     alignItems: 'center'
   },
   modalContentContainerStyle: {
@@ -836,7 +840,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.colorAccent,
     borderRadius: dimens.defaultBorderRadius
   },
-  crossStyle:{
+  crossStyle: {
     position: 'absolute',
     top: 10,
     right: 20,

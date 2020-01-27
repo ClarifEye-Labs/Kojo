@@ -59,7 +59,7 @@ const strings = {
   inventoryCategoryCannotBeEmpty: 'Inventory category cannot be empty',
   pricePerUnitCannotBeEmpty: 'Price per unit cannot be empty',
   pricePerUnitErrorMessage: 'Price per unit has to be a number.',
-  add: 'Add'
+  pleaseChooseCategory: 'Please choose/type category'
 
 }
 
