@@ -28,3 +28,12 @@ const styles = StyleSheet.create({
 
 export default Name
 
+
+// PropTypes.any: The prop can be of any data type
+// PropTypes.bool: The prop should be a Boolean
+// PropTypes.number: The prop should be a number
+// PropTypes.string: The prop should be a string
+// PropTypes.func: The prop should be a function
+// PropTypes.array: The prop should be an array
+// PropTypes.object: The prop should be an object
+// PropTypes.symbol: The prop should be a symbol

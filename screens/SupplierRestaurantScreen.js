@@ -4,6 +4,8 @@ import { dimens, colors, customFonts, strings } from '../constants'
 import { commonStyling } from '../common'
 import { Cross } from '../Components';
 import {NavigationActions, StackActions} from 'react-navigation'
+import firebase from '../config/firebase'
+import screens from '../constants/screens';
 
 class SupplierRestaurantScreen extends Component {
   constructor(props){
@@ -18,7 +20,7 @@ class SupplierRestaurantScreen extends Component {
     const resetAction = StackActions.reset({
       index: 0,
       actions: [
-        NavigationActions.navigate({ routeName: 'SupplierWelcomeScreen' })
+        NavigationActions.navigate({ routeName: screens.SupplierWelcomeScreen })
       ]
     })
     this.props.navigation.dispatch(resetAction);
@@ -42,6 +44,7 @@ class SupplierRestaurantScreen extends Component {
       navigation
     } = this.props
 
+    console.log(firebase.auth().currentUser)
   
     const screen = 
     <View style={mainContainer}>

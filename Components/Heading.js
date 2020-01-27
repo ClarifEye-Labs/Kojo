@@ -2,6 +2,7 @@ import React from 'react'
 import { View, StyleSheet, Text, TouchableOpacity} from 'react-native'
 import { dimens, colors, customFonts } from '../constants'
 import { commonStyling } from '../common'
+import PropTypes from 'prop-types'
 
 const Heading = (props) => { 
   const {
@@ -33,6 +34,12 @@ const styles = StyleSheet.create({
     fontSize: dimens.headingSize
   }
 })
+
+Heading.propTypes = {
+  title : PropTypes.string,
+  headingStyle : PropTypes.object,
+  containerStyle : PropTypes.object
+}
 
 export default Heading
 

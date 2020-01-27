@@ -59,8 +59,10 @@ const strings = {
   inventoryCategoryCannotBeEmpty: 'Inventory category cannot be empty',
   pricePerUnitCannotBeEmpty: 'Price per unit cannot be empty',
   pricePerUnitErrorMessage: 'Price per unit has to be a number.',
-  pleaseChooseCategory: 'Please choose/type category'
-
+  pleaseChooseCategory: 'Please choose/type category',
+  pleaseTryAgain: 'Please try again!',
+  enterYourEmailForgotPassword: 'Enter the email used for registration : ',
+  sendEmail: 'Send Email'
 }
 
 export default strings
