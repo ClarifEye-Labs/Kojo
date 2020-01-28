@@ -21,6 +21,7 @@ class SupplierAddInventoryScreen extends Component {
       inventoryName: '',
       quantityAvailable: '',
       pricePerUnit: '',
+      inventoryUnit: '',
       imageUri: null,
       imageAWSURL: null,
       inventoryAddSuccess: false,
@@ -102,7 +103,9 @@ class SupplierAddInventoryScreen extends Component {
     const {
       inventoryType,
       inventoryName,
-      pricePerUnit
+      pricePerUnit,
+      inventoryUnit
+
     } = this.state
 
     this.setState({
@@ -113,20 +116,25 @@ class SupplierAddInventoryScreen extends Component {
     const errors = {
       inventoryTitle: {},
       pricePerUnit: {},
-      inventoryCategorySelection: {}
+      inventoryCategorySelection: {},
+      unitSelection: {}
     }
 
     errors.inventoryTitle = this.performInventoryTitleValidation(inventoryName)
     errors.pricePerUnit = this.performPricePerUnitValidation(pricePerUnit)
     errors.inventoryCategorySelection = this.performInventoryCategorySelectionValidation(inventoryType)
+    errors.unitSelection = this.performInventoryUnitSelectionValidation(inventoryUnit)
+    
 
     this.setState({
       inventoryTitleError: errors.inventoryTitle.errorReason,
       pricePerUnitError: errors.pricePerUnit.errorReason,
-      inventoryCategorySelectionError: errors.inventoryCategorySelection.errorReason
+      inventoryCategorySelectionError: errors.inventoryCategorySelection.errorReason,
+      unitSelectionError: errors.unitSelection.errorReason
+
     })
 
-    if (!errors.inventoryTitle.errorStatus && !errors.pricePerUnit.errorStatus && !errors.inventoryCategorySelection.errorStatus) {
+    if (!errors.inventoryTitle.errorStatus && !errors.pricePerUnit.errorStatus && !errors.inventoryCategorySelection.errorStatus && !errors.unitSelection.errorStatus) {
       this.uploadInventory()
     } else {
       this.setState({
@@ -186,6 +194,20 @@ class SupplierAddInventoryScreen extends Component {
     if (inventoryType.length === 0) {
       error.errorStatus = true
       error.errorReason = strings.inventoryCategoryCannotBeEmpty
+    }
+
+    return error
+  }
+
+  performInventoryUnitSelectionValidation = (inventoryUnit) => {
+    var error = {
+      errorStatus: false,
+      errorReason: null
+    }
+
+    if (inventoryUnit.length === 0) {
+      error.errorStatus = true
+      error.errorReason = strings.inventoryUnitCannotBeEmpty
     }
 
     return error
@@ -403,7 +425,7 @@ class SupplierAddInventoryScreen extends Component {
       this.setState({
         showCategoryError: true
       })
-  
+
     } else if (categorySelected.item.id === 'other') {
       const { categoryTyped } = this.state
 
@@ -435,8 +457,10 @@ class SupplierAddInventoryScreen extends Component {
 
   showCategoryOnUI = (categoryNameToShow) => {
     this.setState({
-      categoryNameToRender: categoryNameToShow
+      categoryNameToRender: categoryNameToShow,
+      inventoryType: categoryNameToShow
     })
+
   }
 
   selectInventoryCategoryItem = (itemObject) => {
@@ -700,8 +724,7 @@ class SupplierAddInventoryScreen extends Component {
   confirmUnitSelection = () => {
     const { unitSelected } = this.state
 
-
-    if (unitSelected === null) {
+    if (!unitSelected) {
       this.setState({
         showUnitError: true
       })
@@ -733,7 +756,8 @@ class SupplierAddInventoryScreen extends Component {
 
   showUnitOnUI = (unit) => {
     this.setState({
-      unitToRender: unit
+      unitToRender: unit,
+      inventoryUnit: unit
     })
   }
 
@@ -961,7 +985,7 @@ class SupplierAddInventoryScreen extends Component {
           <View style={{ ...categoryContainer }}>
             <Text style={subHeadingStyle}>Unit</Text>
             {this.state.unitSelectionError
-              ? <Text style={subHeadingErrorStyling}>{this.state.inventoryCategorySelectionError}</Text>
+              ? <Text style={subHeadingErrorStyling}>{this.state.unitSelectionError}</Text>
               : null}
             <TouchableOpacity style={{ ...categoryInputContainer }} onPress={this.openUnitModal}>
               <Text style={{ ...categoryTextStyle }}>{this.state.unitToRender}</Text>
@@ -1101,7 +1125,7 @@ class SupplierAddInventoryScreen extends Component {
 
 
     if (!result.cancelled) {
-      this.setState({ imageUri: result.uri, imageHasBeenUploaded: true, showImagePicker: false})
+      this.setState({ imageUri: result.uri, imageHasBeenUploaded: true, showImagePicker: false })
     }
 
   }
