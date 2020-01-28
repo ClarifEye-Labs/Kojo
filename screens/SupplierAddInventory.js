@@ -398,11 +398,12 @@ class SupplierAddInventoryScreen extends Component {
 
   confirmInventoryCategory = () => {
     const { categorySelected } = this.state
-    if (categorySelected === null) {
+    if (!categorySelected) {
 
       this.setState({
         showCategoryError: true
       })
+  
     } else if (categorySelected.item.id === 'other') {
       const { categoryTyped } = this.state
 
@@ -1100,7 +1101,7 @@ class SupplierAddInventoryScreen extends Component {
 
 
     if (!result.cancelled) {
-      this.setState({ imageUri: result.uri, imageHasBeenUploaded: true }, () => { Alert.alert("Image successfully selected") })
+      this.setState({ imageUri: result.uri, imageHasBeenUploaded: true, showImagePicker: false})
     }
 
   }
