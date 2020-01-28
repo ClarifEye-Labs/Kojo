@@ -44,7 +44,8 @@ class SupplierAddInventoryScreen extends Component {
       unitToRender: 'Touch to add Unit',
       showUnitModal: false,
       showUnitError: false,
-      unitTyped: ''
+      unitTyped: '',
+      imageHasBeenUploaded: false
     }
   }
 
@@ -693,16 +694,13 @@ class SupplierAddInventoryScreen extends Component {
             </View>
 
           </View>
-
-
-
         </View>
       </Modal>)
   }
 
   confirmUnitSelection = () => {
     const { unitSelected } = this.state
-    
+
 
     if (unitSelected === null) {
       this.setState({
@@ -710,8 +708,6 @@ class SupplierAddInventoryScreen extends Component {
       })
     } else if (unitSelected.item.id === 'other') {
       const { unitTyped } = this.state
-      console.log("TCL: confirmUnitSelection -> unitTyped", unitTyped)
-
       if (unitTyped.length === 0) {
         this.setState({
           showUnitError: true
@@ -816,7 +812,7 @@ class SupplierAddInventoryScreen extends Component {
     this.setState({
       unitTyped: text
     })
-  } 
+  }
 
   // ----------------- IMAGE MODAL -------------------------
 
@@ -887,13 +883,11 @@ class SupplierAddInventoryScreen extends Component {
     this.setState({
       showInventoryTypePicker: false
     })
-
     if (value !== "") {
       this.setState({
         inventoryTypePickerValue: value
       })
     }
-
   }
 
 
@@ -920,7 +914,8 @@ class SupplierAddInventoryScreen extends Component {
       addButtonStyle,
       buttonContainer,
       errorStyle,
-      subTextStyle
+      subTextStyle,
+      imageContainerStlye
     } = styles
 
     const subHeadingErrorStyling = {
@@ -969,8 +964,8 @@ class SupplierAddInventoryScreen extends Component {
             {this.state.unitSelectionError
               ? <Text style={subHeadingErrorStyling}>{this.state.inventoryCategorySelectionError}</Text>
               : null}
-            <TouchableOpacity style={{...categoryInputContainer}} onPress={this.openUnitModal}>
-              <Text style={{...categoryTextStyle}}>{this.state.unitToRender}</Text>
+            <TouchableOpacity style={{ ...categoryInputContainer }} onPress={this.openUnitModal}>
+              <Text style={{ ...categoryTextStyle }}>{this.state.unitToRender}</Text>
             </TouchableOpacity>
           </View>
 
@@ -988,9 +983,6 @@ class SupplierAddInventoryScreen extends Component {
             errorTitle={this.state.pricePerUnitError}
             errorStatus={this.state.pricePerUnitError} />
 
-         
-
-
         </View>
 
         <View style={addImageContainer}>
@@ -998,7 +990,12 @@ class SupplierAddInventoryScreen extends Component {
           <View style={imageContainer}>
             {this.state.imageUri != null ? (
               <ImageBackground style={imageStyle} imageStyle={imageStyle} source={{ uri: this.state.imageUri }}>
-                <Icon onPress={this.openImagePickerModal} nameIOS='ios-add' nameAndroid='md-add' size={60} />
+                {this.state.imageHasBeenUploaded
+                  ? <TouchableOpacity style={imageContainerStlye} onPress={this.openImagePickerModal} />
+                  : null}
+                {!this.state.imageHasBeenUploaded
+                  ? <Icon onPress={this.openImagePickerModal} nameIOS='ios-add' nameAndroid='md-add' size={60} />
+                  : null}
               </ImageBackground>
             ) : (
                 <ImageBackground style={imageStyle} imageStyle={imageStyle}>
@@ -1079,7 +1076,7 @@ class SupplierAddInventoryScreen extends Component {
 
 
     if (!result.cancelled) {
-      this.setState({ imageUri: result.uri }, () => { Alert.alert("Image successfully selected") })
+      this.setState({ imageUri: result.uri, imageHasBeenUploaded: true }, () => { Alert.alert("Image successfully selected") })
     }
 
   }
@@ -1242,6 +1239,10 @@ const styles = StyleSheet.create({
   subTextStyle: {
     fontSize: 13,
     fontFamily: customFonts.regular
+  },
+  imageContainerStlye: {
+    width: '100%',
+    height: '100%'
   }
 })
 
