@@ -5,19 +5,20 @@ import { dimens, colors, strings} from '../constants'
 import { commonStyling } from '../common'
 import firebase from '../config/firebase'
 import screens from '../constants/screens'
+import appConfig from '../config/appConfig'
 
 class RegistrationScreen extends React.Component { 
   constructor(props){
     super(props)
     this.state={
-      nameEntered: '',
-      nameError: false,
-      emailError: false,
-      emailEntered: '',
+      nameEntered: appConfig.DEBUG_MODE ? 'Shikhar Khandelwal' : '',
+      nameError: undefined,
+      emailError: undefined,
+      emailEntered: appConfig.DEBUG_MODE ? 'conveytoshikhar@gmail.com' : '',
       passwordError: false,
-      passwordEntered: '',
-      confirmationPasswordEntered: '',
-      confirmationPasswordError: false,
+      passwordEntered: appConfig.DEBUG_MODE ? '1234567890' : '',
+      confirmationPasswordEntered: appConfig.DEBUG_MODE ? '1234567890' : '',
+      confirmationPasswordError: undefined,
       submitButtonClicked: false,
       showLoadingDialog: false,
       navigation: this.props.navigation
@@ -208,19 +209,41 @@ class RegistrationScreen extends React.Component {
 
   }
 
-  successfulRegistration= (user) => {
-    console.log("TCL: successfulRegistration -> user", user)
+  successfulRegistration= async (user) => {
+    await firebase.auth().currentUser.updateProfile({
+      displayName: this.state.nameEntered
+    })
+
+    await this.writeUserToFireStore()
+
     this.setState({
       showLoadingDialog: false
     }, () => this.state.navigation.navigate(screens.SupplierRestaurantScreen))
     
   }
 
+  writeUserToFireStore = async () => {
+    const firestore = firebase.firestore()
+    const ref = firestore.collection('users')
+    const user = firebase.auth().currentUser
+    
+    await ref.doc(user.uid).set({
+      user: user.uid,
+      name: user.displayName,
+      email: user.email,
+      role: null,
+      phone: null
+    })
+    
+    
+  }
+
   registrationFailure = (error) => {
     this.setState({
-      showLoadingDialog: false
+      showLoadingDialog: false,
+      submitButtonClicked: false
     })
-    // console.log(error)
+    alert(error)
   }
   
 

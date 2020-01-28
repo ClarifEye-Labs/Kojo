@@ -37,7 +37,7 @@ const AppNavigator = createStackNavigator({
   SplashScreen: SplashScreen
 },
 {
-  initialRouteName: screens.SupplierWelcomeScreen
+  initialRouteName: screens.SplashScreen
 })
 
 

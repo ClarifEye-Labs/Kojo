@@ -1,23 +1,58 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Text, ImageBackground, ActivityIndicator } from 'react-native'
-import { LogoPlaceholder, Loading } from '../Components'
+import { LogoPlaceholder, Loading, Button } from '../Components'
 import { dimens, colors, customFonts } from '../constants'
 import { commonStyling } from '../common'
 import { PropTypes } from 'prop-types'
-import screens from '../constants/screens';
+import screens from '../constants/screens'
+import firebase from '../config/firebase'
+import {NavigationActions, StackActions} from 'react-navigation'
+import collectionNames from '../config/collectionNames';
 
 class SplashScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
       name: 'SplashScreen',
-      navigation: props.navigation
+      navigation: props.navigation,
+      user: undefined,
+      userExists: false,
+      supplierRestaurantSelected: false,
+      phoneEntered: false, 
+
     }
   }
 
+  dispatchScreen = (screenName) => {
+    const resetAction = StackActions.reset({
+      index: 0,
+      actions: [
+        NavigationActions.navigate({ routeName: screenName })
+      ]
+    })
+    setTimeout(()=>this.state.navigation.dispatch(resetAction), 2000);
+  }
 
-  navigateToScreenLogic = () => {
-    setTimeout( () => this.state.navigation.navigate(screens.WelcomeScreen), 2000)
+  navigateToScreenLogic = async () => {
+    const user = firebase.auth().currentUser
+    const firestore = firebase.firestore()
+
+    if(user) {
+      const userRef = firestore.collection(collectionNames.users)
+      const userID = user.uid
+      let userFirestore = null
+  
+      await userRef.doc(userID).get().then( (doc) => doc.exists ? userFirestore = doc.data() : null )
+  
+      const {role} = userFirestore
+      if(!role){
+        this.dispatchScreen(screens.SupplierRestaurantScreen)
+      }else{
+        console.log('Check for phone number etc. ')
+      }
+    }else{
+      this.dispatchScreen(screens.WelcomeScreen)
+    }
   }
 
   render() {
@@ -45,6 +80,7 @@ class SplashScreen extends Component {
           <View style={loadingContainer}>
             <ActivityIndicator style={loadingStyle} size='large' color={colors.colorAccent} />
           </View>
+          <Button onPress={ () => {firebase.auth().signOut()} } title='Sign Out' textColor={colors.colorAccent}  ></Button>
         </View>
       </ImageBackground>
     );

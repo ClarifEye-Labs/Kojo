@@ -6,6 +6,8 @@ import { Cross } from '../Components';
 import {NavigationActions, StackActions} from 'react-navigation'
 import firebase from '../config/firebase'
 import screens from '../constants/screens';
+import appConfig from '../config/appConfig';
+import collectionNames from '../config/collectionNames';
 
 class SupplierRestaurantScreen extends Component {
   constructor(props){
@@ -15,15 +17,31 @@ class SupplierRestaurantScreen extends Component {
     }
   }
   
-  navigateToSupplierScreen = () => {
-    console
+  navigateToScreen = async (screen) => {
     const resetAction = StackActions.reset({
       index: 0,
       actions: [
-        NavigationActions.navigate({ routeName: screens.SupplierWelcomeScreen })
+        NavigationActions.navigate({ routeName: screen })
       ]
     })
-    this.props.navigation.dispatch(resetAction);
+
+    const user = firebase.auth().currentUser
+    const uid = user.uid
+    const userRef = firebase.firestore().collection(collectionNames.users)
+
+    if(screen === screens.SupplierWelcomeScreen) {
+      let role = appConfig.userRoleSupplier
+      await userRef.doc(uid).update({
+        role: role
+      })
+      this.props.navigation.dispatch(resetAction);
+    }else{
+      let role = appConfig.userRoleRestaurantOwner
+      await userRef.doc(uid).update({
+        role: role
+      })
+    }
+   
   }
 
   
@@ -51,14 +69,16 @@ class SupplierRestaurantScreen extends Component {
       <ImageBackground style={upperHalfContainer} source={require('../assets/Onboarding/supplier.jpg')}>
         <TouchableOpacity 
           style={{...textContainer,...containerSupplyBG}} 
-          onPress={() => this.navigateToSupplierScreen()}>
-          <Cross style={crossStyle} size={50} color={colors.colorAccent} onPress={() => navigation.goBack()}/>
+          onPress={() => this.navigateToScreen(screens.SupplierWelcomeScreen, )}>
+
           <Text style={subText}> {strings.iAmA}</Text>
           <Text style={mainText}> {strings.supplier} </Text>
         </TouchableOpacity>
       </ImageBackground>
       <ImageBackground source={require('../assets/Onboarding/restaurantOwner.jpg')} style={lowerHalfContainer}>
-        <TouchableOpacity style={{...textContainer,...constainerRestaurantOwnerBG}}>
+        <TouchableOpacity 
+          style={{...textContainer,...constainerRestaurantOwnerBG}}
+          onPress={ ()=> this.navigateToScreen(null) }>
           <Text style={subText}> {strings.iOwnA} </Text>
           <Text style={mainText}> {strings.restaurant} </Text>
         </TouchableOpacity>
