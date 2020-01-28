@@ -22,6 +22,7 @@ class SupplierAddInventoryScreen extends Component {
       quantityAvailable: '',
       pricePerUnit: '',
       imageUri: null,
+      imageAWSURL: null,
       inventoryAddSuccess: false,
       showImagePicker: false,
       showInventoryTypePicker: false,
@@ -126,8 +127,7 @@ class SupplierAddInventoryScreen extends Component {
     })
 
     if (!errors.inventoryTitle.errorStatus && !errors.pricePerUnit.errorStatus && !errors.inventoryCategorySelection.errorStatus) {
-      //Do Something
-
+      this.uploadInventory()
     } else {
       this.setState({
         showLoadingDialog: false,
@@ -202,7 +202,6 @@ class SupplierAddInventoryScreen extends Component {
 
 
   // --------------- CATEGORY MODAL -----------------
-
 
   getCategoryModal = () => {
     const styles = {
@@ -399,8 +398,8 @@ class SupplierAddInventoryScreen extends Component {
 
   confirmInventoryCategory = () => {
     const { categorySelected } = this.state
-
     if (categorySelected === null) {
+
       this.setState({
         showCategoryError: true
       })
@@ -480,7 +479,6 @@ class SupplierAddInventoryScreen extends Component {
     })
 
   }
-
 
   InventoryCategoryItem = (toRenderItem) => {
     const styles = {
@@ -1025,30 +1023,56 @@ class SupplierAddInventoryScreen extends Component {
 
   // ----------------- DATABASE FUNCTIONS -------------------
 
-  addInvetorytoFirestore = () => {
+  uploadInventory = async () => {
     const {
       inventoryType,
       documentName,
       inventoryName,
       quantityAvailable,
-      pricePerUnit
+      pricePerUnit,
+      imageUri,
+      imageAWSURL
     } = this.state
+
+    var imageURL = await this.uploadImageToAWS()
+    console.log(imageURL)
+    if (imageURL === null) {
+      console.log("response is null")
+      Alert.alert("Image not uploaded")
+    }
+
+    else {
+      this.setState({
+        imageAWSURL: imageURL
+      })
+    }
 
     const inventoryObject = {
       name: inventoryName,
       price_per_unit: pricePerUnit,
-      quantity_available: quantityAvailable,
-      type: inventoryType
+      type: inventoryType,
+      imageURL: imageURL
     }
 
     const firestore = firebase.firestore()
 
-    firestore
-      .collection("products")
-      .doc(documentName)
-      .set(inventoryObject, { merge: true })
+    // firestore
+    //   .collection("products")
+    //   .set(inventoryObject, { merge: true })
 
-    const inventoryReference = "/products/" + documentName
+    // Add a new document with a generated id.
+    const writtenDocID = null
+
+    firestore.collection("products").add(inventoryObject)
+      .then(function (docRef) {
+        console.log("Document written with ID: ", docRef.id);
+        writtenDocID = docRef.id
+      })
+      .catch(function (error) {
+        console.error("Error adding document: ", error);
+      });
+
+    const inventoryReference = "/products/" + writtenDocID
 
     firestore
       .collection("suppliers")

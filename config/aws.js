@@ -2,8 +2,8 @@ const awsConfig = {
     keyPrefix: 'images/',
     bucket: 'kojoinventoryimages',
     region: 'ap-southeast-1',
-    accessKey: 'AKIA2QICFMTIC65G277F',
-    secretKey: '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',
+    accessKey: 'AKIA2QICFMTIIVK4KQHU',
+    secretKey: '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',
     successActionStatus: 201
   }
 
