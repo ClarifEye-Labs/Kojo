@@ -1,5 +1,5 @@
 const appConfig = {
-  DEBUG_MODE: true,
+  DEBUG_MODE: false,
   userRoleSupplier: 'Supplier',
   userRoleRestaurantOwner: 'RestaurantOwner'
 }

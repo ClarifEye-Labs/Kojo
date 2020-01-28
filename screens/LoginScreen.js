@@ -20,12 +20,14 @@ import { commonStyling } from '../common'
 import facebookConstants from '../config/facebook';
 import firebase from '../config/firebase'
 import screens from '../constants/screens';
+import collectionNames from '../config/collectionNames';
+import Utils from '../utils/Utils';
 
 class LoginScreen extends React.Component { 
   constructor(props){
     super(props)
     this.state = {
-
+      navigation: props.navigation
     }
   }
 
@@ -79,7 +81,7 @@ class LoginScreen extends React.Component {
              icon='logo-facebook'
              iconColor={colors.facebookBlue} 
              style={socialButton}
-             onPress={loginWithFacebook}/>
+             onPress={this.loginWithFacebook}/>
          </Card>
          <Card 
          width={dimens.logoWidthOnboarding}
@@ -127,6 +129,7 @@ class LoginScreen extends React.Component {
            title={strings.login} 
            textColor={colors.colorAccent} 
            style={submitButton}/>
+
        </View>
  
           <View style={registerContainer}>
@@ -145,34 +148,57 @@ class LoginScreen extends React.Component {
     return screen
   }
 
-}
 
-async function loginWithFacebook(){
-  await Facebook.initializeAsync(facebookConstants.appID)
-  await Facebook.setAutoInitEnabledAsync(true)
-  const {type,token} = await Facebook.logInWithReadPermissionsAsync(facebookConstants.appID, {permissions: facebookConstants.permissions})
-  if(type == 'success'){
-    const response = await fetch(
-      `https://graph.facebook.com/me?access_token=${token}&fields=id,name,email,about,picture`
-    );
-    console.log('response', JSON.stringify(response));
-    await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);  // Set persistent auth state
-    const credential = firebase.auth.FacebookAuthProvider.credential(token);
-    const facebookProfileData = await firebase.auth().signInWithCredential(credential);  // Sign in with Facebook credential
-    console.log(facebookProfileData)
 
-    // Do something with Facebook profile data
-    // OR you have subscribed to auth state change, authStateChange handler will process the profile data
-    
-    return Promise.resolve({type: 'success'});
+  loginWithFacebook = async () => {
+    await Facebook.initializeAsync(facebookConstants.appID)
+    await Facebook.setAutoInitEnabledAsync(true)
+    const {navigation} = this.state
+    const {type,token} = await Facebook.logInWithReadPermissionsAsync(facebookConstants.appID, {permissions: facebookConstants.permissions})
+    if(type == 'success'){
+      const response = await fetch(
+        `https://graph.facebook.com/me?access_token=${token}&fields=id,name,email,about,picture`
+      );
+      await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);  // Set persistent auth state
+      const credential = firebase.auth.FacebookAuthProvider.credential(token);
+      const facebookProfileData = await firebase.auth().signInWithCredential(credential).then().catch((error) => alert(error));  // Sign in with Facebook credential
+      const facebookUser = firebase.auth().currentUser
+      //need to check if user is already registered or just logging in 
+      const firestore = firebase.firestore()
+      const usersRef = firestore.collection(collectionNames.users)
+      await usersRef.doc(facebookUser.uid).get().then( async (doc)=>{
+        if(doc.exists){
+          //store the current user configuration in redux 
+          console.log('User already exists ')
+          Utils.dispatchScreen(screens.SupplierWelcomeScreen, undefined, navigation)
+        }else{
+          //write the user to database 
+          const email = facebookUser.email
+          const name = facebookUser.displayName
+          const phone = facebookUser.phoneNumber
+          const uid = facebookUser.uid
+          await usersRef.doc(uid).set({
+            name: name,
+            email:email,
+            phone: phone,
+            role: null,
+            uid: uid
+          })
+          Utils.dispatchScreen(screens.SupplierRestaurantScreen, undefined, navigation)
+          console.log('Ready to switch screens')
+        }
+      })
+      return Promise.resolve({type: 'success'});
 
-  } else {
-    console.log(type)
-    alert(strings.pleaseTryAgain)
-  } 
-}
+    } else {
+      alert(strings.pleaseTryAgain)
+    } 
+  }
 
-async function loginWithGoogle(){
+  loginWithGoogle = async() => {
+
+  }
+
 
 }
 

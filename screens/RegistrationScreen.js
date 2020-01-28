@@ -88,7 +88,6 @@ class RegistrationScreen extends React.Component {
       confirmPasswordError: errors.confirmPassword.errorReason
     }, this.peformUIOperationsForShowingErrors(errors))
 
-    
   }
 
   performNameValidation = (name) => { 
@@ -228,7 +227,7 @@ class RegistrationScreen extends React.Component {
     const user = firebase.auth().currentUser
     
     await ref.doc(user.uid).set({
-      user: user.uid,
+      uid: user.uid,
       name: user.displayName,
       email: user.email,
       role: null,

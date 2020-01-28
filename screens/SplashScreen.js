@@ -6,8 +6,8 @@ import { commonStyling } from '../common'
 import { PropTypes } from 'prop-types'
 import screens from '../constants/screens'
 import firebase from '../config/firebase'
-import {NavigationActions, StackActions} from 'react-navigation'
 import collectionNames from '../config/collectionNames';
+import Utils from '../utils/Utils';
 
 class SplashScreen extends Component {
   constructor(props) {
@@ -23,19 +23,10 @@ class SplashScreen extends Component {
     }
   }
 
-  dispatchScreen = (screenName) => {
-    const resetAction = StackActions.reset({
-      index: 0,
-      actions: [
-        NavigationActions.navigate({ routeName: screenName })
-      ]
-    })
-    setTimeout(()=>this.state.navigation.dispatch(resetAction), 2000);
-  }
-
   navigateToScreenLogic = async () => {
     const user = firebase.auth().currentUser
     const firestore = firebase.firestore()
+
 
     if(user) {
       const userRef = firestore.collection(collectionNames.users)
@@ -46,12 +37,12 @@ class SplashScreen extends Component {
   
       const {role} = userFirestore
       if(!role){
-        this.dispatchScreen(screens.SupplierRestaurantScreen)
+        Utils.dispatchScreen(screens.SupplierRestaurantScreen, 2000, this.state.navigation)
       }else{
         console.log('Check for phone number etc. ')
       }
     }else{
-      this.dispatchScreen(screens.WelcomeScreen)
+      Utils.dispatchScreen(screens.WelcomeScreen, 2000, this.state.navigation)
     }
   }
 
