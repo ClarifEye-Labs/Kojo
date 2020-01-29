@@ -66,7 +66,12 @@ const strings = {
   enterYourEmailForgotPassword: 'Enter the email used for registration : ',
   sendEmail: 'Send Email',
   sorryWeNeedPermissions: 'Sorry, we need camera roll permissions to make this work!',
-  chooseUploadImageOption: 'Choose Image Upload Option'
+  chooseUploadImageOption: 'Choose Image Upload Option',
+  addressHeading: 'Pick Address',
+  addressSubHeading: 'Type your address or choose your current location',
+  enterAddress: 'Enter your address',
+  addressPlaceholder: 'Type here...',
+  chooseCurrentLocation: 'Use Current Location'
 }
 
 export default strings

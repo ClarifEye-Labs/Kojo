@@ -16,7 +16,7 @@ const dimens = {
   defaultBorderRadius: 10,
   inputTextFontSize: 19,
   crossSize: 28,
-  crossTop: 60,
+  crossTop: 40,
   crossRight: 40,
   headingSize: 30
 }

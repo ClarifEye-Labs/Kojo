@@ -41,7 +41,6 @@ PhoneScreen.navigationOptions = {
 }
 
 PhoneScreen.propTypes = {
-
   navigation: PropTypes.object
 }
 
