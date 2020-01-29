@@ -5,11 +5,12 @@ import { dimens, colors } from '../constants'
 import { commonStyling } from '../common' 
 import {PropTypes} from 'prop-types'
 
-class Name extends Component {
+class AddressScreen extends Component {
   constructor(props){
     super(props)
     this.state = {
-      navigation: props.navigation
+      navigation: props.navigation,
+      name: 'Address Screen'
     }
   }
   render() {
@@ -36,12 +37,12 @@ const styles = StyleSheet.create({
   }
 })
 
-Name.navigationOptions = {
-  title: 'Title'
+AddressScreen.navigationOptions = {
+  title: 'Address Screen'
 }
 
-Name.propTypes = {
+AddressScreen.propTypes = {
   navigation: PropTypes.object
 }
 
-export default Name
+export default AddressScreen

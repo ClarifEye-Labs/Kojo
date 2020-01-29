@@ -35,11 +35,15 @@ class SplashScreen extends Component {
       await userRef.doc(userID).get().then( (doc) => doc.exists ? userFirestore = doc.data() : null )
       //if user has been deleted from our database then reinit the entire thing
       if(userFirestore) {
-        const {role} = userFirestore
+        const {role, phone, address} = userFirestore
         if(!role){
           Utils.dispatchScreen(screens.SupplierRestaurantScreen, 2000, this.state.navigation)
-        }else{
-          console.log('Check for phone number etc. ')
+        }else if(!phone){
+          console.log('No phone')
+          Utils.dispatchScreen(screens.PhoneScreen, 2000, this.state.navigation)
+        }else if(!address) {
+          console.log('No address for user')
+          Utils.dispatchScreen(screens.AddressScreen, 2000, this.state.navigation)
         }
       }else{
         firebase.auth().signOut()
