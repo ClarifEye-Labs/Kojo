@@ -30,6 +30,7 @@ class SupplierAddInventoryScreen extends Component {
       imagePickerValue: null,
       inventoryTypePickerValue: null,
       inventoryCategories: null,
+      inventoryUnits: null,
       showCategoryModal: false,
       showAddCategorySection: false,
       showAddUnitSection: false,
@@ -55,6 +56,7 @@ class SupplierAddInventoryScreen extends Component {
   componentDidMount() {
     this.getPermissionAsync();
     this.getInventoryCategories();
+    this.getUnits();
   }
 
 
@@ -124,7 +126,7 @@ class SupplierAddInventoryScreen extends Component {
     errors.pricePerUnit = this.performPricePerUnitValidation(pricePerUnit)
     errors.inventoryCategorySelection = this.performInventoryCategorySelectionValidation(inventoryType)
     errors.unitSelection = this.performInventoryUnitSelectionValidation(inventoryUnit)
-    
+
 
     this.setState({
       inventoryTitleError: errors.inventoryTitle.errorReason,
@@ -447,10 +449,7 @@ class SupplierAddInventoryScreen extends Component {
 
   writeCategoryToDatabase = () => {
     const { categoryTyped } = this.state
-
     //write this category to database and refresh loadout of categories 
-
-
     this.showCategoryOnUI(categoryTyped)
     this.closeCategoryModal()
   }
@@ -709,7 +708,7 @@ class SupplierAddInventoryScreen extends Component {
                 style={styles.unitListContainer}>
                 <FlatList
                   contentContainerStyle={styles.flatListStyle}
-                  data={this.state.inventoryCategories}
+                  data={this.state.inventoryUnits}
                   renderItem={item => this.UnitItem(item)}
                   keyExtractor={item => item.id}
                 />
@@ -762,6 +761,23 @@ class SupplierAddInventoryScreen extends Component {
   }
 
   getUnits = async () => {
+
+    var inventoryUnitList = [{ 'id': 'other', title: 'Other' }]
+    const inventoryCategoryCollection = firebase.firestore().collection('units')
+    await inventoryCategoryCollection
+      .get()
+      .then(function (querySnapShot) {
+        querySnapShot.forEach(function (doc) {
+          let categoryObject = {}
+          categoryObject.id = doc.id
+          categoryObject.title = doc.data().title
+          inventoryUnitList.push(categoryObject)
+        })
+      })
+
+    this.setState({
+      inventoryUnits: inventoryUnitList
+    })
 
   }
 
@@ -1056,17 +1072,16 @@ class SupplierAddInventoryScreen extends Component {
       quantityAvailable,
       pricePerUnit,
       imageUri,
-      imageAWSURL
+      imageAWSURL,
+      inventoryUnit
     } = this.state
 
     var imageURL = await this.uploadImageToAWS()
-    console.log(imageURL)
-    if (imageURL === null) {
-      console.log("response is null")
-      Alert.alert("Image not uploaded")
-    }
 
-    else {
+    if (!imageURL) {
+      Alert.alert("Image not uploaded, Try Again.")
+
+    } else {
       this.setState({
         imageAWSURL: imageURL
       })
@@ -1075,6 +1090,7 @@ class SupplierAddInventoryScreen extends Component {
     const inventoryObject = {
       name: inventoryName,
       price_per_unit: pricePerUnit,
+      unit: inventoryUnit,
       type: inventoryType,
       imageURL: imageURL
     }
@@ -1085,16 +1101,17 @@ class SupplierAddInventoryScreen extends Component {
     //   .collection("products")
     //   .set(inventoryObject, { merge: true })
 
-    // Add a new document with a generated id.
-    const writtenDocID = null
-
-    firestore.collection("products").add(inventoryObject)
+    //Add a new document with a generated id.
+    var writtenDocID = null
+    await firestore.collection("products").add(inventoryObject)
       .then(function (docRef) {
-        console.log("Document written with ID: ", docRef.id);
         writtenDocID = docRef.id
+        this.setState({
+          showLoadingDialog: false
+        })
       })
       .catch(function (error) {
-        console.error("Error adding document: ", error);
+        Alert.alert("Error adding inventory, try again: ", error);
       });
 
     const inventoryReference = "/products/" + writtenDocID
@@ -1105,8 +1122,12 @@ class SupplierAddInventoryScreen extends Component {
       .update({
         inventory: firebase.firestore.FieldValue.arrayUnion(firebase.firestore().doc(inventoryReference))
       })
-
-
+      .then(function (error) {
+        Alert.alert("Inventory added to your account successuly.")
+      })
+      .catch(function (error) {
+        Alert.alert("Error adding inventory to your account, try again.", error)
+      })
   }
 
   uploadImageOnClick = async () => {
@@ -1140,12 +1161,18 @@ class SupplierAddInventoryScreen extends Component {
       type: 'image/png'
     }
 
-    RNS3.put(file, awsConfig)
+    var returnValue = null
+    await RNS3.put(file, awsConfig)
       .then(
         (response) => {
-          console.log(response.headers.Location)
+          if (response.headers.Location) {
+            returnValue = response.headers.Location
+          }
+
         }
       )
+
+    return returnValue
   }
 
 
