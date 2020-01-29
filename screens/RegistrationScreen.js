@@ -1,27 +1,31 @@
-import React, {useRef, useEffect} from 'react'
+import React from 'react'
 import { View, StyleSheet, Text, TouchableOpacity, ScrollView } from 'react-native'
 import { Back, Heading, InputWithSubHeading, Button } from '../Components'
-import { dimens, colors, strings} from '../constants'
+import { dimens, colors, strings } from '../constants'
 import { commonStyling } from '../common'
 import firebase from '../config/firebase'
 import screens from '../constants/screens'
 import appConfig from '../config/appConfig'
 
-class RegistrationScreen extends React.Component { 
-  constructor(props){
+class RegistrationScreen extends React.Component {
+  constructor(props) {
     super(props)
-    this.state={
+    this.state = {
       nameEntered: appConfig.DEBUG_MODE ? 'Shikhar Khandelwal' : '',
-      nameError: undefined,
-      emailError: undefined,
       emailEntered: appConfig.DEBUG_MODE ? 'conveytoshikhar@gmail.com' : '',
-      passwordError: false,
       passwordEntered: appConfig.DEBUG_MODE ? '1234567890' : '',
       confirmationPasswordEntered: appConfig.DEBUG_MODE ? '1234567890' : '',
-      confirmationPasswordError: undefined,
       submitButtonClicked: false,
       showLoadingDialog: false,
-      navigation: this.props.navigation
+      navigation: this.props.navigation,
+      nameErrorTitle: '',
+      nameErrorStatus: false,
+      emailErrorTitle: '',
+      emailErrorStatus: false,
+      passwordErrorTitle: '',
+      passwordErrorStatus: false,
+      confirmationPasswordTitle: '',
+      confirmationPasswordStatus: false
     }
   }
 
@@ -50,7 +54,7 @@ class RegistrationScreen extends React.Component {
   }
 
   submitButtonOnClick = () => {
-    const{
+    const {
       nameEntered,
       emailEntered,
       passwordEntered,
@@ -82,48 +86,52 @@ class RegistrationScreen extends React.Component {
     }
 
     this.setState({
-      nameError: errors.name.errorReason,
-      emailError: errors.email.errorReason,
-      passwordError: errors.password.errorReason,
-      confirmPasswordError: errors.confirmPassword.errorReason
+      nameErrorTitle: errors.name.errorReason,
+      nameErrorStatus: errors.name.errorStatus,
+      emailErrorTitle: errors.email.errorReason,
+      emailErrorStatus: errors.email.errorStatus,
+      passwordErrorTitle: errors.password.errorReason,
+      passwordErrorStatus: errors.password.errorStatus || errors.confirmPassword.errorStatus,
+      confirmPasswordErrorTitle: errors.confirmPassword.errorReason,
+      confirmPasswordErrorStatus: errors.confirmPassword.errorStatus,
     }, this.peformUIOperationsForShowingErrors(errors))
 
   }
 
-  performNameValidation = (name) => { 
+  performNameValidation = (name) => {
     var error = {
-      errorStatus : false,
-      errorReason : null
+      errorStatus: false,
+      errorReason: null
     }
 
-    if(name.length === 0){
+    if (name.length === 0) {
       error.errorStatus = true
       error.errorReason = strings.nameCannotBeEmpty
       return error
     }
 
-    if(! /^(([A-Za-z]+[\-\']?)*([A-Za-z]+)?\s)+([A-Za-z]+[\-\']?)*([A-Za-z]+)?$/.test(name)) {
+    if (! /^(([A-Za-z]+[\-\']?)*([A-Za-z]+)?\s)+([A-Za-z]+[\-\']?)*([A-Za-z]+)?$/.test(name)) {
       error.errorStatus = true,
-      error.errorReason = strings.nameErrorMessage
+        error.errorReason = strings.nameErrorMessage
     }
 
     return error
-    
+
   }
 
   performEmailValidation = (email) => {
     var error = {
-      errorStatus : false,
-      errorReason : null
+      errorStatus: false,
+      errorReason: null
     }
 
-    if(email.length === 0){
+    if (email.length === 0) {
       error.errorReason = strings.emailCannotBeEmpty
       error.errorStatus = true
       return error
     }
 
-    if( ! /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email)) {
+    if (! /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email)) {
       error.errorStatus = true
       error.errorReason = strings.emailErrorMessage
     }
@@ -135,18 +143,18 @@ class RegistrationScreen extends React.Component {
 
   performPasswordValidation = (password) => {
     var error = {
-      errorStatus : false,
-      errorReason : null
+      errorStatus: false,
+      errorReason: null
     }
 
-    if(password.length === 0){
+    if (password.length === 0) {
       error.errorStatus = true
       error.errorReason = strings.passwordCannotBeEmpty
       return error
     }
 
 
-    if( password.length < 6) {
+    if (password.length < 6) {
       error.errorStatus = true
       error.errorReason = strings.passwordErrorMessage
     }
@@ -156,44 +164,36 @@ class RegistrationScreen extends React.Component {
 
   performConfirmPasswordValidation = (oldpassword, newpassword) => {
     var error = {
-      errorStatus : false,
-      errorReason : null
+      errorStatus: false,
+      errorReason: null
     }
 
-    if(oldpassword.length === 0|| newpassword.length === 0){
+    if (oldpassword.length === 0 || newpassword.length === 0) {
       error.errorStatus = true
       error.errorReason = strings.confirmPasswordCannotBeEmpty
       return error
     }
 
-    if(oldpassword !== newpassword){
+    if (oldpassword !== newpassword) {
       error.errorStatus = true
       error.errorReason = strings.passwordsDoNotMatch
     }
 
     return error
   }
-  
-  peformUIOperationsForShowingErrors(errors){
-    this.setState({
-      nameError: errors.name.errorStatus,
-      emailError: errors.email.errorStatus,
-      passwordError: errors.password.errorStatus || errors.confirmPassword.errorStatus,
-      confirmationPasswordError: errors.confirmPassword.errorStatus
-    })
 
-    if( !errors.name.errorStatus && !errors.email.errorStatus && !errors.password.errorStatus && !errors.confirmPassword.errorStatus){
+  peformUIOperationsForShowingErrors(errors) {
+    if (!errors.name.errorStatus && !errors.email.errorStatus && !errors.password.errorStatus && !errors.confirmPassword.errorStatus) {
       this.performRegistration()
-    }else{
+    } else {
       this.setState({
         showLoadingDialog: false,
         submitButtonClicked: false
       })
     }
-    
   }
 
-  performRegistration(){
+  performRegistration() {
     const {
       emailEntered,
       passwordEntered,
@@ -208,7 +208,7 @@ class RegistrationScreen extends React.Component {
 
   }
 
-  successfulRegistration= async (user) => {
+  successfulRegistration = async (user) => {
     await firebase.auth().currentUser.updateProfile({
       displayName: this.state.nameEntered
     })
@@ -218,14 +218,14 @@ class RegistrationScreen extends React.Component {
     this.setState({
       showLoadingDialog: false
     }, () => this.state.navigation.navigate(screens.SupplierRestaurantScreen))
-    
+
   }
 
   writeUserToFireStore = async () => {
     const firestore = firebase.firestore()
     const ref = firestore.collection('users')
     const user = firebase.auth().currentUser
-    
+
     await ref.doc(user.uid).set({
       uid: user.uid,
       name: user.displayName,
@@ -233,8 +233,8 @@ class RegistrationScreen extends React.Component {
       role: null,
       phone: null
     })
-    
-    
+
+
   }
 
   registrationFailure = (error) => {
@@ -244,9 +244,9 @@ class RegistrationScreen extends React.Component {
     })
     alert(error)
   }
-  
 
-  render(){
+
+  render() {
     const {
       mainContainer,
       headingContainerStyle,
@@ -263,98 +263,98 @@ class RegistrationScreen extends React.Component {
       navigation
     } = this.props
 
-    const screen = 
-    <View style={mainContainer}>
-      <Back 
-        style={{...commonStyling.backButtonStyling}}
-        onPress={()=> navigation.goBack()}/>
+    const screen =
+      <View style={mainContainer}>
+        <Back
+          style={{ ...commonStyling.backButtonStyling }}
+          onPress={() => navigation.goBack()} />
 
-      <Heading 
-        title={strings.registerWithKojo}
-        containerStyle={headingContainerStyle} />
-        
-      <View style={allInputsContainer}>
-        <InputWithSubHeading 
-          secureTextEntry={false}
-          placeholder={strings.namePlaceholderText}
-          autoCorrect={false}
-          autoCompleteType='name'
-          subHeadingTitle={strings.fullNameSubHeading}
-          autoCapitalize='words'
-          errorTitle={this.state.nameError}
-          onChangeText={this.setNameEntered}
-          errorStatus={this.state.nameError}
-          editable={!this.state.submitButtonClicked}
-          containerStyle={{marginTop: 5, marginBottom: 5}}
-          subHeadingStyle={subHeadingStyle}/>
-        
+        <Heading
+          title={strings.registerWithKojo}
+          containerStyle={headingContainerStyle} />
 
-        <InputWithSubHeading 
-          secureTextEntry={false}
-          placeholder = {strings.emailPlaceholderText}
-          autoCompleteType='email'
-          subHeadingTitle={strings.emailSubHeading}
-          autoCorrect={false}
-          autoCapitalize='none'
-          keyboardType='email-address'
-          errorTitle={this.state.emailError}
-          onChangeText={this.setEmailEntered}
-          errorStatus={this.state.emailError}
-          editable={!this.state.submitButtonClicked}
-          subHeadingStyle={subHeadingStyle}/>
+        <View style={allInputsContainer}>
+          <InputWithSubHeading
+            secureTextEntry={false}
+            placeholder={strings.namePlaceholderText}
+            autoCorrect={false}
+            autoCompleteType='name'
+            subHeadingTitle={strings.fullNameSubHeading}
+            autoCapitalize='words'
+            errorTitle={this.state.nameErrorTitle}
+            onChangeText={this.setNameEntered}
+            errorStatus={this.state.nameErrorStatus}
+            editable={!this.state.submitButtonClicked}
+            containerStyle={{ marginTop: 5, marginBottom: 5 }}
+            subHeadingStyle={subHeadingStyle} />
 
-        <InputWithSubHeading 
-          secureTextEntry={true}
-          autoCompleteType='password'
-          placeholder={strings.passwordPlaceholderText}
-          subHeadingTitle={strings.passwordSubHeading}
-          autoCorrect={false}
-          autoCapitalize='none'
-          errorTitle={this.state.passwordError}
-          onChangeText={this.setPasswordEntered}
-          errorStatus={this.state.passwordError}
-          editable={!this.state.submitButtonClicked}
-          subHeadingStyle={subHeadingStyle}/>
-        
 
-        <InputWithSubHeading 
-          secureTextEntry={true}
-          autoCompleteType='password'
-          placeholder={strings.confirmPasswordPlaceholderText}
-          subHeadingTitle={strings.confirmPasswordSubHeading}
-          autoCorrect={false}
-          autoCapitalize='none'
-          errorTitle={this.state.confirmPasswordError}
-          onChangeText={this.setConfirmationPasswordEntered}
-          errorStatus={this.state.confirmationPasswordError}
-          editable={!this.state.submitButtonClicked}
-          subHeadingStyle={subHeadingStyle}/>
-      </View>
-    
+          <InputWithSubHeading
+            secureTextEntry={false}
+            placeholder={strings.emailPlaceholderText}
+            autoCompleteType='email'
+            subHeadingTitle={strings.emailSubHeading}
+            autoCorrect={false}
+            autoCapitalize='none'
+            keyboardType='email-address'
+            errorTitle={this.state.emailErrorTitle}
+            onChangeText={this.setEmailEntered}
+            errorStatus={this.state.emailErrorStatus}
+            editable={!this.state.submitButtonClicked}
+            subHeadingStyle={subHeadingStyle} />
 
-      <Button 
-        title={strings.register}
-        textColor={colors.colorAccent}
-        style={buttonStyle} 
-        isLoading = {this.state.showLoadingDialog}
-        onPress={this.submitButtonOnClick}/>
+          <InputWithSubHeading
+            secureTextEntry={true}
+            autoCompleteType='password'
+            placeholder={strings.passwordPlaceholderText}
+            subHeadingTitle={strings.passwordSubHeading}
+            autoCorrect={false}
+            autoCapitalize='none'
+            errorTitle={this.state.passwordErrorTitle}
+            onChangeText={this.setPasswordEntered}
+            errorStatus={this.state.passwordErrorStatus}
+            editable={!this.state.submitButtonClicked}
+            subHeadingStyle={subHeadingStyle} />
 
-      <View style={termsContainer}>
-        <Text style={termsStyle}>
-          {strings.registeringWithKojoHeadline}
-        </Text>
-        <View style={tandcContainer}>
-          <TouchableOpacity onPress={() => navigation.navigate(screens.SupplierRestaurantScreen)}>
-            <Text style={tandcText}> {strings.termsAndConditions} </Text>
-          </TouchableOpacity>
-          <Text style={termsStyle}> {strings.and} </Text>
-          <TouchableOpacity>
-            <Text style={tandcText}> {strings.privacyPolicy} </Text>
-          </TouchableOpacity>
+
+          <InputWithSubHeading
+            secureTextEntry={true}
+            autoCompleteType='password'
+            placeholder={strings.confirmPasswordPlaceholderText}
+            subHeadingTitle={strings.confirmPasswordSubHeading}
+            autoCorrect={false}
+            autoCapitalize='none'
+            errorTitle={this.state.confirmPasswordErrorTitle}
+            onChangeText={this.setConfirmationPasswordEntered}
+            errorStatus={this.state.confirmPasswordErrorStatus}
+            editable={!this.state.submitButtonClicked}
+            subHeadingStyle={subHeadingStyle} />
         </View>
-      </View>
 
-    </View>
+
+        <Button
+          title={strings.register}
+          textColor={colors.colorAccent}
+          style={buttonStyle}
+          isLoading={this.state.showLoadingDialog}
+          onPress={this.submitButtonOnClick} />
+
+        <View style={termsContainer}>
+          <Text style={termsStyle}>
+            {strings.registeringWithKojoHeadline}
+          </Text>
+          <View style={tandcContainer}>
+            <TouchableOpacity onPress={() => navigation.navigate(screens.SupplierRestaurantScreen)}>
+              <Text style={tandcText}> {strings.termsAndConditions} </Text>
+            </TouchableOpacity>
+            <Text style={termsStyle}> {strings.and} </Text>
+            <TouchableOpacity>
+              <Text style={tandcText}> {strings.privacyPolicy} </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+      </View>
 
     return screen
   }
@@ -370,12 +370,12 @@ const styles = StyleSheet.create({
   backButtonStyle: {
     ...commonStyling.backButtonStyling
   },
-  headingContainerStyle:{
+  headingContainerStyle: {
     width: '100%',
     textAlign: 'left',
     marginTop: dimens.screenSafeUpperNotchDistance + 70
   },
-  buttonStyle:{
+  buttonStyle: {
     width: '90%',
     backgroundColor: colors.colorPrimary,
     marginTop: 35
@@ -388,19 +388,19 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: colors.blackTransluscent
   },
-  allInputsContainer:{
+  allInputsContainer: {
     width: '100%',
     padding: 8,
     marginTop: 20,
     marginBottom: 10
   },
-  tandcContainer:{
+  tandcContainer: {
     flexDirection: 'row',
     width: '100%',
     marginTop: 2,
     alignItems: 'center'
   },
-  tandcText:{
+  tandcText: {
     fontSize: 15,
     color: colors.colorPrimary
   },
@@ -409,9 +409,8 @@ const styles = StyleSheet.create({
   }
 })
 
-RegistrationScreen.navigationOptions={
-  header:null
+RegistrationScreen.navigationOptions = {
+  header: null
 }
 export default RegistrationScreen
 
- 
