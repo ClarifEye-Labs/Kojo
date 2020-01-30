@@ -1,20 +1,22 @@
 import React from 'react'
 import * as Facebook from 'expo-facebook';
-import { 
-  View, 
-  StyleSheet, 
-  Text, 
-  TouchableOpacity, 
+import {
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
   ScrollView,
-  KeyboardAvoidingView} from 'react-native'
-import { 
-  Card, 
-  LogoPlaceholder, 
-  Button, 
-  SocialButton, 
+  KeyboardAvoidingView
+} from 'react-native'
+import {
+  Card,
+  LogoPlaceholder,
+  Button,
+  SocialButton,
   InputWithSubHeading,
-  Back} from '../Components'
-  
+  Back
+} from '../Components'
+
 import { dimens, colors, customFonts, strings } from '../constants'
 import { commonStyling } from '../common'
 import facebookConstants from '../config/facebook';
@@ -23,15 +25,15 @@ import screens from '../constants/screens';
 import collectionNames from '../config/collectionNames';
 import Utils from '../utils/Utils';
 
-class LoginScreen extends React.Component { 
-  constructor(props){
+class LoginScreen extends React.Component {
+  constructor(props) {
     super(props)
     this.state = {
       navigation: props.navigation
     }
   }
 
-  render(){
+  render() {
 
     const {
       mainContainer,
@@ -61,90 +63,90 @@ class LoginScreen extends React.Component {
       <KeyboardAvoidingView behavior="padding" enabled style={mainContainer} >
         <ScrollView style={mainContainer}>
 
-        <View style={logoContainer}>
-          <Back 
-            style={{...commonStyling.backButtonStyling}}
-            onPress={()=> navigation.goBack()}/>
-            
-          <LogoPlaceholder style={logo}/>
-        </View>
- 
-        <View style={contentContainer}>
- 
-          <View style={socialContainer}>
-         <Card 
-         width={dimens.logoWidthOnboarding}
-         height={dimens.buttonHeight}
-         elevation={10}>
-           <SocialButton
-             title={strings.facebook}
-             icon='logo-facebook'
-             iconColor={colors.facebookBlue} 
-             style={socialButton}
-             onPress={this.loginWithFacebook}/>
-         </Card>
-         <Card 
-         width={dimens.logoWidthOnboarding}
-         height={dimens.buttonHeight}
-         elevation={10}>
-           <SocialButton
-             title={strings.google}
-             icon='logo-google'
-             iconColor={colors.googleOrange} 
-             style={socialButton}
-             onPress={null}/>
-         </Card>
-       </View>
-       
-          <View style={orContainer}>
-         <View style={thinLine} />
-         <Text style={orStyling}> or </Text>
-         <View style={thinLine} />
-       </View>
- 
-          <View style={loginDetailsContainer}>
-         <InputWithSubHeading 
-           subHeadingTitle={strings.emailSubHeading}
-           placeholder={strings.emailPlaceholderText}
-           secureTextEntry={false} 
-           subHeadingStyle={subText}
-           textInputContainerStyle={textInputContainer} 
-           autoCompleteType='email'
-           />
- 
-         <InputWithSubHeading 
-           subHeadingTitle={strings.passwordSubHeading}
-           placeholder={strings.passwordPlaceholderText}
-           secureTextEntry={true} 
-           subHeadingStyle={subText}
-           autoCompleteType='password'
-           textInputContainerStyle={textInputContainer} />
- 
- 
-         <TouchableOpacity onPress={()=>navigation.navigate(screens.ForgotPasswordScreen)}>
-           <Text style={forgotPasswordText}> {strings.forgotPassword} </Text>
-         </TouchableOpacity>
- 
-         <Button 
-           title={strings.login} 
-           textColor={colors.colorAccent} 
-           style={submitButton}/>
+          <View style={logoContainer}>
+            <Back
+              style={{ ...commonStyling.backButtonStyling }}
+              onPress={() => navigation.goBack()} />
 
-       </View>
- 
-          <View style={registerContainer}>
-         <Text style={registerTextSubtext}>{strings.dontHaveAnAccount}</Text>
-         <TouchableOpacity onPress={()=>navigation.navigate(screens.RegistrationScreen)}>
-           <Text style={registerText}> {strings.registerNow}</Text>
-         </TouchableOpacity>
-       </View>
-        </View>
+            <LogoPlaceholder style={logo} />
+          </View>
+
+          <View style={contentContainer}>
+
+            <View style={socialContainer}>
+              <Card
+                width={dimens.logoWidthOnboarding}
+                height={dimens.buttonHeight}
+                elevation={10}>
+                <SocialButton
+                  title={strings.facebook}
+                  icon='logo-facebook'
+                  iconColor={colors.facebookBlue}
+                  style={socialButton}
+                  onPress={this.loginWithFacebook} />
+              </Card>
+              <Card
+                width={dimens.logoWidthOnboarding}
+                height={dimens.buttonHeight}
+                elevation={10}>
+                <SocialButton
+                  title={strings.google}
+                  icon='logo-google'
+                  iconColor={colors.googleOrange}
+                  style={socialButton}
+                  onPress={null} />
+              </Card>
+            </View>
+
+            <View style={orContainer}>
+              <View style={thinLine} />
+              <Text style={orStyling}> or </Text>
+              <View style={thinLine} />
+            </View>
+
+            <View style={loginDetailsContainer}>
+              <InputWithSubHeading
+                subHeadingTitle={strings.emailSubHeading}
+                placeholder={strings.emailPlaceholderText}
+                secureTextEntry={false}
+                subHeadingStyle={subText}
+                textInputContainerStyle={textInputContainer}
+                autoCompleteType='email'
+              />
+
+              <InputWithSubHeading
+                subHeadingTitle={strings.passwordSubHeading}
+                placeholder={strings.passwordPlaceholderText}
+                secureTextEntry={true}
+                subHeadingStyle={subText}
+                autoCompleteType='password'
+                textInputContainerStyle={textInputContainer} />
+
+
+              <TouchableOpacity onPress={() => navigation.navigate(screens.ForgotPasswordScreen)}>
+                <Text style={forgotPasswordText}> {strings.forgotPassword} </Text>
+              </TouchableOpacity>
+
+              <Button
+                title={strings.login}
+                textColor={colors.colorAccent}
+                style={submitButton} />
+
+            </View>
+
+            <View style={registerContainer}>
+              <Text style={registerTextSubtext}>{strings.dontHaveAnAccount}</Text>
+              <TouchableOpacity onPress={() => navigation.navigate(screens.RegistrationScreen)}>
+                <Text style={registerText}> {strings.registerNow}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         </ScrollView>
-        
+
       </KeyboardAvoidingView>
-    
-    
-  
+
+
+
     return screen
   }
 
@@ -153,9 +155,9 @@ class LoginScreen extends React.Component {
   loginWithFacebook = async () => {
     await Facebook.initializeAsync(facebookConstants.appID)
     await Facebook.setAutoInitEnabledAsync(true)
-    const {navigation} = this.state
-    const {type,token} = await Facebook.logInWithReadPermissionsAsync(facebookConstants.appID, {permissions: facebookConstants.permissions})
-    if(type == 'success'){
+    const { navigation } = this.state
+    const { type, token } = await Facebook.logInWithReadPermissionsAsync(facebookConstants.appID, { permissions: facebookConstants.permissions })
+    if (type == 'success') {
       const response = await fetch(
         `https://graph.facebook.com/me?access_token=${token}&fields=id,name,email,about,picture`
       );
@@ -166,12 +168,12 @@ class LoginScreen extends React.Component {
       //need to check if user is already registered or just logging in 
       const firestore = firebase.firestore()
       const usersRef = firestore.collection(collectionNames.users)
-      await usersRef.doc(facebookUser.uid).get().then( async (doc)=>{
-        if(doc.exists){
+      await usersRef.doc(facebookUser.uid).get().then(async (doc) => {
+        if (doc.exists) {
           //store the current user configuration in redux 
           console.log('User already exists ')
           Utils.dispatchScreen(screens.SupplierWelcomeScreen, undefined, navigation)
-        }else{
+        } else {
           //write the user to database 
           const email = facebookUser.email
           const name = facebookUser.displayName
@@ -179,7 +181,7 @@ class LoginScreen extends React.Component {
           const uid = facebookUser.uid
           await usersRef.doc(uid).set({
             name: name,
-            email:email,
+            email: email,
             phone: phone,
             role: null,
             uid: uid
@@ -188,14 +190,14 @@ class LoginScreen extends React.Component {
           console.log('Ready to switch screens')
         }
       })
-      return Promise.resolve({type: 'success'});
+      return Promise.resolve({ type: 'success' });
 
     } else {
       alert(strings.pleaseTryAgain)
-    } 
+    }
   }
 
-  loginWithGoogle = async() => {
+  loginWithGoogle = async () => {
 
   }
 
@@ -203,99 +205,99 @@ class LoginScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
-    mainContainer: {
-      ...commonStyling.mainContainer,
-      flexDirection: 'column'
-    },
-    logoContainer: {
-      flex: 1,
-      paddingTop: dimens.screenSafeUpperNotchDistance + 40,
-      alignItems: 'center',
-      justifyContent: 'center'
-    },
-    logo: {
-      width: dimens.logoWidthOnboarding,
-      height: dimens.logoHeightOnboarding,
-      borderColor: colors.colorPrimary,
-      borderWidth: 1
-    },
-    contentContainer: {
-      flex: 2,
-      marginTop: 40
-    },
-    socialContainer:{
-      width: '100%',
-      height: dimens.buttonHeight,
-      alignItems: 'center',
-      justifyContent: 'space-evenly',
-      flexDirection: 'row'
-    },
-    socialButton: {
-      width: '100%',
-    },
-    orStyling: {
-      color: colors.blackTransluscent,
-      fontSize: 18,
-      marginHorizontal: 10,
-      fontFamily: customFonts.regular
-    },
-    orContainer: {
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexDirection: 'row',
-      marginTop: 40
-    },
-    thinLine: {
-      height: dimens.thinLine,
-      backgroundColor: colors.blackTransluscent,
-      width: '40%'
-    },
-    loginDetailsContainer:{
-      flexDirection: 'column',
-      justifyContent: 'center',
-      paddingLeft: '10%',
-      paddingRight: '10%'
-    },
-    textInputContainer: {
-      borderBottomColor: colors.blackTransluscent,
-    },
-    subText: {
-      marginTop: 30
-    },
-    forgotPasswordText:{
-      marginTop: 8,
-      textAlign: 'right',
-      fontSize: 16,
-      fontFamily: customFonts.semiBold,
-      color: colors.colorPrimary
-    },
-    submitButton:{
-      backgroundColor: colors.colorPrimary,
-      marginTop: 40,
-      width: '100%'
-    },
-    loginText:{
-      color: colors.colorAccent,
-      fontSize: 18,
-      fontFamily: customFonts.medium
-    },
-    registerContainer:{
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginTop: 20,
-      marginBottom: 20
-    },
-    registerText:{
-      fontSize: 16,
-      fontFamily: customFonts.semiBold,
-      color: colors.colorPrimary
-    },
-    registerTextSubtext:{
-      fontSize: 16,
-      color: colors.blackTransluscent,
-      fontFamily: customFonts.medium
-    }
+  mainContainer: {
+    ...commonStyling.mainContainer,
+    flexDirection: 'column'
+  },
+  logoContainer: {
+    flex: 1,
+    paddingTop: dimens.screenSafeUpperNotchDistance + 40,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  logo: {
+    width: dimens.logoWidthOnboarding,
+    height: dimens.logoHeightOnboarding,
+    borderColor: colors.colorPrimary,
+    borderWidth: 1
+  },
+  contentContainer: {
+    flex: 2,
+    marginTop: 40
+  },
+  socialContainer: {
+    width: '100%',
+    height: dimens.buttonHeight,
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+    flexDirection: 'row'
+  },
+  socialButton: {
+    width: '100%',
+  },
+  orStyling: {
+    color: colors.blackTransluscent,
+    fontSize: 18,
+    marginHorizontal: 10,
+    fontFamily: customFonts.regular
+  },
+  orContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    marginTop: 40
+  },
+  thinLine: {
+    height: dimens.thinLine,
+    backgroundColor: colors.blackTransluscent,
+    width: '40%'
+  },
+  loginDetailsContainer: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    paddingLeft: '10%',
+    paddingRight: '10%'
+  },
+  textInputContainer: {
+    borderBottomColor: colors.blackTransluscent,
+  },
+  subText: {
+    marginTop: 30
+  },
+  forgotPasswordText: {
+    marginTop: 8,
+    textAlign: 'right',
+    fontSize: 16,
+    fontFamily: customFonts.semiBold,
+    color: colors.colorPrimary
+  },
+  submitButton: {
+    backgroundColor: colors.colorPrimary,
+    marginTop: 40,
+    width: '100%'
+  },
+  loginText: {
+    color: colors.colorAccent,
+    fontSize: 18,
+    fontFamily: customFonts.medium
+  },
+  registerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
+    marginBottom: 20
+  },
+  registerText: {
+    fontSize: 16,
+    fontFamily: customFonts.semiBold,
+    color: colors.colorPrimary
+  },
+  registerTextSubtext: {
+    fontSize: 16,
+    color: colors.blackTransluscent,
+    fontFamily: customFonts.medium
+  }
 
 })
 
