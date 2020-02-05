@@ -100,7 +100,7 @@ class LoginScreen extends React.Component {
 
             <View style={orContainer}>
               <View style={thinLine} />
-              <Text style={orStyling}> or </Text>
+              <Text style={orStyling}> {strings.or} </Text>
               <View style={thinLine} />
             </View>
 

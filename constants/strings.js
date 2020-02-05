@@ -69,9 +69,13 @@ const strings = {
   chooseUploadImageOption: 'Choose Image Upload Option',
   addressHeading: 'Pick Address',
   addressSubHeading: 'Type your address or choose your current location',
-  enterAddress: 'Enter your address',
+  enterAddress: 'Touch to enter address',
   addressPlaceholder: 'Type here...',
-  chooseCurrentLocation: 'Use Current Location'
+  chooseCurrentLocation: 'Use Current Location',
+  or: 'or',
+  addressModalSubheading: 'Enter your address',
+  close: 'Close',
+  cancel: 'Cancel'
 }
 
 export default strings
