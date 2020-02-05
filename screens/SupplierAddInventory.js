@@ -1097,18 +1097,11 @@ class SupplierAddInventoryScreen extends Component {
     }
 
     const firestore = firebase.firestore()
-    // firestore
-    //   .collection("products")
-    //   .set(inventoryObject, { merge: true })
-
     //Add a new document with a generated id.
     var writtenDocID = null
     await firestore.collection("products").add(inventoryObject)
       .then(function (docRef) {
         writtenDocID = docRef.id
-        this.setState({
-          showLoadingDialog: false
-        })
       })
       .catch(function (error) {
         console.log(error)
@@ -1121,18 +1114,14 @@ class SupplierAddInventoryScreen extends Component {
       .collection("suppliers")
       .doc("carlsberg") //Will be dynamic based on the logged in user
       .update({
-        inventory: firebase.firestore.FieldValue.arrayUnion(firebase.firestore().doc(inventoryReference))
       })
       .then(function () {
         Alert.alert("Inventory added to your account successuly.")
-        this.setState({
-          showLoadingDialog: false
-        })
       })
-      .catch(function (error) {
-        console.log("errorrrr")
-        // Alert.alert("Error adding inventory to your account, try again.", error)
-      })
+
+    this.setState({
+      showLoadingDialog: false
+    })
   }
 
   uploadImageOnClick = async () => {
