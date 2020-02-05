@@ -12,6 +12,7 @@ import awsConfig from '../config/aws'
 import * as Animatable from 'react-native-animatable'
 
 
+
 class SupplierAddInventoryScreen extends Component {
   constructor(props) {
     super(props)
@@ -1096,7 +1097,6 @@ class SupplierAddInventoryScreen extends Component {
     }
 
     const firestore = firebase.firestore()
-
     // firestore
     //   .collection("products")
     //   .set(inventoryObject, { merge: true })
@@ -1111,7 +1111,8 @@ class SupplierAddInventoryScreen extends Component {
         })
       })
       .catch(function (error) {
-        Alert.alert("Error adding inventory, try again: ", error);
+        console.log(error)
+        // Alert.alert("Error adding inventory, try again: ", error);
       });
 
     const inventoryReference = "/products/" + writtenDocID
@@ -1122,11 +1123,15 @@ class SupplierAddInventoryScreen extends Component {
       .update({
         inventory: firebase.firestore.FieldValue.arrayUnion(firebase.firestore().doc(inventoryReference))
       })
-      .then(function (error) {
+      .then(function () {
         Alert.alert("Inventory added to your account successuly.")
+        this.setState({
+          showLoadingDialog: false
+        })
       })
       .catch(function (error) {
-        Alert.alert("Error adding inventory to your account, try again.", error)
+        console.log("errorrrr")
+        // Alert.alert("Error adding inventory to your account, try again.", error)
       })
   }
 
@@ -1148,7 +1153,6 @@ class SupplierAddInventoryScreen extends Component {
     if (!result.cancelled) {
       this.setState({ imageUri: result.uri, imageHasBeenUploaded: true, showImagePicker: false })
     }
-
   }
 
   uploadImageToAWS = async () => {
@@ -1174,7 +1178,6 @@ class SupplierAddInventoryScreen extends Component {
 
     return returnValue
   }
-
 
 }
 
