@@ -75,7 +75,8 @@ const strings = {
   or: 'or',
   addressModalSubheading: 'Enter your address',
   close: 'Close',
-  cancel: 'Cancel'
+  cancel: 'Cancel',
+  submit: 'Submit'
 }
 
 export default strings

@@ -61,8 +61,6 @@ class SupplierRestaurantScreen extends Component {
     const {
       navigation
     } = this.props
-
-    console.log(firebase.auth().currentUser)
   
     const screen = 
     <View style={mainContainer}>

@@ -8,6 +8,10 @@ import iconNames from '../constants/iconNames';
 import LottieView from 'lottie-react-native';
 import { GoogleAutoComplete } from 'react-native-google-autocomplete';
 import appConfig from '../config/appConfig';
+import firebase from '../config/firebase'
+import collectionNames from '../config/collectionNames';
+import Utils from '../utils/Utils';
+import screens from '../constants/screens';
 
 
 class AddressScreen extends Component {
@@ -16,14 +20,10 @@ class AddressScreen extends Component {
     this.state = {
       navigation: props.navigation,
       name: 'Address Screen',
-      addressEntered: '',
-      isAddressModalVisible: true,
+      addressEntered: strings.enterAddress,
+      isAddressModalVisible: false,
       addressPlaceholder: 'Enter your warehouse address'
     }
-  }
-
-  componentDidMount = () => {
-    this.animation.play()
   }
 
   // ----- ADDRESS MODAL --------
@@ -93,7 +93,7 @@ class AddressScreen extends Component {
                   onChangeText={handleTextChange}
                   placeholder={this.state.addressPlaceholder}
                 />
-                 <Icon
+                <Icon
                   nameAndroid={iconNames.crossAndroid}
                   nameIOS={iconNames.crossIOS}
                   onPress={clearSearch}
@@ -104,7 +104,7 @@ class AddressScreen extends Component {
                 {isSearching
                   ? <ActivityIndicator style={activityIndicatorAddressStyle} size='small' color={colors.grayTransluscent} />
                   : locationResults.map((ai, i) => (
-                    this.AddressListItem(ai)
+                    this.AddressListItem(ai, fetchDetails)
                   ))}
               </ScrollView>
             </View>
@@ -112,70 +112,10 @@ class AddressScreen extends Component {
           </React.Fragment>
         )}
       </GoogleAutoComplete>
-
-    // <GooglePlacesAutocomplete
-    //   placeholder='Search'
-    //   minLength={2} // minimum length of text to search
-    //   autoFocus={false}
-    //   returnKeyType={'search'} // Can be left out for default return key https://facebook.github.io/react-native/docs/textinput.html#returnkeytype
-    //   keyboardAppearance={'light'} // Can be left out for default keyboardAppearance https://facebook.github.io/react-native/docs/textinput.html#keyboardappearance
-    //   listViewDisplayed='auto'    // true/false/undefined
-    //   fetchDetails={true}
-    //   renderDescription={row => row.description} // custom description render
-    //   onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
-    //     console.log(data, details);
-    //   }}
-    //   getDefaultValue={() => ''}
-
-    //   query={{
-    //     // available options: https://developers.google.com/places/web-service/autocomplete
-    //     key: appConfig.googelCloudKey,
-    //     language: 'en', // language of the results
-    //     types: 'establishment' // default: 'geocode'
-    //   }}
-
-    //   styles={{
-    //     textInputContainer: {
-    //       width: '100%'
-    //     },
-    //     description: {
-    //       fontWeight: 'bold'
-    //     },
-    //     predefinedPlacesDescription: {
-    //       color: '#1faadb'
-    //     }
-    //   }}
-
-    //   currentLocation={true} // Will add a 'Current location' button at the top of the predefined places list
-    //   currentLocationLabel="Current location"
-    //   nearbyPlacesAPI='GooglePlacesSearch' // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
-    //   GoogleReverseGeocodingQuery={{
-    //     // available options for GoogleReverseGeocoding API : https://developers.google.com/maps/documentation/geocoding/intro
-    //   }}
-    //   GooglePlacesSearchQuery={{
-    //     // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
-    //     rankby: 'distance',
-    //     type: 'cafe'
-    //   }}
-
-    //   GooglePlacesDetailsQuery={{
-    //     // available options for GooglePlacesDetails API : https://developers.google.com/places/web-service/details
-    //     fields: 'formatted_address',
-    //   }}
-
-    //   filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
-    //   predefinedPlaces={[homePlace, workPlace]}
-
-    //   debounce={200} // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
-    //   renderLeftButton={() => <Text>Cancel</Text>}
-    //   renderRightButton={() => <Text>Custom text after the input</Text>}
-    // />
-
-
     return component
   }
 
-  AddressListItem = (addressItem) => {
+  AddressListItem = (addressItem, fetchDetails) => {
     const {
       addressListItemContainer,
       addressItemText
@@ -183,11 +123,54 @@ class AddressScreen extends Component {
 
     const addressListItemComponent =
       <View style={addressListItemContainer} key={addressItem.description}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => this.handleAddressListItemClick(addressItem, fetchDetails)}>
           <Text numberOfLines={1} ellipsizeMode='tail' style={addressItemText}>{addressItem.description}</Text>
         </TouchableOpacity>
       </View>
     return addressListItemComponent
+  }
+
+  handleAddressListItemClick = async (addressItem, fetchDetails) => {
+    const res = await fetchDetails(addressItem.place_id)
+    let place = undefined
+
+    this.hideAddressModal() //hide the modal and set text to addres formatted address 
+
+    if (res && res.geometry) {
+      place = {}
+      place.latitude = res.geometry.location.lat
+      place.longitude = res.geometry.location.lng
+      place.formattedName = res.name + ', ' + res.formatted_address
+      place.place_id = res.place_id
+      this.setState({
+        addressEntered: place.formattedName
+      })
+    }
+
+    if (place) {
+      this.uploadAddressToDatabase(place)
+    }
+    return
+  }
+
+  uploadAddressToDatabase = async (place) => {
+    const user = firebase.auth().currentUser
+    const uid = user.uid
+    const userRef = firebase.firestore().collection(collectionNames.users)
+    if (userRef) {
+      this.animation.play()
+      await userRef.doc(uid).update({
+        address: { ...place }
+      }).then(this.setState({
+        proceedButtonVisible: true
+      })).catch((er) => {
+        console.log(er)
+      })
+    }
+  }
+
+  onSubmitClick = () => {
+    Utils.dispatchScreen(screens.SupplierWelcomeScreen, undefined, this.state.navigation)
   }
 
   render() {
@@ -215,16 +198,9 @@ class AddressScreen extends Component {
         <Text style={subHeadingStyle}>{strings.addressSubHeading}</Text>
         <View style={inputContainerStyle}>
           <TouchableOpacity style={inputContainerTouchableStyle} onPress={this.showAddressModal}>
-            <Text style={inputAddressTextStyle}>{strings.enterAddress}</Text>
+            <Text style={inputAddressTextStyle}>{this.state.addressEntered}</Text>
           </TouchableOpacity>
         </View>
-        <View style={orContainer}>
-          <View style={thinLine} />
-          <Text style={orStyling}> {strings.or} </Text>
-          <View style={thinLine} />
-        </View>
-
-        <Button title={strings.chooseCurrentLocation} style={buttonStyle} textColor={colors.colorAccent} />
 
         <View style={animationContainerStyle}>
           <LottieView
@@ -232,9 +208,13 @@ class AddressScreen extends Component {
               this.animation = animation;
             }}
             onAnimationFinish={null}
-            loop={true}
+            loop={false}
             source={require('../assets/animations/address.json')} />
         </View>
+
+        {this.state.proceedButtonVisible
+          ? <Button title={strings.submit} style={buttonStyle} textColor={colors.colorAccent} onPress={this.onSubmitClick}/>
+          : null}
 
         {this.getAddressModal()}
 
@@ -262,7 +242,7 @@ const styles = StyleSheet.create({
     marginTop: dimens.screenHorizontalMargin + 80,
   },
   animationContainerStyle: {
-    marginTop: 20,
+    marginTop: 50,
     marginBottom: 40,
     width: '100%',
     height: 200,
@@ -304,7 +284,7 @@ const styles = StyleSheet.create({
   buttonStyle: {
     backgroundColor: colors.colorPrimary,
     width: '100%',
-    marginTop: 40
+    marginTop: 50
   },
   inputContainerTouchableStyle: {
     width: '100%',
@@ -327,7 +307,7 @@ const styles = StyleSheet.create({
     top: 20,
     right: dimens.screenHorizontalMargin
   },
-  closeText:{
+  closeText: {
     color: colors.colorPrimary,
     fontFamily: customFonts.semiBold,
     fontSize: 16
