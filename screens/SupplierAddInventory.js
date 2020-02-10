@@ -408,7 +408,8 @@ class SupplierAddInventoryScreen extends Component {
     )
   }
 
-  openCategoryModal = () => {
+  openCategoryModal = async () => {
+    await this.getInventoryCategories()
     this.setState({
       showCategoryModal: true
     })
@@ -421,7 +422,7 @@ class SupplierAddInventoryScreen extends Component {
     })
   }
 
-  confirmInventoryCategory = () => {
+  confirmInventoryCategory = async () => {
     const { categorySelected } = this.state
     if (!categorySelected) {
 
@@ -439,7 +440,7 @@ class SupplierAddInventoryScreen extends Component {
       } else {
         this.setState({
           showCategoryError: false
-        }, this.writeCategoryToDatabase())
+        }, await this.writeCategoryToDatabase())
       }
     } else {
       this.showCategoryOnUI(categorySelected.item.title)
@@ -448,9 +449,21 @@ class SupplierAddInventoryScreen extends Component {
 
   }
 
-  writeCategoryToDatabase = () => {
+  writeCategoryToDatabase = async () => {
     const { categoryTyped } = this.state
-    //write this category to database and refresh loadout of categories 
+
+    //write this category to database and refresh loadout of categories
+    categoryTypeObject = {
+      title: categoryTyped
+    }
+    const db = firebase.firestore()
+    await db.collection('product_type').add(categoryTypeObject)
+      .then(function (docRef) {
+        console.log("Category type written with id", docRef.id)
+      })
+      .catch(function (error) {
+        console.error("Error adding category type", error)
+      });
     this.showCategoryOnUI(categoryTyped)
     this.closeCategoryModal()
   }
@@ -488,20 +501,25 @@ class SupplierAddInventoryScreen extends Component {
 
     var inventoryCategoryList = [{ 'id': 'other', title: 'Other' }]
     const inventoryCategoryCollection = firebase.firestore().collection('product_type')
+
     await inventoryCategoryCollection
       .get()
-      .then(function (querySnapShot) {
+      .then((querySnapShot) => {
         querySnapShot.forEach(function (doc) {
           let categoryObject = {}
           categoryObject.id = doc.id
           categoryObject.title = doc.data().title
           inventoryCategoryList.push(categoryObject)
+
         })
+
+        this.setState({
+          inventoryCategories: inventoryCategoryList
+        })
+
       })
 
-    this.setState({
-      inventoryCategories: inventoryCategoryList
-    })
+
 
   }
 
@@ -721,7 +739,7 @@ class SupplierAddInventoryScreen extends Component {
       </Modal>)
   }
 
-  confirmUnitSelection = () => {
+  confirmUnitSelection = async () => {
     const { unitSelected } = this.state
 
     if (!unitSelected) {
@@ -737,7 +755,8 @@ class SupplierAddInventoryScreen extends Component {
       } else {
         this.setState({
           showUnitError: false
-        }, this.writeUnitToDatabase())
+        }, await this.writeUnitToDatabase())
+
       }
     } else {
       this.showUnitOnUI(unitSelected.item.title)
@@ -745,10 +764,21 @@ class SupplierAddInventoryScreen extends Component {
     }
   }
 
-  writeUnitToDatabase = () => {
+  writeUnitToDatabase = async () => {
     const { unitTyped } = this.state
 
-    //write this category to database and refresh loadout of categories 
+    //write this category to database and refresh loadout of categories
+    UnitObject = {
+      title: unitTyped
+    }
+    const db = firebase.firestore()
+    await db.collection('units').add(UnitObject)
+      .then(function (docRef) {
+        console.log("Unit written with id", docRef.id)
+      })
+      .catch(function (error) {
+        console.error("Error adding unit", error)
+      });
 
     this.showUnitOnUI(unitTyped)
     this.closeUnitModal()
@@ -836,7 +866,8 @@ class SupplierAddInventoryScreen extends Component {
     return component
   }
 
-  openUnitModal = () => {
+  openUnitModal = async () => {
+    await this.getUnits()
     this.setState({
       showUnitModal: true
     })
@@ -1105,7 +1136,6 @@ class SupplierAddInventoryScreen extends Component {
       })
       .catch(function (error) {
         console.log(error)
-        // Alert.alert("Error adding inventory, try again: ", error);
       });
 
     const inventoryReference = "/products/" + writtenDocID
