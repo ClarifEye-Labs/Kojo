@@ -120,7 +120,7 @@ class RegistrationScreen extends React.Component {
   }
 
   performEmailValidation = (email) => {
-    var error = {
+    let error = {
       errorStatus: false,
       errorReason: null
     }
@@ -231,6 +231,7 @@ class RegistrationScreen extends React.Component {
       name: user.displayName,
       email: user.email,
       role: null,
+      address: null,
       phone: null
     })
 

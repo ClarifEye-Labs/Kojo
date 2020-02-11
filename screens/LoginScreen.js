@@ -29,8 +29,134 @@ class LoginScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      navigation: props.navigation
+      navigation: props.navigation,
+      emailEntered: '',
+      passwordEntered: '',
+      emailErrorStatus: false,
+      emailErrorReason: null,
+      passwordErrorStatus: false,
+      passwordErrorReason: null,
+      loginButtonLoading: false
     }
+  }
+
+  setEmailEntered = (text) => {
+    this.setState({
+      emailEntered: text
+    })
+  }
+
+  setPasswordEntered = (text) => {
+    this.setState({
+      passwordEntered: text
+    })
+  }
+
+  initiateLogin = () => {
+    const {
+      emailEntered,
+      passwordEntered
+    } = this.state
+    this.setState({
+      loginButtonLoading: true
+    })
+    const emailErrorResult = this.checkEmailEnteredError(emailEntered)
+    if (emailErrorResult && emailErrorResult.errorStatus) {
+      this.setState({
+        emailErrorStatus: true,
+        emailErrorReason: emailErrorResult.errorReason,
+        loginButtonLoading: false
+      })
+    } else {
+      this.setState({
+        emailErrorStatus: false,
+        emailErrorReason: null,
+        loginButtonLoading: true
+      })
+    }
+    const passwordErrorResult = this.checkPasswordEnteredError(passwordEntered)
+    if (passwordErrorResult && passwordErrorResult.errorStatus) {
+      this.setState({
+        passwordErrorStatus: true,
+        passwordErrorReason: passwordErrorResult.errorReason,
+        loginButtonLoading: false
+      })
+      return
+    } else {
+      this.setState({
+        passwordErrorStatus: false,
+        passwordErrorReason: null,
+        loginButtonLoading: true
+      })
+    }
+
+    this.performLogin(emailEntered, passwordEntered)
+  }
+
+  checkPasswordEnteredError = (password) => {
+    let error = {
+      errorStatus: false,
+      errorReason: null
+    }
+
+    if (password.length === 0) {
+      error.errorStatus = true
+      error.errorReason = strings.passwordCannotBeEmpty
+      return error
+    }
+
+
+    if (password.length < 6) {
+      error.errorStatus = true
+      error.errorReason = strings.passwordErrorMessage
+    }
+
+    return error
+  }
+
+  checkEmailEnteredError = (email) => {
+    let error = {
+      errorStatus: false,
+      errorReason: null
+    }
+    if (email.length === 0) {
+      error.errorReason = strings.emailCannotBeEmpty
+      error.errorStatus = true
+      return error
+    }
+
+    if (! /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email)) {
+      error.errorStatus = true
+      error.errorReason = strings.emailErrorMessage
+    }
+
+    return error
+
+  }
+
+  async performLogin(email, password) {
+    await firebase.auth().signOut()
+    firebase.auth().signInWithEmailAndPassword(email, password).catch((error) => {
+      let errorCode = error.code
+      let errorMessage = error.message
+      if (error) {
+        alert(errorMessage)
+        this.setState({
+          loginButtonLoading: false
+        })
+      }
+    }).then( (loginObject) => {
+      if(loginObject && loginObject.user){
+        this.onSuccessfulLogin()
+      }
+    })  
+  }
+
+  onSuccessfulLogin = () => {
+    alert('Login Successful')
+    this.setState({
+      loginButtonLoading: false
+    })
   }
 
   render() {
@@ -109,7 +235,11 @@ class LoginScreen extends React.Component {
                 subHeadingTitle={strings.emailSubHeading}
                 placeholder={strings.emailPlaceholderText}
                 secureTextEntry={false}
+                errorStatus={this.state.emailErrorStatus}
                 subHeadingStyle={subText}
+                onChangeText={this.setEmailEntered}
+                inputValue={this.state.emailEntered}
+                errorTitle={this.state.emailErrorReason}
                 textInputContainerStyle={textInputContainer}
                 autoCompleteType='email'
               />
@@ -119,6 +249,10 @@ class LoginScreen extends React.Component {
                 placeholder={strings.passwordPlaceholderText}
                 secureTextEntry={true}
                 subHeadingStyle={subText}
+                errorStatus={this.state.passwordErrorStatus}
+                onChangeText={this.setPasswordEntered}
+                errorTitle={this.state.passwordErrorReason}
+                inputValue={this.state.passwordEntered}
                 autoCompleteType='password'
                 textInputContainerStyle={textInputContainer} />
 
@@ -130,6 +264,8 @@ class LoginScreen extends React.Component {
               <Button
                 title={strings.login}
                 textColor={colors.colorAccent}
+                onPress={this.initiateLogin}
+                isLoading={this.state.loginButtonLoading}
                 style={submitButton} />
 
             </View>

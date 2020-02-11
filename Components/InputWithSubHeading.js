@@ -58,7 +58,6 @@ const InputWithSubHeading = (props) => {
     borderBottomColor: errorStatus ? colors.errorRed : colors.blackTransluscent
   }
 
-  console.log(secureTextEntry?secureTextEntry:false)
   const component =
     <View style={containerStyle}>
       <View style={subHeadingContainerStyle}>
