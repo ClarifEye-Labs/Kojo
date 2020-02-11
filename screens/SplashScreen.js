@@ -23,6 +23,10 @@ class SplashScreen extends Component {
     }
   }
 
+  componentDidMount = async () => {
+    this.navigateToScreenLogic()
+  }
+
   navigateToScreenLogic = async () => {
     const user = firebase.auth().currentUser
     const firestore = firebase.firestore()
@@ -38,12 +42,13 @@ class SplashScreen extends Component {
         const {role, phone, address} = userFirestore
         if(!role){
           Utils.dispatchScreen(screens.SupplierRestaurantScreen, 2000, this.state.navigation)
-        }else if(!phone){
-          console.log('No phone')
-          Utils.dispatchScreen(screens.PhoneScreen, 2000, this.state.navigation)
         }else if(!address) {
           console.log('No address for user')
           Utils.dispatchScreen(screens.AddressScreen, 2000, this.state.navigation)
+        }
+        else if(!phone){
+          console.log('No phone')
+          Utils.dispatchScreen(screens.PhoneScreen, 2000, this.state.navigation)
         }
       }else{
         firebase.auth().signOut()
@@ -69,8 +74,6 @@ class SplashScreen extends Component {
       navigation
     } = this.props
 
-    this.navigateToScreenLogic()
-
     return (
       <ImageBackground
         style={mainContainer}
@@ -81,7 +84,6 @@ class SplashScreen extends Component {
           <View style={loadingContainer}>
             <ActivityIndicator style={loadingStyle} size='large' color={colors.colorAccent} />
           </View>
-          <Button onPress={ () => {firebase.auth().signOut()} } title='Sign Out' textColor={colors.colorAccent}  ></Button>
         </View>
       </ImageBackground>
     );

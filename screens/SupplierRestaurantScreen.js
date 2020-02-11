@@ -1,30 +1,22 @@
 import React, { Component } from 'react'; 
 import { View, StyleSheet, Text, TouchableOpacity, ImageBackground} from 'react-native'
-import { dimens, colors, customFonts, strings } from '../constants'
+import { colors, customFonts, strings } from '../constants'
 import { commonStyling } from '../common'
-import { Cross } from '../Components';
-import {NavigationActions, StackActions} from 'react-navigation'
 import firebase from '../config/firebase'
 import screens from '../constants/screens';
 import appConfig from '../config/appConfig';
 import collectionNames from '../config/collectionNames';
+import Utils from '../utils/Utils';
 
 class SupplierRestaurantScreen extends Component {
   constructor(props){
     super(props)
     this.state = {
-
+      navigation: props.navigation
     }
   }
   
   navigateToScreen = async (screen) => {
-    const resetAction = StackActions.reset({
-      index: 0,
-      actions: [
-        NavigationActions.navigate({ routeName: screen })
-      ]
-    })
-
     const user = firebase.auth().currentUser
     const uid = user.uid
     const userRef = firebase.firestore().collection(collectionNames.users)
@@ -34,14 +26,13 @@ class SupplierRestaurantScreen extends Component {
       await userRef.doc(uid).update({
         role: role
       })
-      this.props.navigation.dispatch(resetAction);
     }else{
       let role = appConfig.userRoleRestaurantOwner
       await userRef.doc(uid).update({
         role: role
       })
     }
-   
+    Utils.dispatchScreen(screens.AddressScreen, undefined, this.state.navigation);
   }
 
   
@@ -54,20 +45,15 @@ class SupplierRestaurantScreen extends Component {
       mainText,
       textContainer,
       containerSupplyBG,
-      constainerRestaurantOwnerBG,
-      crossStyle
+      constainerRestaurantOwnerBG
     } = styles
 
-    const {
-      navigation
-    } = this.props
-  
     const screen = 
     <View style={mainContainer}>
       <ImageBackground style={upperHalfContainer} source={require('../assets/Onboarding/supplier.jpg')}>
         <TouchableOpacity 
           style={{...textContainer,...containerSupplyBG}} 
-          onPress={() => this.navigateToScreen(screens.SupplierWelcomeScreen, )}>
+          onPress={() => this.navigateToScreen(screens.SupplierWelcomeScreen)}>
 
           <Text style={subText}> {strings.iAmA}</Text>
           <Text style={mainText}> {strings.supplier} </Text>

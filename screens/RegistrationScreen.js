@@ -6,6 +6,7 @@ import { commonStyling } from '../common'
 import firebase from '../config/firebase'
 import screens from '../constants/screens'
 import appConfig from '../config/appConfig'
+import Utils from '../utils/Utils'
 
 class RegistrationScreen extends React.Component {
   constructor(props) {
@@ -217,7 +218,7 @@ class RegistrationScreen extends React.Component {
 
     this.setState({
       showLoadingDialog: false
-    }, () => this.state.navigation.navigate(screens.SupplierRestaurantScreen))
+    }, () => { Utils.dispatchScreen(screens.SupplierWelcomeScreen, undefined, this.state.navigation) })
 
   }
 

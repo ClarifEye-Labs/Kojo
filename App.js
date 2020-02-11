@@ -43,7 +43,7 @@ const AppNavigator = createStackNavigator({
   AddressComplete: AddressComplete
 },
 {
-  initialRouteName: screens.LoginScreen
+  initialRouteName: screens.SplashScreen
 })
 
 

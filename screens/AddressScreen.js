@@ -19,7 +19,6 @@ class AddressScreen extends Component {
     super(props)
     this.state = {
       navigation: props.navigation,
-      name: 'Address Screen',
       addressEntered: strings.enterAddress,
       isAddressModalVisible: false,
       addressPlaceholder: 'Enter your warehouse address'
@@ -170,7 +169,7 @@ class AddressScreen extends Component {
   }
 
   onSubmitClick = () => {
-    Utils.dispatchScreen(screens.SupplierWelcomeScreen, undefined, this.state.navigation)
+    Utils.dispatchScreen(screens.PhoneScreen, undefined, this.state.navigation)
   }
 
   render() {
