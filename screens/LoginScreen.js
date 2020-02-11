@@ -145,18 +145,33 @@ class LoginScreen extends React.Component {
           loginButtonLoading: false
         })
       }
-    }).then( (loginObject) => {
-      if(loginObject && loginObject.user){
+    }).then((loginObject) => {
+      if (loginObject && loginObject.user) {
         this.onSuccessfulLogin()
       }
-    })  
+    })
   }
 
-  onSuccessfulLogin = () => {
-    alert('Login Successful')
-    this.setState({
-      loginButtonLoading: false
-    })
+  onSuccessfulLogin = async () => {
+    //login has been enabled, check here for the missing props of user and redirect accordingly 
+    const user = firebase.auth().currentUser
+    const firestore = firebase.firestore()
+    const userRef = firestore.collection(collectionNames.users)
+    const userID = user.uid
+    let userFirestore = null
+    await userRef.doc(userID).get().then((doc) => doc.exists ? userFirestore = doc.data() : null)
+    if(userFirestore) {
+      const screenToDispatch = Utils.screenToLoadForUser(userFirestore)
+      this.setState({
+        loginButtonLoading: false
+      })
+      Utils.dispatchScreen(screenToDispatch, undefined, this.state.navigation)
+    }else{
+      alert('User has been deleted from our database, please register again!')
+      this.setState({
+        loginButtonLoading: false
+      })
+    }
   }
 
   render() {
@@ -299,16 +314,16 @@ class LoginScreen extends React.Component {
       );
       await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);  // Set persistent auth state
       const credential = firebase.auth.FacebookAuthProvider.credential(token);
-      const facebookProfileData = await firebase.auth().signInWithCredential(credential).then().catch((error) => alert(error));  // Sign in with Facebook credential
+      await firebase.auth().signInWithCredential(credential).then().catch((error) => alert(error));  // Sign in with Facebook credential
       const facebookUser = firebase.auth().currentUser
-      //need to check if user is already registered or just logging in 
+      //need to check if user is just logging in or registering for first time 
       const firestore = firebase.firestore()
       const usersRef = firestore.collection(collectionNames.users)
       await usersRef.doc(facebookUser.uid).get().then(async (doc) => {
         if (doc.exists) {
           //store the current user configuration in redux 
-          console.log('User already exists ')
-          Utils.dispatchScreen(screens.SupplierWelcomeScreen, undefined, navigation)
+          console.log('User already exists, fetching details from database')
+
         } else {
           //write the user to database 
           const email = facebookUser.email
@@ -320,10 +335,10 @@ class LoginScreen extends React.Component {
             email: email,
             phone: phone,
             role: null,
+            address: null,
             uid: uid
           })
-          Utils.dispatchScreen(screens.SupplierRestaurantScreen, undefined, navigation)
-          console.log('Ready to switch screens')
+
         }
       })
       return Promise.resolve({ type: 'success' });
