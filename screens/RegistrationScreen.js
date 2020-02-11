@@ -218,7 +218,7 @@ class RegistrationScreen extends React.Component {
 
     this.setState({
       showLoadingDialog: false
-    }, () => { Utils.dispatchScreen(screens.SupplierWelcomeScreen, undefined, this.state.navigation) })
+    }, () => { Utils.dispatchScreen(screens.SupplierRestaurantScreen, undefined, this.state.navigation) })
 
   }
 

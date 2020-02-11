@@ -51,8 +51,9 @@ class SplashScreen extends Component {
           Utils.dispatchScreen(screens.PhoneScreen, 2000, this.state.navigation)
         }
       }else{
-        firebase.auth().signOut()
+        await firebase.auth().signOut()
         console.log('User has been deleted from our database')
+        Utils.dispatchScreen(screens.WelcomeScreen, 2000, this.state.navigation)
       }
     }else{
       //no user signed in 
