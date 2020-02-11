@@ -34,6 +34,7 @@ class SupplierInventoryScreen extends Component {
       search: '',
       showSearch: false,
       searchInventory: [],
+      inventoryType: [],
       dummyInventory: [
         {
           title: 'ALCOHOL', data: [
@@ -91,6 +92,40 @@ class SupplierInventoryScreen extends Component {
     //   firestore: firestore,
     //   suppliersData: suppliersData
     // }, () => this.getDataFromDatabase(this.state.suppliersData, this.state.supplierID))
+    this.getInventory();
+  }
+
+  getInventory = async () => {
+    var inventoryArray = []
+
+    var db = firebase.firestore()
+    await db.collection("product_type").get().then(function (querySnapshot) {
+      querySnapshot.forEach(function (doc) {
+        // doc.data() is never undefined for query doc snapshots
+        var tempInventoryObject = { 'title': '', data: [] }
+        tempInventoryObject.title = doc.data().title
+        inventoryArray.push(tempInventoryObject)
+      });
+    });
+
+    await db.collection("products").get().then(function (querySnapshot) {
+      querySnapshot.forEach(function (doc) {
+        // doc.data() is never undefined for query doc snapshots
+        var docInventoryType = doc.data().type
+        for (var i = 0; i < inventoryArray.length; i++) {
+          if (inventoryArray[i].title === docInventoryType) {
+            inventoryArray[i].data.push(doc.data())
+          }
+        }
+      });
+    })
+
+
+
+    this.setState({
+      dummyInventory: inventoryArray
+    })
+
   }
 
   render() {
@@ -129,18 +164,18 @@ class SupplierInventoryScreen extends Component {
 
     const componentLoaded =
       <Animatable.View animation='fadeIn' style={mainContainer}>
-        <Animated.View style={[mainHeaderContainerStyle, { height: headerHeight }]}> 
-          <LinearGradient 
-            style={gradientStyle} 
+        <Animated.View style={[mainHeaderContainerStyle, { height: headerHeight }]}>
+          <LinearGradient
+            style={gradientStyle}
             colors={[colors.colorPrimary, colors.colorSecondary]}>
 
             <Animated.View
-              style={{ flex: 1, opacity: heroTitleOpacity, zIndex: 1}}>
+              style={{ flex: 1, opacity: heroTitleOpacity, zIndex: 1 }}>
               {this.getMainHeaderView()}
             </Animated.View>
 
             <Animated.View
-              style={{ flex: 1, opacity: headerTitleOpacity, zIndex: 1}}>
+              style={{ flex: 1, opacity: headerTitleOpacity, zIndex: 1 }}>
               {this.getCollapsedHeaderView()}
             </Animated.View>
 
@@ -221,20 +256,20 @@ class SupplierInventoryScreen extends Component {
 
   updateSearch = search => {
     this.setState({ search })
-    if (search == ''){
+    if (search == '') {
       this.setState({
         searchInventory: this.state.dummyInventory
       })
     }
     const searchEntered = search.toUpperCase()
     const newListToShow = []
-    for(let index in this.state.dummyInventory){
+    for (let index in this.state.dummyInventory) {
       const title = this.state.dummyInventory[index].title
       let itemObject = this.state.dummyInventory[index]
       const itemsToShow = []
-      for(let index in itemObject.data){
+      for (let index in itemObject.data) {
         let item = itemObject.data[index]
-        if(item.name.toUpperCase().includes(searchEntered)){
+        if (item.name.toUpperCase().includes(searchEntered)) {
           itemsToShow.push(item)
         }
       }
@@ -370,8 +405,8 @@ const styles = StyleSheet.create({
     paddingLeft: dimens.screenHorizontalMargin
   },
   gradientStyle: {
-    height: '100%', 
-    width: '100%', 
+    height: '100%',
+    width: '100%',
     zIndex: -2
   },
   sectionHeaderTitle: {
