@@ -67,7 +67,17 @@ const strings = {
   sendEmail: 'Send Email',
   sorryWeNeedPermissions: 'Sorry, we need camera roll permissions to make this work!',
   chooseUploadImageOption: 'Choose Image Upload Option',
-  inventoryUnitCannotBeEmpty: 'Inventory unit cannot be empty'
+  inventoryUnitCannotBeEmpty: 'Inventory unit cannot be empty',
+  addressHeading: 'Pick Address',
+  addressSubHeading: 'Type your address or choose your current location',
+  enterAddress: 'Touch to enter address',
+  addressPlaceholder: 'Type here...',
+  chooseCurrentLocation: 'Use Current Location',
+  or: 'or',
+  addressModalSubheading: 'Enter your address',
+  close: 'Close',
+  cancel: 'Cancel',
+  submit: 'Submit'
 }
 
 export default strings

@@ -20,6 +20,9 @@ import EditItemScreen from './screens/EditItemScreen'
 import ForgotPasswordScreen from './screens/ForgotPasswordScreen';
 import SplashScreen from './screens/SplashScreen'
 import screens from './constants/screens';
+import PhoneScreen from './screens/PhoneScreen';
+import AddressScreen from './screens/AddressScreen';
+import AddressComplete from './screens/AddressComplete';
 
 const AppNavigator = createStackNavigator({
   LoginScreen: LoginScreen,
@@ -34,10 +37,13 @@ const AppNavigator = createStackNavigator({
   SupplierAddInventoryScreen: SupplierAddInventoryScreen,
   ForgotPasswordScreen: ForgotPasswordScreen,
   EditItemScreen: EditItemScreen,
-  SplashScreen: SplashScreen
+  SplashScreen: SplashScreen,
+  PhoneScreen: PhoneScreen,
+  AddressScreen: AddressScreen,
+  AddressComplete: AddressComplete
 },
 {
-  initialRouteName: screens.SupplierWelcomeScreen
+  initialRouteName: screens.SplashScreen
 })
 
 

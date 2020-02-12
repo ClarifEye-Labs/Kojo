@@ -1,23 +1,56 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Text, ImageBackground, ActivityIndicator } from 'react-native'
-import { LogoPlaceholder, Loading } from '../Components'
+import { LogoPlaceholder, Loading, Button } from '../Components'
 import { dimens, colors, customFonts } from '../constants'
 import { commonStyling } from '../common'
 import { PropTypes } from 'prop-types'
-import screens from '../constants/screens';
+import screens from '../constants/screens'
+import firebase from '../config/firebase'
+import collectionNames from '../config/collectionNames';
+import Utils from '../utils/Utils';
 
 class SplashScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
       name: 'SplashScreen',
-      navigation: props.navigation
+      navigation: props.navigation,
+      user: undefined,
+      userExists: false,
+      supplierRestaurantSelected: false,
+      phoneEntered: false, 
+
     }
   }
 
+  componentDidMount = async () => {
+    this.navigateToScreenLogic()
+  }
 
-  navigateToScreenLogic = () => {
-    setTimeout( () => this.state.navigation.navigate(screens.WelcomeScreen), 2000)
+  navigateToScreenLogic = async () => {
+    const user = firebase.auth().currentUser
+    const firestore = firebase.firestore()
+
+    if(user) {
+      const userRef = firestore.collection(collectionNames.users)
+      const userID = user.uid
+      let userFirestore = null
+  
+      await userRef.doc(userID).get().then( (doc) => doc.exists ? userFirestore = doc.data() : null )
+      //if user has been deleted from our database then reinit the entire thing
+      if(userFirestore) {
+        const screenToDispatch = Utils.screenToLoadForUser(userFirestore)
+        Utils.dispatchScreen(screenToDispatch, 1000, this.state.navigation)
+      }else{
+        await firebase.auth().signOut()
+        console.log('User has been deleted from our database')
+        Utils.dispatchScreen(screens.WelcomeScreen, 1000, this.state.navigation)
+      }
+    }else{
+      //no user signed in 
+      Utils.dispatchScreen(screens.WelcomeScreen, 2000, this.state.navigation)
+    }
+
   }
 
   render() {
@@ -32,8 +65,6 @@ class SplashScreen extends Component {
     const {
       navigation
     } = this.props
-
-    this.navigateToScreenLogic()
 
     return (
       <ImageBackground

@@ -6,90 +6,83 @@ import {
   TextInput
 } from 'react-native'
 import { dimens, colors, customFonts } from '../constants'
-import { PropTypes } from 'prop-types'
+import {PropTypes} from 'prop-types'
 
-class InputWithSubHeading extends React.Component {
-  constructor(props) {
-    super(props)
+const InputWithSubHeading = (props) => {
+  const {
+    subTextStyle,
+    inputStyle,
+    inputContainerStyle,
+    subHeadingContainerStyle,
+    errorStyle
+  } = styles
+
+  const {
+    secureTextEntry,
+    placeholder,
+    subHeadingTitle,
+    subHeadingStyle,
+    textInputStyle,
+    textInputContainerStyle,
+    autoCompleteType,
+    autoCorrect,
+    autoCapitalize,
+    errorStatus,
+    onChangeText,
+    keyboardType,
+    containerStyle,
+    inputValue,
+    errorTitle,
+    editable
+  } = props
+
+  const subHeadingStyling = {
+    ...subTextStyle,
+    ...subHeadingStyle
   }
 
-  render() {
-    const {
-      subTextStyle,
-      inputStyle,
-      inputContainerStyle,
-      subHeadingContainerStyle,
-      errorStyle
-    } = styles
+  const subHeadingErrorStyling = {
+    ...subTextStyle,
+    ...errorStyle,
+    color: colors.errorRed
+  }
 
-    const {
-      secureTextEntry,
-      placeholder,
-      subHeadingTitle,
-      subHeadingStyle,
-      textInputStyle,
-      textInputContainerStyle,
-      autoCompleteType,
-      autoCorrect,
-      autoCapitalize,
-      errorStatus,
-      onChangeText,
-      keyboardType,
-      containerStyle,
-      inputValue,
-      errorTitle,
-      editable
-    } = this.props
+  const inputStyling = {
+    ...inputStyle,
+    ...textInputStyle
+  }
 
-    const subHeadingStyling = {
-      ...subTextStyle,
-      ...subHeadingStyle
-    }
+  const inputContainerStyling = {
+    ...textInputContainerStyle,
+    ...inputContainerStyle,
+    borderBottomColor: errorStatus ? colors.errorRed : colors.blackTransluscent
+  }
 
-    const subHeadingErrorStyling = {
-      ...subTextStyle,
-      ...errorStyle,
-      color: colors.errorRed
-    }
-
-    const inputStyling = {
-      ...inputStyle,
-      ...textInputStyle
-    }
-
-    const inputContainerStyling = {
-      ...textInputContainerStyle,
-      ...inputContainerStyle,
-      borderBottomColor: errorStatus ? colors.errorRed : colors.blackTransluscent
-    }
-
-
-    const component =
-      <View style={containerStyle}>
-        <View style={subHeadingContainerStyle}>
-          <Text style={subHeadingStyling}>{subHeadingTitle}</Text>
-          {errorTitle
-            ? <Text style={subHeadingErrorStyling}>{errorTitle}</Text>
-            : null}
-        </View>
-        <View style={inputContainerStyling}>
-          <TextInput
-            editable={editable}
-            style={inputStyling}
-            secureTextEntry={secureTextEntry}
-            autoCompleteType={autoCompleteType ? autoCompleteType : 'off'}
-            autoCorrect={autoCorrect ? autoCorrect : true}
-            onChangeText={onChangeText}
-            value={inputValue}
-            keyboardType={keyboardType ? keyboardType : 'default'}
-            autoCapitalize={autoCapitalize ? autoCapitalize : 'none'}
-            placeholderTextColor={colors.grayTransluscent}
-            placeholder={placeholder} />
-        </View>
+  const component =
+    <View style={containerStyle}>
+      <View style={subHeadingContainerStyle}>
+        <Text style={subHeadingStyling}>{subHeadingTitle}</Text>
+        {errorTitle
+          ? <Text style={subHeadingErrorStyling}>{errorTitle}</Text>
+          : null}
       </View>
+      <View style={inputContainerStyling}>
+        <TextInput
+          editable={editable}
+          style={inputStyling}
+          secureTextEntry={secureTextEntry ? secureTextEntry : false}
+          autoCompleteType={autoCompleteType ? autoCompleteType : 'off'}
+          autoCorrect={autoCorrect ? autoCorrect : true}
+          onChangeText={onChangeText}
+          value={inputValue}
+          keyboardType={keyboardType ? keyboardType : 'default'}
+          autoCapitalize={autoCapitalize ? autoCapitalize : 'none'}
+          placeholderTextColor={colors.grayTransluscent}
+          placeholder={placeholder} />
+      </View>
+    </View>
 
-    return component
-  }
+  return component
 }
 
 const styles = StyleSheet.create({
