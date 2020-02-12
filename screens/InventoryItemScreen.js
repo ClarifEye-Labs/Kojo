@@ -60,7 +60,9 @@ class InventoryItemScreen extends Component {
     const itemPrice = this.state.item.price_per_unit;
     const itemImageURL = this.state.item.imageURL;
     const quantityAvailable = this.state.item.quantityAvailable;
-
+    const itemCategory = this.state.item.type
+    const itemUnit = this.state.item.unit
+    console.log(this.state.item)
     return (
       <View style={mainContainer}>
         <Back size={34} style={commonStyling.backButtonStyling} color={colors.colorAccent} onPress={() => navigation.goBack()} />
@@ -86,7 +88,7 @@ class InventoryItemScreen extends Component {
             subHeadingStyle={subHeadingStyle}
             textStyle={textStyle}
             subHeadingTitle='Category'
-            textTitle={itemPrice} />
+            textTitle={itemCategory} />
           <TextWithSubheading
             containerStyle={infoItemContainer}
             subHeadingStyle={subHeadingStyle}
@@ -97,15 +99,8 @@ class InventoryItemScreen extends Component {
             containerStyle={infoItemContainer}
             subHeadingStyle={subHeadingStyle}
             textStyle={textStyle}
-            subHeadingTitle='Units Available'
-            textTitle={quantityAvailable} />
-          <TextWithSubheading
-            containerStyle={infoItemContainer}
-            subHeadingStyle={subHeadingStyle}
-            textStyle={textStyle}
-            subHeadingTitle='Temp'
-            textTitle={itemPrice} />
-
+            subHeadingTitle='Unit Type'
+            textTitle={itemUnit} />
           <View style={buttonContainer}>
             <Button
               title='Delete Item'

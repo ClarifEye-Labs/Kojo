@@ -6,13 +6,14 @@ import {
 } from 'react-native'
 import { SearchBar } from 'react-native-elements'
 import { Loading, Card, SearchIcon, Back, Forward } from '../Components'
-import { dimens, colors, customFonts } from '../constants'
+import { dimens, colors, customFonts, screens } from '../constants'
 import { commonStyling } from '../common'
 import * as Animatable from 'react-native-animatable'
 import firebase from '../config/firebase'
 import Utils from '../utils/Utils';
 import { connect } from 'react-redux';
 import { LinearGradient } from 'expo-linear-gradient';
+
 
 
 const HEADER_EXPANDED_HEIGHT = 250;
@@ -25,7 +26,7 @@ class SupplierInventoryScreen extends Component {
     super(props);
     this.state = {
       name: 'SupplierInventoryScreen',
-      loadingContent: false,
+      loadingContent: true,
       firestore: undefined,
       suppliersData: undefined,
       scrollY: new Animated.Value(0),
@@ -35,74 +36,21 @@ class SupplierInventoryScreen extends Component {
       showSearch: false,
       searchInventory: [],
       inventoryType: [],
-      dummyInventory: [
-        {
-          title: 'ALCOHOL', data: [
-
-            {
-              name: "asahi super dry draught 20L",
-              price_per_unit: 350,
-              imageURL: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQdQSfIj7XNtCjG7SH0AKUvOsz6sXkP9NiLZBUF_1ujrYM3A9B3',
-              quantity_available: "3 KEG"
-            },
-            {
-              name: "asahi super dry draught 20L",
-              price_per_unit: 350,
-              imageURL: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTue8659sCpibiyYGEMlTCmQXXdgzrbCKgt0A8diHpbB77qctS4',
-              quantity_available: "3 KEG"
-            }]
-        },
-        {
-          title: 'DAIRY', data: [
-            {
-              name: "Milk",
-              price_per_unit: 20,
-              imageURL: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQtr6av-WaBS0crmVtLMNmWrkWQrA_ljG14xC1EpUOS3K_C7OQy',
-              quantity_available: "3 L"
-            },
-            {
-              name: "Milk",
-              price_per_unit: 20,
-              imageURL: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRRRToZF7581M0HVd2q-YLYqYD3cfWUjGgbblN99U-LN6mpjga4',
-              quantity_available: "3 L"
-            },
-            {
-              name: "Milk",
-              price_per_unit: 20,
-              imageURL: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcSl2d6F2rBpBnhAE4IDloWMmYtW6FvGFWQt7T8AipSMiTEyuRKl',
-              quantity_available: "3 L"
-            },
-            {
-              name: "Milk",
-              price_per_unit: 20,
-              imageURL: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQwqJr1L0xSNDxNmldNOOdKdox6zWOhmz3jyyUhfIb6931uAdJC',
-              quantity_available: "3 L"
-            }]
-        }
-      ]
+      inventoryItems: []
     }
   }
 
   componentDidMount = () => {
-    // var firestore = firebase.firestore()
-    // var suppliersData = firestore.collection('suppliers')
-
-    // this.props.navigation.setParams({ showSearchPanel: this.showSearchPanel });
-    // this.setState({
-    //   firestore: firestore,
-    //   suppliersData: suppliersData
-    // }, () => this.getDataFromDatabase(this.state.suppliersData, this.state.supplierID))
     this.getInventory();
   }
 
   getInventory = async () => {
-    var inventoryArray = []
+    let inventoryArray = []
 
-    var db = firebase.firestore()
+    let db = firebase.firestore()
     await db.collection("product_type").get().then(function (querySnapshot) {
       querySnapshot.forEach(function (doc) {
-        // doc.data() is never undefined for query doc snapshots
-        var tempInventoryObject = { 'title': '', data: [] }
+        let tempInventoryObject = { 'title': '', data: [] }
         tempInventoryObject.title = doc.data().title
         inventoryArray.push(tempInventoryObject)
       });
@@ -110,9 +58,8 @@ class SupplierInventoryScreen extends Component {
 
     await db.collection("products").get().then(function (querySnapshot) {
       querySnapshot.forEach(function (doc) {
-        // doc.data() is never undefined for query doc snapshots
-        var docInventoryType = doc.data().type
-        for (var i = 0; i < inventoryArray.length; i++) {
+        let docInventoryType = doc.data().type
+        for (let i = 0; i < inventoryArray.length; i++) {
           if (inventoryArray[i].title === docInventoryType) {
             inventoryArray[i].data.push(doc.data())
           }
@@ -121,9 +68,9 @@ class SupplierInventoryScreen extends Component {
     })
 
 
-
     this.setState({
-      dummyInventory: inventoryArray
+      inventoryItems: inventoryArray,
+      loadingContent: false
     })
 
   }
@@ -203,7 +150,7 @@ class SupplierInventoryScreen extends Component {
 
         <SectionList
           contentContainerStyle={{ minHeight: SCREEN_HEIGHT + HEADER_COLLAPSED_HEIGHT }}
-          sections={this.state.search ? this.state.searchInventory : this.state.dummyInventory}
+          sections={this.state.search ? this.state.searchInventory : this.state.inventoryItems}
           renderItem={({ item }) => SectionContent(item, this.props)}
           renderSectionHeader={({ section }) => SectionHeader(section, this.props)}
           keyExtractor={(item, index) => index}
@@ -258,14 +205,14 @@ class SupplierInventoryScreen extends Component {
     this.setState({ search })
     if (search == '') {
       this.setState({
-        searchInventory: this.state.dummyInventory
+        searchInventory: this.state.inventoryItems
       })
     }
     const searchEntered = search.toUpperCase()
     const newListToShow = []
-    for (let index in this.state.dummyInventory) {
-      const title = this.state.dummyInventory[index].title
-      let itemObject = this.state.dummyInventory[index]
+    for (let index in this.state.inventoryItems) {
+      const title = this.state.inventoryItems[index].title
+      let itemObject = this.state.inventoryItems[index]
       const itemsToShow = []
       for (let index in itemObject.data) {
         let item = itemObject.data[index]
@@ -319,7 +266,7 @@ class SupplierInventoryScreen extends Component {
 
 function mapStateToProps(state) {
   return {
-    dummyInventory: state.dummyInventory
+    inventoryItems: state.inventoryItems
   }
 }
 
@@ -372,7 +319,7 @@ const SectionContent = (sectionContent, props) => {
 
     <View style={sectionContentContainerInner}>
       <TouchableOpacity style={sectionContentTouchableContainer} onPress={() => {
-        navigation.navigate('InventoryItemScreen', {
+        navigation.navigate(screens.InventoryItemScreen, {
           item: sectionContent
         })
       }}>
@@ -381,7 +328,7 @@ const SectionContent = (sectionContent, props) => {
           style={forwardButton}
           color={colors.black}
           onPress={() => {
-            navigation.navigate('InventoryItemScreen', {
+            navigation.navigate(screens.InventoryItemScreen, {
               item: sectionContent
             })
           }} />
