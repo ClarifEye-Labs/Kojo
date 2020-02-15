@@ -76,6 +76,7 @@ class SupplierAddInventoryScreen extends Component {
   }
 
   setInventoryName = (text) => {
+
     this.setState({
       inventoryName: text
     })
@@ -99,6 +100,45 @@ class SupplierAddInventoryScreen extends Component {
     })
   }
 
+  reInitScreen = () => {
+    this.setState({
+      inventoryType: '',
+      documentName: '',
+      inventoryName: '',
+      quantityAvailable: '',
+      pricePerUnit: '',
+      inventoryUnit: '',
+      imageUri: null,
+      imageAWSURL: null,
+      inventoryAddSuccess: false,
+      showImagePicker: false,
+      showInventoryTypePicker: false,
+      imagePickerValue: null,
+      inventoryTypePickerValue: null,
+      inventoryCategories: null,
+      inventoryUnits: null,
+      showCategoryModal: false,
+      showAddCategorySection: false,
+      showAddUnitSection: false,
+      categorySelected: undefined,
+      categoryTyped: '',
+      showCategoryError: null,
+      showLoadingDialog: false,
+      submitButtonClicked: false,
+      inventoryTitleError: null,
+      pricePerUnitError: null,
+      inventoryCategorySelectionError: null,
+      unitSelectionError: null,
+      categoryNameToRender: 'Touch to add category',
+      unitToRender: 'Touch to add Unit',
+      showUnitModal: false,
+      showUnitError: false,
+      unitTyped: '',
+      imageHasBeenUploaded: false
+    })
+
+
+  }
 
   // --------- VALIDATION AND ONCLICK LISTENERS -------------
 
@@ -377,6 +417,7 @@ class SupplierAddInventoryScreen extends Component {
                   subHeadingTitle={strings.inventoryDocumentCategory}
                   autoCorrect={false}
                   onChangeText={this.setCategoryTyped}
+                  inputValue={this.state.categoryTyped}
                   autoCapitalize='words'
                   editable={!this.state.submitButtonClicked}
                 />
@@ -996,7 +1037,7 @@ class SupplierAddInventoryScreen extends Component {
     }
 
     const screen = (
-      <ScrollView style={mainContainer}>
+      <ScrollView style={mainContainer} key={this.state.screenUniqeValue}>
         <Back
           style={{ ...commonStyling.backButtonStyling }}
           onPress={() => navigation.goBack()} />
@@ -1025,6 +1066,7 @@ class SupplierAddInventoryScreen extends Component {
             subHeadingTitle={strings.inventoryDocumentName}
             autoCorrect={false}
             onChangeText={this.setInventoryName}
+            inputValue={this.state.inventoryName}
             autoCapitalize='words'
             subHeadingStyle={subHeadingStyle}
             errorTitle={this.state.inventoryTitleError}
@@ -1050,6 +1092,7 @@ class SupplierAddInventoryScreen extends Component {
             autoCorrect={false}
             keyboardType='number-pad'
             onChangeText={this.setInventoryPrice}
+            inputValue={this.state.pricePerUnit}
             subHeadingStyle={subHeadingStyle}
             errorTitle={this.state.pricePerUnitError}
             errorStatus={this.state.pricePerUnitError} />
@@ -1151,7 +1194,7 @@ class SupplierAddInventoryScreen extends Component {
 
     this.setState({
       showLoadingDialog: false
-    })
+    }, () => { this.reInitScreen() })
   }
 
   uploadImageOnClick = async () => {
