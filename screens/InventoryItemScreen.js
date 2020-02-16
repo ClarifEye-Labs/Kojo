@@ -13,9 +13,10 @@ import {
   Modal
 } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient';
-import { dimens, colors, customFonts, strings } from '../constants'
+import { dimens, colors, customFonts, strings, screens } from '../constants'
 import { commonStyling } from '../common'
 import { Back, Edit, Card, TextWithSubheading, Button, Cross } from '../Components'
+import firebase from '../config/firebase'
 
 class InventoryItemScreen extends Component {
   constructor(props) {
@@ -23,16 +24,24 @@ class InventoryItemScreen extends Component {
     this.state = {
       name: 'InventoryItemScreen',
       deleteModalVisible: false,
-      item: props.navigation.getParam('item')
+      item: props.navigation.getParam('item'),
+      navigation: props.navigation
     }
   }
 
-  closeDeleteModal = () => {this.setState({deleteModalVisible: false})}
+  closeDeleteModal = () => { this.setState({ deleteModalVisible: false }) }
 
-  showDeleteModal = () => {this.setState({deleteModalVisible: true})}
+  showDeleteModal = () => { this.setState({ deleteModalVisible: true }) }
 
-  deleteConfirm = () => {
-
+  deleteConfirm = async () => {
+    let db = firebase.firestore()
+    let itemID = this.state.item.id
+    db.collection("products").doc(itemID).delete().then(() => {
+      this.closeDeleteModal()
+      this.state.navigation.navigate(screens.SupplierWelcomeScreen)
+    }).catch(function (error) {
+      alert("Error removing document: ", error);
+    });
   }
 
   render() {
@@ -55,13 +64,14 @@ class InventoryItemScreen extends Component {
     const {
       navigation,
     } = this.props
-    
+
     const itemName = this.state.item.name;
     const itemPrice = this.state.item.price_per_unit;
     const itemImageURL = this.state.item.imageURL;
     const quantityAvailable = this.state.item.quantityAvailable;
     const itemCategory = this.state.item.type
     const itemUnit = this.state.item.unit
+    const itemID = this.state.item.id
     console.log(this.state.item)
     return (
       <View style={mainContainer}>
@@ -122,16 +132,16 @@ class InventoryItemScreen extends Component {
       crossStyle,
       textContainerModal,
       headingModalStyle,
-      itemNameModal,  
+      itemNameModal,
       deleteButtonModal,
       cancelButtonModal
     } = styles
 
     return (
       <Modal visible={this.state.deleteModalVisible} transparent={true} animationType='slide' onBackButtonPress={this.closeDeleteModal}>
-        <TouchableOpacity 
-          activeOpacity={1}  
-          onPressOut={this.closeDeleteModal} 
+        <TouchableOpacity
+          activeOpacity={1}
+          onPressOut={this.closeDeleteModal}
           style={modalContainerStyle}>
           <TouchableWithoutFeedback>
             <View style={modalContentContainerStyle}>
@@ -142,15 +152,15 @@ class InventoryItemScreen extends Component {
               </View>
 
               <Button
-                  title='Delete'
-                  textColor={colors.colorAccent}
-                  onPress={this.deleteConfirm}
-                  style={deleteButtonModal} />
-               <Button
-                  title='Back'
-                  textColor={colors.colorAccent}
-                  onPress={this.closeDeleteModal}
-                  style={cancelButtonModal} />
+                title='Delete'
+                textColor={colors.colorAccent}
+                onPress={this.deleteConfirm}
+                style={deleteButtonModal} />
+              <Button
+                title='Back'
+                textColor={colors.colorAccent}
+                onPress={this.closeDeleteModal}
+                style={cancelButtonModal} />
             </View>
           </TouchableWithoutFeedback>
         </TouchableOpacity>
@@ -248,8 +258,8 @@ const styles = StyleSheet.create({
   },
   modalContainerStyle: {
     flex: 1,
-    justifyContent: 'center', 
-    backgroundColor: colors.blackTransluscent, 
+    justifyContent: 'center',
+    backgroundColor: colors.blackTransluscent,
     alignItems: 'center'
   },
   modalContentContainerStyle: {
@@ -260,7 +270,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.colorAccent,
     borderRadius: dimens.defaultBorderRadius
   },
-  crossStyle:{
+  crossStyle: {
     position: 'absolute',
     top: 10,
     right: 20,

@@ -56,18 +56,21 @@ class SupplierInventoryScreen extends Component {
       });
     });
 
-    await db.collection("products").get().then(function (querySnapshot) {
+    await db.collection("products").
+    get().then(function (querySnapshot) {
       querySnapshot.forEach(function (doc) {
         let docInventoryType = doc.data().type
         for (let i = 0; i < inventoryArray.length; i++) {
           if (inventoryArray[i].title === docInventoryType) {
-            inventoryArray[i].data.push(doc.data())
+            let tempDataObject = doc.data()
+            tempDataObject['id'] = doc.id
+            inventoryArray[i].data.push(tempDataObject)
           }
         }
       });
     })
 
-
+    // console.log(inventoryArray)
     this.setState({
       inventoryItems: inventoryArray,
       loadingContent: false
