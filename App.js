@@ -24,6 +24,7 @@ import PhoneScreen from './screens/PhoneScreen';
 import AddressScreen from './screens/AddressScreen';
 import AddressComplete from './screens/AddressComplete';
 import SupplierHome from './screens/SupplierHome';
+import ProfileScreen from './screens/ProfileScreen';
 
 const AppNavigator = createStackNavigator({
   LoginScreen: LoginScreen,
@@ -42,7 +43,8 @@ const AppNavigator = createStackNavigator({
   PhoneScreen: PhoneScreen,
   AddressScreen: AddressScreen,
   AddressComplete: AddressComplete,
-  SupplierHome: SupplierHome
+  SupplierHome: SupplierHome,
+  ProfileScreen: ProfileScreen
 },
 {
   initialRouteName: screens.SupplierHome,

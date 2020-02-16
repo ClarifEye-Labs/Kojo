@@ -14,7 +14,8 @@ const screens = {
   SplashScreen: 'SplashScreen',
   PhoneScreen: 'PhoneScreen',
   AddressScreen: 'AddressScreen',
-  SupplierHome: 'SupplierHome'
+  SupplierHome: 'SupplierHome',
+  ProfileScreen: 'ProfileScreen'
 }
 
 export default screens;

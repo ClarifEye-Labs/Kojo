@@ -1,14 +1,9 @@
-import React, { Component } from 'react';
-import { View, StyleSheet, Text } from 'react-native'
-import { } from '../Components'
-import { dimens, colors } from '../constants'
-import { commonStyling } from '../common'
+import React from 'react';
+import { colors } from '../constants'
 import { createBottomTabNavigator } from 'react-navigation-tabs';
-import { createAppContainer } from 'react-navigation';
-import { PropTypes } from 'prop-types'
 import SupplierWelcomeScreen from './SupplierWelcomeScreen';
-import WelcomeScreen from './WelcomeScreen'
 import { Icon } from 'react-native-elements';
+import ProfileScreen from './ProfileScreen';
 
 
 const SupplierHome = createBottomTabNavigator(
@@ -22,7 +17,7 @@ const SupplierHome = createBottomTabNavigator(
         }
       },
       Profile: {
-        screen: WelcomeScreen,
+        screen: ProfileScreen,
         navigationOptions: {
           tabBarIcon: ({ tintColor }) => (
             <Icon name="person-outline" size={25} color={tintColor} />
