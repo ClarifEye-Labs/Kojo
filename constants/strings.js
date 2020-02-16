@@ -77,7 +77,10 @@ const strings = {
   addressModalSubheading: 'Enter your address',
   close: 'Close',
   cancel: 'Cancel',
-  submit: 'Submit'
+  submit: 'Submit',
+  registeredEmail: 'Registered Email',
+  pleaseProvideThis: 'Please provide this.',
+  signOut: 'Sign Out'
 }
 
 export default strings

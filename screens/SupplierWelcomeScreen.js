@@ -1,24 +1,23 @@
 import React, { Component } from 'react';
-import { 
-  View, 
-  StyleSheet, 
-  FlatList} from 'react-native'
-import {SupplierWelcomeItem} from '../Components'
+import {
+  View,
+  StyleSheet,
+  FlatList
+} from 'react-native'
+import { SupplierWelcomeItem } from '../Components'
 import { dimens, colors, strings } from '../constants'
-import { commonStyling } from '../common' 
+import { commonStyling } from '../common'
 import Constants from 'expo-constants'
 import * as Animatable from 'react-native-animatable'
+import RegistrationScreen from './RegistrationScreen';
+import WelcomeScreen from './WelcomeScreen'
+import { Icon } from 'react-native-elements';
 
 class SupplierWelcomeScreen extends Component {
- 
-  constructor(props){
+  constructor(props) {
     super(props)
     this.state = {
-    }
-  }
-  render() {
-    const supplierData = [
-      {
+      supplierData: [{
         id: '0',
         title: strings.viewInventory,
       },
@@ -33,10 +32,11 @@ class SupplierWelcomeScreen extends Component {
       {
         id: '3',
         title: strings.viewClients,
-      },
-     
-    ];
+      },]
+    }
+  }
 
+  render() {
     const {
       mainContainer,
       listStyle
@@ -51,10 +51,10 @@ class SupplierWelcomeScreen extends Component {
         <FlatList 
           style={listStyle}
           contentContainerStyle={listStyle}
-          data={supplierData}
+          data={this.state.supplierData}
           renderItem={({ item }) => ListItem(item, navigation)}
           keyExtractor={item => item.id}
-      />
+        />
     </Animatable.View>
     );
   }
@@ -66,7 +66,7 @@ function ListItem(item, navigation) {
   var backgroundColorOverlay = undefined
   var cardTitle = item.title
   var textColor = undefined
-  var onPress  = undefined
+  var onPress = undefined
 
 
   switch (item.title) {
@@ -74,10 +74,10 @@ function ListItem(item, navigation) {
       backgroundImage = require('../assets/Supplier/addItems.jpg')
       backgroundColorOverlay = colors.blueTransluscent
       textColor = colors.colorAccent
-      onPress = () => navigation.navigate('SupplierAddInventoryScreen') 
+      onPress = () => navigation.navigate('SupplierAddInventoryScreen')
       break;
     }
-    case 'View Inventory':{
+    case 'View Inventory': {
       backgroundImage = require('../assets/Supplier/viewInventory.jpeg')
       backgroundColorOverlay = colors.blackTransluscent
       textColor = colors.colorAccent
@@ -106,22 +106,22 @@ function ListItem(item, navigation) {
     }
   }
 
-  return ( <SupplierWelcomeItem 
+  return (<SupplierWelcomeItem
     backgroundImage={backgroundImage}
     cardTitle={cardTitle}
     backgroundColorOverlay={backgroundColorOverlay}
     textColor={textColor}
     onPress={onPress}
-    />)
+  />)
 }
 
 const styles = StyleSheet.create({
   mainContainer: {
     ...commonStyling.mainContainer,
-    paddingTop: dimens.screenSafeUpperNotchDistance +10 
+    paddingTop: dimens.screenSafeUpperNotchDistance + 10
   },
   listStyle: {
-    marginBottom: Constants.statusBarHeight + 10
+    marginBottom: 10
   }
 })
 

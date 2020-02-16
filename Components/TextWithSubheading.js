@@ -16,12 +16,13 @@ const TextWithSubheading = (props) => {
     subHeadingStyle,
     textStyle,
     containerStyle,
+    numberOfLines
   } = props
 
   const component = 
   <View style={{...mainContainer},{...containerStyle}}>
     <Text style={subHeadingStyle}> {subHeadingTitle} </Text>
-    <Text style={textStyle}> {textTitle} </Text>
+    <Text numberOfLines={numberOfLines ? numberOfLines : 1} style={textStyle}> {textTitle} </Text>
   </View> 
   
 

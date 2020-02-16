@@ -26,7 +26,7 @@ export default class Utils {
     } else if (!address) {
       return screens.AddressScreen
     }else if (!phone) {
-      return screens.PhoneScreen
+      return screens.SupplierHome
     }
   }
 
