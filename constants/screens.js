@@ -13,7 +13,8 @@ const screens = {
   EditItemScreen: 'EditItemScreen',
   SplashScreen: 'SplashScreen',
   PhoneScreen: 'PhoneScreen',
-  AddressScreen: 'AddressScreen'
+  AddressScreen: 'AddressScreen',
+  SupplierHome: 'SupplierHome'
 }
 
 export default screens;
