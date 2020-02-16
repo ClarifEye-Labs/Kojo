@@ -14,7 +14,8 @@ import WelcomeScreen from './WelcomeScreen'
 import { Icon } from 'react-native-elements';
 
 class SupplierWelcomeScreen extends Component {
-  constructor(props) {
+  
+  constructor(props){
     super(props)
     this.state = {
       supplierData: [{

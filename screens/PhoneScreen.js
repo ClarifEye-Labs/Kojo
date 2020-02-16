@@ -1,9 +1,23 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text} from 'react-native'
-import { } from '../Components'
-import { dimens, colors } from '../constants'
+import { 
+  View,
+  StyleSheet,
+  Text,
+  Animated,
+  Dimensions,
+  ImageBackground,
+  ScrollView,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  Alert,
+  Modal    
+} from 'react-native'
+import { Back, Edit, Card, TextWithSubheading, Button, Cross } from '../Components'
+import { LinearGradient } from 'expo-linear-gradient';
+import { dimens, colors, customFonts, strings, screens } from '../constants'
 import { commonStyling } from '../common' 
 import {PropTypes} from 'prop-types'
+import firebase from '../config/firebase'
 
 class PhoneScreen extends Component {
   constructor(props){
@@ -14,14 +28,27 @@ class PhoneScreen extends Component {
   }
   render() {
     const {
-      mainContainer
+      mainContainer,
+      itemNameStyle,
+      editButton,
+      imageContainer,
+      imageStyling,
+      gradientStyle,
+      headerContainer,
+      infoItemContainer,
+      subHeadingStyle,
+      textStyle,
+      buttonContainer,
+      deleteButtonStyle,
     } = styles
 
     const {
       navigation
     } = this.props
+
     return (
       <View style={mainContainer}>
+      <Back size={34} style={commonStyling.backButtonStyling} color={colors.colorAccent} onPress={() => navigation.goBack()} />
         <Text> Hello from {this.state.name} </Text>
       </View>
     );
