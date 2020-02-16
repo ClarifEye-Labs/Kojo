@@ -47,7 +47,7 @@ const AppNavigator = createStackNavigator({
   ProfileScreen: ProfileScreen
 },
 {
-  initialRouteName: screens.SupplierHome,
+  initialRouteName: screens.SplashScreen,
  
 })
 
