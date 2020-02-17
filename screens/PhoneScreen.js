@@ -33,7 +33,7 @@ class PhoneScreen extends Component {
       countryToRender: "Select a country",
       country: null,
       phoneNumber: null,
-      placeHolderPhone: 'this will change'
+      placeHolderPhone: 'Phone number'
     }
   }
   componentDidMount() {
@@ -271,7 +271,7 @@ class PhoneScreen extends Component {
   submitButtonOnClick = async () => {
 
     let phoneObject = { 'country': this.state.country, 'number': this.state.phoneNumber }
-    //await this.uploadPhoneNumberToDatabase(phoneObject)
+    await this.uploadPhoneNumberToDatabase(phoneObject)
     // console.log(phoneObject)
   }
 
@@ -283,9 +283,9 @@ class PhoneScreen extends Component {
       await userRef.doc(uid).update({
         phone: { phoneNumber }
       }).then(this.setState({
-
+        //navigate to next screen
       })).catch((er) => {
-        console.log(er)
+        alert.Alert(er)
       })
     }
   }
