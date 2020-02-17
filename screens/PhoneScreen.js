@@ -21,19 +21,23 @@ import { commonStyling } from '../common'
 import { PropTypes, string } from 'prop-types'
 import firebase from '../config/firebase'
 import LottieView from 'lottie-react-native';
+import { Utils } from '../utils';
+import collectionNames from '../config/collectionNames'
 
 class PhoneScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      navigation: props.navigation,
       name: 'Phone Screen',
       isCountryModalVisible: false,
-      countryList: [{ 'id': +852, title: '(+852) Hong Kong' }, { 'id': +86, title: '(+86) China' }],
+      countryList: [{ 'id': '+852', title: '(+852) Hong Kong' }, { 'id': '+86', title: '(+86) China' }],
       countrySelected: null,
       countryToRender: "Select a country",
       country: null,
       phoneNumber: null,
-      placeHolderPhone: 'Phone number'
+      placeHolderPhone: 'Phone number',
+      phoneSubmitIsLoading: false
     }
   }
   componentDidMount() {
@@ -269,10 +273,11 @@ class PhoneScreen extends Component {
   }
 
   submitButtonOnClick = async () => {
-
     let phoneObject = { 'country': this.state.country, 'number': this.state.phoneNumber }
+    this.setState({
+      phoneSubmitIsLoading: true
+    })
     await this.uploadPhoneNumberToDatabase(phoneObject)
-    // console.log(phoneObject)
   }
 
   uploadPhoneNumberToDatabase = async (phoneNumber) => {
@@ -281,15 +286,24 @@ class PhoneScreen extends Component {
     const userRef = firebase.firestore().collection(collectionNames.users)
     if (userRef) {
       await userRef.doc(uid).update({
-        phone: { phoneNumber }
-      }).then(this.setState({
-        //navigate to next screen
-      })).catch((er) => {
+        phone: {
+          country: { ...phoneNumber.country },
+          number: phoneNumber.number
+        }
+      }).then(this.successfulUpload).catch((er) => {
         alert.Alert(er)
       })
+    } else {
+      console.log('User not signed in, redirect to welcome screen.')
     }
   }
 
+  successfulUpload = () => {
+    this.setState({
+      phoneSubmitIsLoading: false
+    })
+    Utils.dispatchScreen(screens.SupplierHome, undefined, this.state.navigation)
+  }
 
   render() {
     const {
@@ -364,10 +378,10 @@ class PhoneScreen extends Component {
           <View style={buttonContainer}>
             <Button
               title="Submit"
+              isLoading={this.state.phoneSubmitIsLoading}
               onPress={this.submitButtonOnClick}
               style={submitButtonStyle}
-              textColor={colors.colorAccent}
-              isLoading={this.state.showLoadingDialog} />
+              textColor={colors.colorAccent} />
           </View>
         </View>
         {this.getCountryModal()}

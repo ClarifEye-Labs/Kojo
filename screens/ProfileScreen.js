@@ -35,7 +35,7 @@ class ProfileScreen extends Component {
         const userInitialsArray = userData.name.split(' ').map( (name) => name[0])
         this.setState({
           userAddress: userData.address.formattedName,
-          userPhone: userData.phone,
+          userPhone: userData.phone.number,
           userRole: userData.role,
           userName: userData.name,
           userEmail: userData.email,

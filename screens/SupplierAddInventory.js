@@ -10,6 +10,7 @@ import * as Permissions from 'expo-permissions';
 import { RNS3 } from 'react-native-aws3'
 import awsConfig from '../config/aws'
 import * as Animatable from 'react-native-animatable'
+import collectionNames from '../config/collectionNames'
 
 
 
@@ -258,7 +259,7 @@ class SupplierAddInventoryScreen extends Component {
 
   getPermissionAsync = async () => {
     if (Constants.platform.ios) {
-      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL, Permissions.CAMERA);
       if (status !== 'granted') {
         alert(strings.sorryWeNeedPermissions);
       }
@@ -441,9 +442,6 @@ class SupplierAddInventoryScreen extends Component {
             </View>
 
           </View>
-
-
-
         </View>
       </Modal>
     )
@@ -494,7 +492,7 @@ class SupplierAddInventoryScreen extends Component {
     const { categoryTyped } = this.state
 
     //write this category to database and refresh loadout of categories
-    categoryTypeObject = {
+    let categoryTypeObject = {
       title: categoryTyped
     }
     const db = firebase.firestore()
@@ -809,11 +807,11 @@ class SupplierAddInventoryScreen extends Component {
     const { unitTyped } = this.state
 
     //write this category to database and refresh loadout of categories
-    UnitObject = {
+    let unitObject = {
       title: unitTyped
     }
     const db = firebase.firestore()
-    await db.collection('units').add(UnitObject)
+    await db.collection('units').add(unitObject)
       .then(function (docRef) {
         console.log("Unit written with id", docRef.id)
       })
@@ -1151,16 +1149,19 @@ class SupplierAddInventoryScreen extends Component {
       inventoryUnit
     } = this.state
 
-    var imageURL = await this.uploadImageToAWS()
-
-    if (!imageURL) {
-      Alert.alert("Image not uploaded, Try Again.")
-
-    } else {
-      this.setState({
-        imageAWSURL: imageURL
-      })
+    let imageURL = null
+    if (imageUri) {
+      imageURL = await this.uploadImageToAWS()
+      if (!imageURL) {
+        Alert.alert("Image not uploaded, Try Again.")
+      } else {
+        this.setState({
+          imageAWSURL: imageURL
+        })
+      }
     }
+
+    
 
     const inventoryObject = {
       name: inventoryName,
@@ -1183,13 +1184,17 @@ class SupplierAddInventoryScreen extends Component {
 
     const inventoryReference = "/products/" + writtenDocID
 
-    firestore
-      .collection("suppliers")
-      .doc("carlsberg") //Will be dynamic based on the logged in user
+    await firestore
+      .collection(collectionNames.suppliers)
+      .doc(firebase.auth().currentUser.uid)
       .update({
+        inventory: firebase.firestore.FieldValue.arrayUnion(inventoryReference)
       })
-      .then(function () {
-        Alert.alert("Inventory added to your account successuly.")
+      .then(() => {
+        console.log('Uplaod compelte')
+      })
+      .catch((error) => {
+        console.log("TCL: uploadInventory -> error", error)
       })
 
     this.setState({
@@ -1231,10 +1236,10 @@ class SupplierAddInventoryScreen extends Component {
     await RNS3.put(file, awsConfig)
       .then(
         (response) => {
+          console.log("TCL: uploadImageToAWS -> response", response)
           if (response.headers.Location) {
             returnValue = response.headers.Location
           }
-
         }
       )
 

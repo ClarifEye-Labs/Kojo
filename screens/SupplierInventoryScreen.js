@@ -13,6 +13,7 @@ import firebase from '../config/firebase'
 import Utils from '../utils/Utils';
 import { connect } from 'react-redux';
 import { LinearGradient } from 'expo-linear-gradient';
+import collectionNames from '../config/collectionNames';
 
 
 
@@ -46,29 +47,26 @@ class SupplierInventoryScreen extends Component {
 
   getInventory = async () => {
     let inventoryArray = []
-
     let db = firebase.firestore()
-    await db.collection("product_type").get().then(function (querySnapshot) {
+    await db.collection(collectionNames.productType).get().then(function (querySnapshot) {
       querySnapshot.forEach(function (doc) {
-        let tempInventoryObject = { 'title': '', data: [] }
-        tempInventoryObject.title = doc.data().title
-        inventoryArray.push(tempInventoryObject)
+        inventoryArray.push({ 'title': doc.data().title, data: [] })
       });
     });
 
     await db.collection("products").
-    get().then(function (querySnapshot) {
-      querySnapshot.forEach(function (doc) {
-        let docInventoryType = doc.data().type
-        for (let i = 0; i < inventoryArray.length; i++) {
-          if (inventoryArray[i].title === docInventoryType) {
-            let tempDataObject = doc.data()
-            tempDataObject['id'] = doc.id
-            inventoryArray[i].data.push(tempDataObject)
+      get().then(function (querySnapshot) {
+        querySnapshot.forEach(function (doc) {
+          let docInventoryType = doc.data().type
+          for (let i = 0; i < inventoryArray.length; i++) {
+            if (inventoryArray[i].title === docInventoryType) {
+              let tempDataObject = doc.data()
+              tempDataObject['id'] = doc.id
+              inventoryArray[i].data.push(tempDataObject)
+            }
           }
-        }
-      });
-    })
+        });
+      })
 
     // console.log(inventoryArray)
     this.setState({
