@@ -31,13 +31,13 @@ class SupplierInventoryScreen extends Component {
       firestore: undefined,
       suppliersData: undefined,
       scrollY: new Animated.Value(0),
-      supplierID: 'carlsberg',
-      inventory: undefined,
+      supplierID: firebase.auth().currentUser.uid,
       search: '',
       showSearch: false,
       searchInventory: [],
       inventoryType: [],
-      inventoryItems: []
+      inventoryItems: [],
+      productsOfUser: [],
     }
   }
 
@@ -48,32 +48,83 @@ class SupplierInventoryScreen extends Component {
   getInventory = async () => {
     let inventoryArray = []
     let db = firebase.firestore()
-    await db.collection(collectionNames.productType).get().then(function (querySnapshot) {
-      querySnapshot.forEach(function (doc) {
-        inventoryArray.push({ 'title': doc.data().title, data: [] })
-      });
-    });
-
-    await db.collection("products").
-      get().then(function (querySnapshot) {
-        querySnapshot.forEach(function (doc) {
-          let docInventoryType = doc.data().type
-          for (let i = 0; i < inventoryArray.length; i++) {
-            if (inventoryArray[i].title === docInventoryType) {
-              let tempDataObject = doc.data()
-              tempDataObject['id'] = doc.id
-              inventoryArray[i].data.push(tempDataObject)
-            }
-          }
-        });
+    let inventoryRefArray = []
+    await db
+      .collection(collectionNames.suppliers)
+      .doc(this.state.supplierID)
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          const data = doc.data()
+          inventoryRefArray = data.inventory
+          inventoryRefArray ? this.fetchProductsForEachInventoryRef(inventoryRefArray) : console.log('No products for user')
+        }
       })
 
-    // console.log(inventoryArray)
     this.setState({
       inventoryItems: inventoryArray,
       loadingContent: false
     })
 
+  }
+
+  fetchProductsForEachInventoryRef = async (inventoryRefArray) => {
+    let db = firebase.firestore()
+    let products = []
+    for (let index in inventoryRefArray) {
+      const inventoryRef = inventoryRefArray[index]
+      await db.doc(inventoryRef)
+        .get()
+        .then((doc) => {
+          if (doc.exists) {
+            products.push(doc.data())
+          } else {
+            console.log('Werent able to fetch products')
+          }
+        })
+    }
+
+    this.setState({
+      productsOfUser: products
+    }, () => { products ? this.formulateListToShowOfProducts() : null })
+  }
+
+  formulateListToShowOfProducts() {
+    const {
+      productsOfUser
+    } = this.state
+    let inventoryDictionary = {}
+    for(let index in productsOfUser) {
+      const product = productsOfUser[index]
+      const category = product.type
+      if(Array.isArray(inventoryDictionary[category])){
+        const products = inventoryDictionary[category]
+        products.push(product)
+        inventoryDictionary[category] = products
+      }else{
+        inventoryDictionary[category] = [product]
+      }
+    }
+
+    const list = this.constructFlatListItems(inventoryDictionary)
+
+
+
+
+    
+  }
+
+  constructFlatListItems = (dictionary) => {
+    let listToReturn = []
+    if(dictionary){
+      for(let key in dictionary){
+        listToReturn.push({title: key, data: dictionary[key]})
+      }
+    }
+    this.setState({
+      inventoryItems: listToReturn,
+      loadingContent: false
+    })
   }
 
   render() {
@@ -307,14 +358,17 @@ const SectionContent = (sectionContent, props) => {
     navigation
   } = props
 
-
+  if(!sectionContent.imageURL){
+    sectionContent.imageURL = 'https://screenshotlayer.com/images/assets/placeholder.png'
+  }
+  
   const sectionContentToRender = <View style={sectionContentContainerOuter}>
     <View style={cardContainerStyle}>
       <Card width={65} height={65} elevation={dimens.defaultBorderRadius}>
         <ImageBackground
           style={imageStyle}
           imageStyle={{ borderRadius: dimens.defaultBorderRadius }}
-          source={{ uri: sectionContent.imageURL }} />
+          source={ { uri: sectionContent.imageURL }} />
       </Card>
     </View>
 
