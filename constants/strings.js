@@ -80,7 +80,10 @@ const strings = {
   submit: 'Submit',
   registeredEmail: 'Registered Email',
   pleaseProvideThis: 'Please provide this.',
-  signOut: 'Sign Out'
+  signOut: 'Sign Out',
+  phoneNumber: 'Phone Number',
+  choosePhoneExtension: 'Choose phone extension',
+  enterPhone: 'Enter Phone'
 }
 
 export default strings

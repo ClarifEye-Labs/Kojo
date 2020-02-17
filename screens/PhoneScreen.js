@@ -14,11 +14,11 @@ import {
   TextInput,
   FlatList
 } from 'react-native'
-import { Back, Edit, Card, TextWithSubheading, Button, Cross, InputWithSubHeading, Icon } from '../Components'
+import { Icon, Button } from '../Components'
 import { LinearGradient } from 'expo-linear-gradient';
-import { dimens, colors, customFonts, strings, screens } from '../constants'
+import { dimens, colors, customFonts, strings, screens, iconNames } from '../constants'
 import { commonStyling } from '../common'
-import { PropTypes } from 'prop-types'
+import { PropTypes, string } from 'prop-types'
 import firebase from '../config/firebase'
 import LottieView from 'lottie-react-native';
 
@@ -28,11 +28,12 @@ class PhoneScreen extends Component {
     this.state = {
       name: 'Phone Screen',
       isCountryModalVisible: false,
-      countryList: [{ 'id': 852, title: '(+852) Hong Kong' }, { 'id': 86, title: '(+86) China' }],
+      countryList: [{ 'id': +852, title: '(+852) Hong Kong' }, { 'id': +86, title: '(+86) China' }],
       countrySelected: null,
       countryToRender: "Select a country",
       country: null,
-      phoneNumber: null
+      phoneNumber: null,
+      placeHolderPhone: 'this will change'
     }
   }
   componentDidMount() {
@@ -310,8 +311,9 @@ class PhoneScreen extends Component {
       inputContainerTouchableStyle,
       inputCountryTextStyle,
       addButtonStyle,
-      phoneTextInput
-
+      phoneTextInput,
+      inputsContainer,
+      submitButtonStyle
     } = styles
 
     const {
@@ -320,12 +322,12 @@ class PhoneScreen extends Component {
 
     return (
       <ScrollView style={mainContainer}>
-        <Back size={34} style={commonStyling.backButtonStyling} color={colors.colorAccent} onPress={() => navigation.goBack()} />
+        <Icon nameAndroid={iconNames.crossAndroid} nameIOS={iconNames.crossIOS} size={36} style={commonStyling.crossStyle} color={colors.colorAccent} onPress={() => navigation.goBack()} />
         <View style={headerContainer}>
           <LinearGradient
             colors={[colors.colorPrimary, colors.colorSecondary]}
             style={gradientStyle}>
-            <Text style={headingStyle}>Phone Number</Text>
+            <Text style={headingStyle}>{strings.phoneNumber}</Text>
           </LinearGradient>
           <View style={imageContainer}>
             <View width={200} height={200} elevation={dimens.defaultElevation + 10} >
@@ -342,29 +344,32 @@ class PhoneScreen extends Component {
             </View>
           </View>
         </View>
-        <View style={inputContainerStyle}>
-          <TouchableOpacity style={inputContainerTouchableStyle} onPress={this.showCountryModal}>
-            <Text style={inputCountryTextStyle}>{this.state.countryToRender}</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={inputContainerStyle}>
-          <TextInput
-            style={inputCountryTextStyle}
-            onChangeText={this.handlePhoneNumber}
-            placeholder="Enter Phone Number"
-            keyboardType='number-pad'
-          />
-        </View>
+        <View style={inputsContainer}>
+          <View style={inputContainerStyle}>
+            <Text style={subHeadingStyle}>{strings.choosePhoneExtension}</Text>
+            <TouchableOpacity style={inputContainerTouchableStyle} onPress={this.showCountryModal}>
+              <Text style={inputCountryTextStyle}>{this.state.countryToRender}</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={inputContainerStyle}>
+            <Text style={subHeadingStyle}>{strings.enterPhone}</Text>
+            <TextInput
+              onChangeText={this.handlePhoneNumber}
+              placeholder={this.state.placeHolderPhone}
+              style={phoneTextInput}
+              keyboardType='number-pad'
+            />
+          </View>
 
-        <View style={buttonContainer}>
-          <Button
-            title="Submit"
-            onPress={this.submitButtonOnClick}
-            style={addButtonStyle}
-            textColor={colors.colorAccent}
-            isLoading={this.state.showLoadingDialog} />
+          <View style={buttonContainer}>
+            <Button
+              title="Submit"
+              onPress={this.submitButtonOnClick}
+              style={submitButtonStyle}
+              textColor={colors.colorAccent}
+              isLoading={this.state.showLoadingDialog} />
+          </View>
         </View>
-
         {this.getCountryModal()}
       </ScrollView>
     );
@@ -378,7 +383,7 @@ const styles = StyleSheet.create({
   headerContainerImage: {
     width: '100%',
     zIndex: -1,
-    height: 290
+    height: 280
   },
   gradientStyle: {
     position: 'absolute',
@@ -401,10 +406,10 @@ const styles = StyleSheet.create({
   imageContainer: {
     display: 'flex',
     alignItems: 'center',
-    height: 450,
+    height: 300,
     borderBottomColor: colors.grayTransluscent,
     borderBottomWidth: 0,
-    paddingTop: 100,
+    paddingTop: 260,
     justifyContent: 'center'
   },
   imageStyling: {
@@ -435,8 +440,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1
   },
   subHeadingStyle: {
-    fontSize: 18,
-    fontFamily: customFonts.semiBold,
+    fontSize: 16,
+    fontFamily: customFonts.regular,
     color: colors.grayBlue
   },
   textStyle: {
@@ -446,9 +451,9 @@ const styles = StyleSheet.create({
     color: colors.blackTransluscent
   },
   buttonContainer: {
-    flexDirection: 'row',
-    marginTop: 30,
-    justifyContent: 'space-evenly',
+    marginTop: 20,
+    width: '100%',
+    justifyContent: 'center',
     alignItems: 'center'
   },
   deleteButtonStyle: {
@@ -530,39 +535,45 @@ const styles = StyleSheet.create({
     paddingLeft: dimens.screenHorizontalMargin
   },
   inputContainerStyle: {
-    marginHorizontal: 8,
-    height: dimens.textInputHeight,
-    borderBottomColor: colors.grayTransluscent,
-    borderBottomWidth: 1,
+    height: dimens.textInputHeight + 20,
+    width: '90%',
+    flexDirection: 'column',
+    borderBottomColor: colors.grayBlue,
+    borderBottomWidth: 0.5,
     justifyContent: 'center',
-    marginBottom: 40
+    marginBottom: 35
   },
   inputContainerTouchableStyle: {
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',
+    height: dimens.textInputHeight,
+    justifyContent: 'center'
   },
   inputCountryTextStyle: {
-    fontSize: 19,
+    fontSize: 20,
     color: colors.grayTransluscent,
     fontFamily: customFonts.regular,
-    textAlign: 'center'
   },
   phoneTextInput: {
     width: '100%',
     height: dimens.textInputHeight,
-    borderBottomWidth: 1,
-    paddingHorizontal: 8,
+    borderBottomWidth: 0.5,
     paddingVertical: 4,
     fontFamily: customFonts.regular,
-    fontSize: 16,
+    fontSize: 20,
     borderColor: colors.grayTransluscent,
   },
   addButtonStyle: {
     backgroundColor: colors.submitGreen,
     width: '80%',
+  },
+  inputsContainer: {
+    marginTop: 100,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  submitButtonStyle: {
+    width: '90%',
+    backgroundColor: colors.colorPrimary
   }
-
 })
 
 PhoneScreen.navigationOptions = {

@@ -17,7 +17,7 @@ const dimens = {
   inputTextFontSize: 19,
   crossSize: 28,
   crossTop: 40,
-  crossRight: 10,
+  crossRight: 20,
   headingSize: 30
 }
 
