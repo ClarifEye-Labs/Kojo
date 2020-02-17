@@ -77,7 +77,7 @@ class SupplierInventoryScreen extends Component {
         .get()
         .then((doc) => {
           if (doc.exists) {
-            products.push(doc.data())
+            products.push({ ...{id: doc.id}, ...{...doc.data()} } )
           } else {
             console.log('Werent able to fetch products')
           }
@@ -107,11 +107,10 @@ class SupplierInventoryScreen extends Component {
     }
 
     const list = this.constructFlatListItems(inventoryDictionary)
-
-
-
-
-    
+    this.setState({
+      inventoryItems: list,
+      loadingContent: false
+    })
   }
 
   constructFlatListItems = (dictionary) => {
@@ -121,10 +120,7 @@ class SupplierInventoryScreen extends Component {
         listToReturn.push({title: key, data: dictionary[key]})
       }
     }
-    this.setState({
-      inventoryItems: listToReturn,
-      loadingContent: false
-    })
+    return listToReturn
   }
 
   render() {

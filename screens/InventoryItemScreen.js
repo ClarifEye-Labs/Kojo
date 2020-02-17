@@ -17,6 +17,7 @@ import { dimens, colors, customFonts, strings, screens } from '../constants'
 import { commonStyling } from '../common'
 import { Back, Edit, Card, TextWithSubheading, Button, Cross } from '../Components'
 import firebase from '../config/firebase'
+import collectionNames from '../config/collectionNames';
 
 class InventoryItemScreen extends Component {
   constructor(props) {
@@ -36,12 +37,25 @@ class InventoryItemScreen extends Component {
   deleteConfirm = async () => {
     let db = firebase.firestore()
     let itemID = this.state.item.id
-    db.collection("products").doc(itemID).delete().then(() => {
-      this.closeDeleteModal()
-      this.state.navigation.navigate(screens.SupplierWelcomeScreen)
-    }).catch(function (error) {
-      alert("Error removing document: ", error);
-    });
+    console.log("TCL: InventoryItemScreen -> deleteConfirm -> itemID", itemID)
+
+    if (itemID) {
+      db
+      .collection(collectionNames.suppliers)
+      .doc(firebase.auth().currentUser.uid)
+      .update({
+        inventory: firebase.firestore.FieldValue.arrayRemove('/products/' + itemID)
+      }).then(() => {
+        this.closeDeleteModal()
+        this.state.navigation.navigate(screens.SupplierWelcomeScreen)
+      }).catch(function (error) {
+        alert("Error removing document: ", error);
+      });
+    }else{
+      console.log('Some error in pipeline')
+    }
+
+    
   }
 
   render() {
