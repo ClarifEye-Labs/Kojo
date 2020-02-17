@@ -83,7 +83,11 @@ const strings = {
   signOut: 'Sign Out',
   phoneNumber: 'Phone Number',
   choosePhoneExtension: 'Choose phone extension',
-  enterPhone: 'Enter Phone'
+  enterPhone: 'Enter Phone',
+  searchItems: 'Search Items',
+  editYourItemsBelow: 'Edit your items below',
+  viewYourItemsBelow: 'View your items below',
+  inventory: 'Inventory'
 }
 
 export default strings

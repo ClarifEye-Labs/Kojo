@@ -1190,9 +1190,7 @@ class SupplierAddInventoryScreen extends Component {
       .update({
         inventory: firebase.firestore.FieldValue.arrayUnion(inventoryReference)
       })
-      .then(() => {
-        console.log('Uplaod compelte')
-      })
+      .then(null)
       .catch((error) => {
         console.log("TCL: uploadInventory -> error", error)
       })

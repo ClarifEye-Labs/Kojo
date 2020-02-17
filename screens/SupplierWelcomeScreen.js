@@ -5,7 +5,7 @@ import {
   FlatList
 } from 'react-native'
 import { SupplierWelcomeItem } from '../Components'
-import { dimens, colors, strings } from '../constants'
+import { dimens, colors, strings, screens } from '../constants'
 import { commonStyling } from '../common'
 import Constants from 'expo-constants'
 import * as Animatable from 'react-native-animatable'
@@ -75,21 +75,21 @@ function ListItem(item, navigation) {
       backgroundImage = require('../assets/Supplier/addItems.jpg')
       backgroundColorOverlay = colors.blueTransluscent
       textColor = colors.colorAccent
-      onPress = () => navigation.navigate('SupplierAddInventoryScreen')
+      onPress = () => navigation.navigate(screens.SupplierAddInventoryScreen)
       break;
     }
     case 'View Inventory': {
       backgroundImage = require('../assets/Supplier/viewInventory.jpeg')
       backgroundColorOverlay = colors.blackTransluscent
       textColor = colors.colorAccent
-      onPress = () => navigation.navigate('SupplierInventoryScreen')
+      onPress = () => navigation.navigate(screens.SupplierInventoryScreen)
       break;
     }
     case 'Edit Items': {
       backgroundImage = require('../assets/Supplier/editItem.jpeg')
       backgroundColorOverlay = colors.orangeHueTransluscent
       textColor = colors.colorAccent
-      onPress = () => navigation.navigate('RegistrationScreen')
+      onPress = () => navigation.navigate(screens.EditInventoryScreen)
       break;
     }
     case 'View Clients': {

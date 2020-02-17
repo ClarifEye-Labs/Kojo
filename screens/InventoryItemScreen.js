@@ -18,6 +18,7 @@ import { commonStyling } from '../common'
 import { Back, Edit, Card, TextWithSubheading, Button, Cross } from '../Components'
 import firebase from '../config/firebase'
 import collectionNames from '../config/collectionNames';
+import { Utils } from '../utils';
 
 class InventoryItemScreen extends Component {
   constructor(props) {
@@ -37,7 +38,6 @@ class InventoryItemScreen extends Component {
   deleteConfirm = async () => {
     let db = firebase.firestore()
     let itemID = this.state.item.id
-    console.log("TCL: InventoryItemScreen -> deleteConfirm -> itemID", itemID)
 
     if (itemID) {
       db
@@ -47,7 +47,7 @@ class InventoryItemScreen extends Component {
         inventory: firebase.firestore.FieldValue.arrayRemove('/products/' + itemID)
       }).then(() => {
         this.closeDeleteModal()
-        this.state.navigation.navigate(screens.SupplierWelcomeScreen)
+        Utils.dispatchScreen(screens.SupplierHome, undefined, this.state.navigation)
       }).catch(function (error) {
         alert("Error removing document: ", error);
       });
@@ -86,7 +86,6 @@ class InventoryItemScreen extends Component {
     const itemCategory = this.state.item.type
     const itemUnit = this.state.item.unit
     const itemID = this.state.item.id
-    console.log(this.state.item)
     return (
       <View style={mainContainer}>
         <Back size={34} style={commonStyling.backButtonStyling} color={colors.colorAccent} onPress={() => navigation.goBack()} />

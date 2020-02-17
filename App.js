@@ -25,6 +25,7 @@ import AddressScreen from './screens/AddressScreen';
 import AddressComplete from './screens/AddressComplete';
 import SupplierHome from './screens/SupplierHome';
 import ProfileScreen from './screens/ProfileScreen';
+import EditInventoryScreen from './screens/EditInventoryScreen';
 
 const AppNavigator = createStackNavigator({
   LoginScreen: LoginScreen,
@@ -44,7 +45,8 @@ const AppNavigator = createStackNavigator({
   AddressScreen: AddressScreen,
   AddressComplete: AddressComplete,
   SupplierHome: SupplierHome,
-  ProfileScreen: ProfileScreen
+  ProfileScreen: ProfileScreen,
+  EditInventoryScreen: EditInventoryScreen
 },
 {
   initialRouteName: screens.SplashScreen,

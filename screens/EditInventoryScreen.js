@@ -22,11 +22,11 @@ const HEADER_COLLAPSED_HEIGHT = 100;
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen")
 
-class SupplierInventoryScreen extends Component {
+class EditInventoryScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: 'SupplierInventoryScreen',
+      name: 'EditInventoryScreen',
       loadingContent: true,
       firestore: undefined,
       suppliersData: undefined,
@@ -187,7 +187,7 @@ class SupplierInventoryScreen extends Component {
           color={colors.colorAccent} />
 
         {this.state.showSearch ? <SearchBar
-          placeholder="Search Item"
+          placeholder={strings.searchItems}
           onChangeText={this.updateSearch}
           platform={(Platform.OS === 'ios') ? 'ios' : 'android'}
           showCancel={true}
@@ -230,8 +230,8 @@ class SupplierInventoryScreen extends Component {
 
     return (
       <View style={expandedHeaderContainerStyle}>
-        <Text style={headingStyle}>{strings.inventory} </Text>
-        <Text style={subHeadingStyle}>{strings.viewYourItemsBelow} </Text>
+        <Text style={headingStyle}>{strings.inventory}</Text>
+        <Text style={subHeadingStyle}>{strings.editYourItemsBelow}</Text>
       </View>
     )
   }
@@ -370,7 +370,7 @@ const SectionContent = (sectionContent, props) => {
 
     <View style={sectionContentContainerInner}>
       <TouchableOpacity style={sectionContentTouchableContainer} onPress={() => {
-        navigation.navigate(screens.InventoryItemScreen, {
+        navigation.navigate(screens.EditItemScreen, {
           item: sectionContent
         })
       }}>
@@ -512,9 +512,8 @@ const styles = StyleSheet.create({
   }
 })
 
-
-SupplierInventoryScreen.navigationOptions = {
+EditInventoryScreen.navigationOptions = {
   header: null
 }
 
-export default connect(mapStateToProps)(SupplierInventoryScreen)
+export default connect(mapStateToProps)(EditInventoryScreen)

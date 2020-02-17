@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Text, ImageBackground } from 'react-native'
 import { Confirm, Back, Heading, InputWithSubHeading, Button, Card, Edit } from '../Components'
-import { dimens, colors, customFonts } from '../constants'
+import { dimens, colors, customFonts, screens } from '../constants'
 import { commonStyling } from '../common'
 import { LinearGradient } from 'expo-linear-gradient';
 import { ScrollView } from 'react-native-gesture-handler';
+import firebase from '../config/firebase'
+import collectionNames from '../config/collectionNames';
+import { Utils } from '../utils';
 
 class EditItemScreen extends Component {
   constructor(props) {
@@ -15,7 +18,9 @@ class EditItemScreen extends Component {
       newItemName: this.props.navigation.getParam('item').name,
       newItemPrice: this.props.navigation.getParam('item').price_per_unit,
       newItemCategory: this.props.navigation.getParam('item').category,
-      newItemImageURL: this.props.navigation.getParam('item').imageURL
+      newItemImageURL: this.props.navigation.getParam('item').imageURL,
+      navigation: props.navigation,
+      isLoading: false
     }
   }
 
@@ -26,22 +31,39 @@ class EditItemScreen extends Component {
   }
 
   setItemPrice = (price) => {
-    if(price.length !== 0 ){
+    if (price.length !== 0) {
       this.setState({
         newItemPrice: parseInt(price)
       })
-    }else{
+    } else {
       this.setState({
-        newItemPrice: ''
+        newItemPrice: null
       })
     }
   }
 
-  setItemCategory = (category) => {
+  confirmEdit = () => {
     this.setState({
-      newItemCategory: category
+      isLoading: true
     })
+    const {
+      item
+    } = this.state
+    const itemID = item.id
+    const db = firebase.firestore()
+
+    db
+      .collection(collectionNames.products)
+      .doc(itemID)
+      .update({
+        name: this.state.newItemName,
+        price_per_unit: this.state.newItemPrice
+      })
+      .then(() => this.setState({
+        isLoading: false
+      }, () => Utils.dispatchScreen(screens.SupplierHome, undefined, this.state.navigation )))
   }
+
 
   render() {
     const {
@@ -87,49 +109,39 @@ class EditItemScreen extends Component {
 
         <View style={topButtonsContainer}>
           <Heading containerStyle={headingContainerStyle} headingStyle={headingStyle} title='Edit item' />
-          <Confirm style={confirmStyle} size={60} color={colors.colorAccent} />
-          <Back color={colors.colorAccent} style={commonStyling.backButtonStyling} size={36} onPress={ () => navigation.goBack() }/>
+          <Confirm style={confirmStyle} size={60} color={colors.colorAccent} onPress={this.confirmEdit}/>
+          <Back color={colors.colorAccent} style={commonStyling.backButtonStyling} size={36} onPress={() => navigation.goBack()} />
         </View>
 
         <ScrollView style={textContentContainerStyle}>
-          <InputWithSubHeading 
+          <InputWithSubHeading
             subHeadingTitle='Item Name'
             containerStyle={textInputContainerStyle}
             inputValue={this.state.newItemName}
             onChangeText={this.setItemName} />
 
-          <InputWithSubHeading 
+          <InputWithSubHeading
             subHeadingTitle='Item Price'
             keyboardType='numeric'
             containerStyle={textInputContainerStyle}
-            inputValue={this.state.newItemPrice.toString()}
+            inputValue={this.state.newItemPrice ? this.state.newItemPrice.toString() : null}
             onChangeText={this.setItemPrice} />
 
-          <InputWithSubHeading 
-            subHeadingTitle='Item Category'
-            inputValue={this.state.newItemCategory}
-            containerStyle={textInputContainerStyle}
-            onChangeText={this.setItemCategory} />
-
-          <InputWithSubHeading 
-            subHeadingTitle='Temp'
-            inputValue={this.state.newItemName}
-            containerStyle={textInputContainerStyle}
-            onChangeText={this.setItemName} />
-
           <View style={buttonContainer}>
-            <Button 
-              title='Confirm' 
+            <Button
+              title='Confirm'
+              isLoading={this.state.isLoading}
+              onPress={this.confirmEdit}
               textColor={colors.colorAccent}
-              style={confirmButtonStyle}/>
+              style={confirmButtonStyle} />
           </View>
 
-          
+
         </ScrollView>
 
-       
-      
-       
+
+
+
       </View>
     );
   }
@@ -158,7 +170,7 @@ const styles = StyleSheet.create({
     color: colors.colorAccent,
     fontSize: 25
   },
-  topButtonsContainer:{
+  topButtonsContainer: {
     width: '100%',
     height: 100,
     position: 'absolute',
@@ -186,7 +198,7 @@ const styles = StyleSheet.create({
   },
   confirmButtonStyle: {
     width: 320,
-    height: dimens.buttonHeight, 
+    height: dimens.buttonHeight,
     marginHorizontal: dimens.screenHorizontalMargin,
     marginRight: dimens.screenHorizontalMargin,
     backgroundColor: colors.colorSecondary
