@@ -1,13 +1,20 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, ImageBackground } from 'react-native'
-import { Confirm, Back, Heading, InputWithSubHeading, Button, Card, Edit } from '../Components'
-import { dimens, colors, customFonts, screens } from '../constants'
+import { View, StyleSheet, Text, ImageBackground, Modal, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
+import { Confirm, Back, Heading, InputWithSubHeading, Button, Card, Edit, Cross } from '../Components'
+import { dimens, colors, customFonts, screens, strings } from '../constants'
 import { commonStyling } from '../common'
 import { LinearGradient } from 'expo-linear-gradient';
 import { ScrollView } from 'react-native-gesture-handler';
 import firebase from '../config/firebase'
+import { RNS3 } from 'react-native-aws3'
+import awsConfig from '../config/aws'
 import collectionNames from '../config/collectionNames';
 import { Utils } from '../utils';
+import * as ImagePicker from 'expo-image-picker';
+import Constants from 'expo-constants';
+import * as Permissions from 'expo-permissions';
+
+
 
 class EditItemScreen extends Component {
   constructor(props) {
@@ -20,9 +27,137 @@ class EditItemScreen extends Component {
       newItemCategory: this.props.navigation.getParam('item').category,
       newItemImageURL: this.props.navigation.getParam('item').imageURL,
       navigation: props.navigation,
-      isLoading: false
+      isLoading: false,
+      showImagePicker: false,
+      imageUri: null,
+      imageHasBeenUploaded: false,
+      imageAWSURL: null
     }
   }
+
+  componentDidMount() {
+    this.getPermissionAsync()
+  }
+
+  // ---------------------- IMAGE MODAL METHODS-----------------------------
+  getPermissionAsync = async () => {
+    if (Constants.platform.ios) {
+      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL, Permissions.CAMERA);
+      if (status !== 'granted') {
+        alert(strings.sorryWeNeedPermissions);
+      }
+    }
+  }
+
+  openImagePickerModal = () => {
+    this.setState({
+      showImagePicker: true
+    })
+  }
+
+  closeImagePickerModal = () => {
+    this.setState({
+      showImagePicker: false
+    })
+  }
+
+  getImageModal = () => {
+    const {
+      modalContentContainerStyle,
+      modalContainerStyle,
+      crossStyle,
+      textContainerModal,
+      headingModalStyle,
+      uploadButtonModal: deleteButtonModal,
+      clickButtonModal: cancelButtonModal,
+      modalButtonContainer
+    } = styles
+
+    return (
+      <Modal visible={this.state.showImagePicker} transparent={true} animationType='slide' onBackButtonPress={() => { this.setState({ showImagePicker: false }) }}>
+        <TouchableOpacity
+          activeOpacity={1}
+          onPressOut={() => { this.setState({ showImagePicker: false }) }}
+          style={modalContainerStyle}>
+          <TouchableWithoutFeedback>
+            <View style={modalContentContainerStyle}>
+              <Cross style={crossStyle} onPress={() => { this.setState({ showImagePicker: false }) }} color={colors.grayBlue} size={38} />
+              <View style={textContainerModal}>
+                <Text style={headingModalStyle}>{strings.chooseUploadImageOption}</Text>
+              </View>
+              <View style={modalButtonContainer}>
+                <Button
+                  title='Upload from library'
+                  textColor={colors.colorAccent}
+                  onPress={() => { this.updateImagePickerValue('library') }}
+                  style={deleteButtonModal} />
+                <Button
+                  title='Click from camera'
+                  textColor={colors.colorAccent}
+                  onPress={() => { this.updateImagePickerValue('camera') }}
+                  style={cancelButtonModal} />
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </TouchableOpacity>
+      </Modal>
+    )
+  }
+
+
+  updateImagePickerValue = (value) => {
+    if (value !== "") {
+      this.setState({
+        imagePickerValue: value,
+      }, () => { this.uploadImageOnClick() })
+    }
+  }
+
+  uploadImageOnClick = async () => {
+    let result = null
+    if (this.state.imagePickerValue == "library") {
+      result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1
+      });
+    } else if (this.state.imagePickerValue == "camera") {
+      result = await ImagePicker.launchCameraAsync();
+
+    }
+
+
+    if (!result.cancelled) {
+      this.setState({ imageUri: result.uri, imageHasBeenUploaded: true, showImagePicker: false })
+    }
+  }
+
+  uploadImageToAWS = async () => {
+    const response = await fetch(this.state.imageUri);
+    const blob = await response.blob();
+
+    const file = {
+      uri: this.state.imageUri,
+      name: this.state.inventoryName + ".png",
+      type: 'image/png'
+    }
+
+    var returnValue = null
+    await RNS3.put(file, awsConfig)
+      .then(
+        (response) => {
+          if (response.headers.Location) {
+            returnValue = response.headers.Location
+          }
+        }
+      )
+
+    return returnValue
+  }
+
+
+
 
   setItemName = (name) => {
     this.setState({
@@ -42,13 +177,30 @@ class EditItemScreen extends Component {
     }
   }
 
-  confirmEdit = () => {
+  confirmEdit = async () => {
     this.setState({
       isLoading: true
     })
+
     const {
-      item
+      item,
+      imageUri,
+      newItemImageURL
     } = this.state
+
+
+    let imageURL = newItemImageURL
+    if (imageUri) {
+      imageURL = await this.uploadImageToAWS()
+      if (!imageURL) {
+        Alert.alert("Image not uploaded, Try Again.")
+      } else {
+        this.setState({
+          imageAWSURL: imageURL
+        })
+      }
+    }
+
     const itemID = item.id
     const db = firebase.firestore()
 
@@ -57,11 +209,12 @@ class EditItemScreen extends Component {
       .doc(itemID)
       .update({
         name: this.state.newItemName,
-        price_per_unit: this.state.newItemPrice
+        price_per_unit: this.state.newItemPrice,
+        imageURL: imageURL
       })
       .then(() => this.setState({
         isLoading: false
-      }, () => Utils.dispatchScreen(screens.SupplierHome, undefined, this.state.navigation )))
+      }, () => Utils.dispatchScreen(screens.SupplierHome, undefined, this.state.navigation)))
   }
 
 
@@ -98,18 +251,26 @@ class EditItemScreen extends Component {
           </LinearGradient>
           <View style={imageContainer}>
             <Card width={280} height={280} elevation={dimens.defaultElevation + 10} >
-              <ImageBackground style={imageStyling} imageStyle={imageStyling} source={{ uri: this.state.newItemImageURL }}>
+              {this.state.imageUri == null ? (<ImageBackground style={imageStyling} imageStyle={imageStyling} source={{ uri: this.state.newItemImageURL }}>
                 <View style={imageEditOverlay}>
-                  <Edit style={editImageIcon} color={colors.colorAccent} size={32} />
+                  <Edit style={editImageIcon} color={colors.colorAccent} size={32} onPress={this.openImagePickerModal} />
                 </View>
               </ImageBackground>
+              ) : (<ImageBackground style={imageStyling} imageStyle={imageStyling} source={{ uri: this.state.imageUri }}>
+                <View style={imageEditOverlay}>
+                  <Edit style={editImageIcon} color={colors.colorAccent} size={32} onPress={this.openImagePickerModal} />
+                </View>
+              </ImageBackground>
+
+                )}
             </Card>
           </View>
         </View>
+        {this.getImageModal()}
 
         <View style={topButtonsContainer}>
           <Heading containerStyle={headingContainerStyle} headingStyle={headingStyle} title='Edit item' />
-          <Confirm style={confirmStyle} size={60} color={colors.colorAccent} onPress={this.confirmEdit}/>
+          <Confirm style={confirmStyle} size={60} color={colors.colorAccent} onPress={this.confirmEdit} />
           <Back color={colors.colorAccent} style={commonStyling.backButtonStyling} size={36} onPress={() => navigation.goBack()} />
         </View>
 
@@ -248,7 +409,54 @@ const styles = StyleSheet.create({
   editImageIcon: {
     position: 'absolute',
     right: dimens.screenHorizontalMargin,
+  },
+  modalContentContainerStyle: {
+    width: 320,
+    height: 260,
+    backgroundColor: colors.colorAccent,
+    borderRadius: dimens.defaultBorderRadius
+  },
+  modalContainerStyle: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: colors.blackTransluscent,
+    alignItems: 'center'
+  },
+  crossStyle: {
+    position: 'absolute',
+    top: 5,
+    right: 20,
+  },
+  textContainerModal: {
+    marginTop: 45,
+    width: '100%'
+  },
+  headingModalStyle: {
+    fontSize: 18,
+    textAlign: 'center',
+    fontFamily: customFonts.regular,
+    color: colors.grayBlue
+  },
+  uploadButtonModal: {
+    width: '80%',
+    marginTop: 15,
+    height: dimens.buttonHeight,
+    backgroundColor: colors.submitGreen
+  },
+  clickButtonModal: {
+    width: '80%',
+    marginTop: 15,
+    height: dimens.buttonHeight,
+    backgroundColor: colors.darkBlue
+  },
+  modalButtonContainer: {
+    marginTop: 30,
+    flexDirection: 'column',
+    alignItems: 'center',
+    width: '100%',
+    justifyContent: 'center'
   }
+
 })
 
 EditItemScreen.navigationOptions = {
