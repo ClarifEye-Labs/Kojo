@@ -323,6 +323,9 @@ class LoginScreen extends React.Component {
         if (doc.exists) {
           //store the current user configuration in redux 
           console.log('User already exists, fetching details from database')
+          const userData = doc.data()
+          const screenToLoadForUser = Utils.screenToLoadForUser(userData)
+          Utils.dispatchScreen(screenToLoadForUser, undefined, this.state.navigation)
 
         } else {
           //write the user to database 
