@@ -50,7 +50,6 @@ const AppNavigator = createStackNavigator({
 },
 {
   initialRouteName: screens.SplashScreen,
- 
 })
 
 

@@ -160,13 +160,13 @@ class LoginScreen extends React.Component {
     const userID = user.uid
     let userFirestore = null
     await userRef.doc(userID).get().then((doc) => doc.exists ? userFirestore = doc.data() : null)
-    if(userFirestore) {
+    if (userFirestore) {
       const screenToDispatch = Utils.screenToLoadForUser(userFirestore)
       this.setState({
         loginButtonLoading: false
       })
       Utils.dispatchScreen(screenToDispatch, undefined, this.state.navigation)
-    }else{
+    } else {
       alert('User has been deleted from our database, please register again!')
       this.setState({
         loginButtonLoading: false
@@ -336,11 +336,13 @@ class LoginScreen extends React.Component {
           await usersRef.doc(uid).set({
             name: name,
             email: email,
-            phone: phone,
+            phone: phone, 
             role: null,
             address: null,
             uid: uid
           })
+          Utils.dispatchScreen(screens.SupplierRestaurantScreen, undefined, this.state.navigation)
+
 
         }
       })
