@@ -197,6 +197,7 @@ class SupplierInventoryScreen extends Component {
         /> : null}
 
         <SectionList
+          scrollEnabled={this.state.inventoryItems.length ? true : false}
           contentContainerStyle={{ minHeight: SCREEN_HEIGHT + HEADER_COLLAPSED_HEIGHT }}
           sections={this.state.search ? this.state.searchInventory : this.state.inventoryItems}
           renderItem={({ item }) => SectionContent(item, this.props)}
