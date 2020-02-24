@@ -28,6 +28,7 @@
     ],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "description": "Connects suppliers to restaurants "
   }
 }

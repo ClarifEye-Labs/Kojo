@@ -2,7 +2,7 @@ const dimens = {
   buttonHeight: 55,
   defaultButtonWidth: 150,
   defaultButtonBorder: 2,
-  textInputHeight: 50,
+  textInputHeight: 45,
   buttonBorderWidth: 1,
   screenHorizontalMargin: 20,
   screenVerticalMargin: 20,
@@ -16,8 +16,8 @@ const dimens = {
   defaultBorderRadius: 10,
   inputTextFontSize: 19,
   crossSize: 28,
-  crossTop: 60,
-  crossRight: 40,
+  crossTop: 40,
+  crossRight: 20,
   headingSize: 30
 }
 

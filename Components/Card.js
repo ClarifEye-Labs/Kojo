@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react'
 import { View, StyleSheet, Text } from 'react-native'
 import { dimens, colors } from '../constants'
+import {PropTypes} from 'prop-types'
 
 const Card = (props) => {  
   const {
@@ -52,6 +53,12 @@ function elevationShadowStyle(elevation) {
     shadowOpacity: 0.3,
     shadowRadius: 0.8 * elevation
   };
+}
+
+Card.propTypes = {
+  width: PropTypes.any,
+  height: PropTypes.any,
+  borderRadius: PropTypes.number
 }
 
 export default Card

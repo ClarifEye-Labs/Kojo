@@ -1,27 +1,45 @@
 import React, { Component } from 'react'; 
 import { View, StyleSheet, Text, TouchableOpacity, ImageBackground} from 'react-native'
-import { dimens, colors, customFonts, strings } from '../constants'
+import { colors, customFonts, strings } from '../constants'
 import { commonStyling } from '../common'
-import { Cross } from '../Components';
-import {NavigationActions, StackActions} from 'react-navigation'
+import firebase from '../config/firebase'
+import screens from '../constants/screens';
+import appConfig from '../config/appConfig';
+import collectionNames from '../config/collectionNames';
+import Utils from '../utils/Utils';
 
 class SupplierRestaurantScreen extends Component {
   constructor(props){
     super(props)
     this.state = {
-
+      navigation: props.navigation
     }
   }
   
-  navigateToSupplierScreen = () => {
-    console
-    const resetAction = StackActions.reset({
-      index: 0,
-      actions: [
-        NavigationActions.navigate({ routeName: 'SupplierWelcomeScreen' })
-      ]
-    })
-    this.props.navigation.dispatch(resetAction);
+  navigateToScreen = async (screen) => {
+    const user = firebase.auth().currentUser
+    const uid = user.uid
+    const userRef = firebase.firestore().collection(collectionNames.users)
+    const supplierRef = firebase.firestore().collection(collectionNames.suppliers)
+
+    if(screen === screens.SupplierWelcomeScreen) {
+      let role = appConfig.userRoleSupplier
+      await userRef.doc(uid).update({
+        role: role
+      })
+      await supplierRef.doc(uid).set({
+        uid: uid,
+        clients: [],
+        inventory: []
+      })
+
+    }else{
+      let role = appConfig.userRoleRestaurantOwner
+      await userRef.doc(uid).update({
+        role: role
+      })
+    }
+    Utils.dispatchScreen(screens.AddressScreen, undefined, this.state.navigation);
   }
 
   
@@ -34,28 +52,24 @@ class SupplierRestaurantScreen extends Component {
       mainText,
       textContainer,
       containerSupplyBG,
-      constainerRestaurantOwnerBG,
-      crossStyle
+      constainerRestaurantOwnerBG
     } = styles
 
-    const {
-      navigation
-    } = this.props
-
-  
     const screen = 
     <View style={mainContainer}>
       <ImageBackground style={upperHalfContainer} source={require('../assets/Onboarding/supplier.jpg')}>
         <TouchableOpacity 
           style={{...textContainer,...containerSupplyBG}} 
-          onPress={() => this.navigateToSupplierScreen()}>
-          <Cross style={crossStyle} size={50} color={colors.colorAccent} onPress={() => navigation.goBack()}/>
+          onPress={() => this.navigateToScreen(screens.SupplierWelcomeScreen)}>
+
           <Text style={subText}> {strings.iAmA}</Text>
           <Text style={mainText}> {strings.supplier} </Text>
         </TouchableOpacity>
       </ImageBackground>
       <ImageBackground source={require('../assets/Onboarding/restaurantOwner.jpg')} style={lowerHalfContainer}>
-        <TouchableOpacity style={{...textContainer,...constainerRestaurantOwnerBG}}>
+        <TouchableOpacity 
+          style={{...textContainer,...constainerRestaurantOwnerBG}}
+          onPress={ ()=> this.navigateToScreen(null) }>
           <Text style={subText}> {strings.iOwnA} </Text>
           <Text style={mainText}> {strings.restaurant} </Text>
         </TouchableOpacity>
