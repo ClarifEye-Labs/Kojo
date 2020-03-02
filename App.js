@@ -10,8 +10,7 @@ import SupplierRestaurantScreen from './screens/SupplierRestaurantScreen'
 import EmailScreen from './screens/EmailScreen'
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import { createStore } from 'redux';
-import { Provider } from 'react-redux';
+import { Provider, connect } from 'react-redux';
 import InventoryItemScreen from './screens/InventoryItemScreen'
 import SupplierInventoryScreen from './screens/SupplierInventoryScreen';
 import SupplierClientsScreen from './screens/SupplierClientsScreen';
@@ -26,6 +25,7 @@ import AddressComplete from './screens/AddressComplete';
 import SupplierHome from './screens/SupplierHome';
 import ProfileScreen from './screens/ProfileScreen';
 import EditInventoryScreen from './screens/EditInventoryScreen';
+import configureStore from './store_redux/configureStore'
 
 const AppNavigator = createStackNavigator({
   LoginScreen: LoginScreen,
@@ -52,34 +52,9 @@ const AppNavigator = createStackNavigator({
   initialRouteName: screens.SplashScreen,
 })
 
-
 const AppContainer = createAppContainer(AppNavigator);
 
-const initialState = {
-  dummyInventory: [
-    { title: 'Alcohol', data: ['ALTERED', 'ABBY', 'ACTION U.S.A.', 'AMUCK', 'ANGUISH'] },
-    { title: 'Dairy', data: ['BEST MEN', 'BEYOND JUSTICE', 'BLACK GUNN', 'BLOOD RANCH', 'BEASTIES'] },
-    { title: 'Meat', data: ['CARTEL', 'CASTLE OF EVIL', 'CHANCE', 'COP GAME', 'CROSS FIRE',] },
-  ]
-}
-
-const reducer = (state = initialState, action) => {
-  switch (action.type) {
-    case 'UPDATE_INVENTORY':
-      return {
-        dummyInventory: [
-          { title: 'Alcohol', data: ['ALTERED', 'ABBY', 'ACTION U.S.A.', 'AMUCK', 'ANGUISH'] },
-          { title: 'Dairy', data: ['BEST MEN', 'BEYOND JUSTICE', 'BLACK GUNN', 'BLOOD RANCH', 'BEASTIES'] },
-          { title: 'Meat', data: ['CARTEL', 'CASTLE OF EVIL', 'CHANCE', 'COP GAME', 'CROSS FIRE',] },
-        ]
-      }
-  }
-  return state
-}
-
-const store = createStore(reducer)
-
-
+const store = configureStore()
 
 class App extends Component {
 
