@@ -14,8 +14,6 @@ import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 
-
-
 class EditItemScreen extends Component {
   constructor(props) {
     super(props)

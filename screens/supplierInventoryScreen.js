@@ -14,6 +14,8 @@ import Utils from '../utils/Utils';
 import { connect } from 'react-redux';
 import { LinearGradient } from 'expo-linear-gradient';
 import collectionNames from '../config/collectionNames';
+import { updateInventory } from '../actions_redux/updateInventory';
+import { bindActionCreators } from 'redux';
 
 
 
@@ -46,6 +48,7 @@ class SupplierInventoryScreen extends Component {
   }
 
   getInventory = async () => {
+    let { inventoryItems, actions } = this.props;
     let inventoryArray = []
     let db = firebase.firestore()
     let inventoryRefArray = []
@@ -65,6 +68,14 @@ class SupplierInventoryScreen extends Component {
       inventoryItems: inventoryArray,
       loadingContent: false
     })
+
+    actions.updateInventory(inventoryArray)
+
+
+
+
+
+    
 
   }
 
@@ -319,10 +330,14 @@ function mapStateToProps(state) {
   }
 }
 
+const actionCreators = Objects.assign(
+  {},
+  updateInventory
+)
+
+
 function mapDispatchToProps(dispatch) {
-  return {
-    updateInventory: () => dispatch({ type: 'UPDATE_INVENTORY' })
-  }
+  actions: bindActionCreators(actionCreators, dispatch)
 }
 
 const SectionHeader = (section) => {
@@ -518,4 +533,4 @@ SupplierInventoryScreen.navigationOptions = {
   header: null
 }
 
-export default connect(mapStateToProps)(SupplierInventoryScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(SupplierInventoryScreen)
