@@ -9,7 +9,7 @@ const updateInventoryReducer = (state=initialState, action) => {
         case UPDATE_INVENTORY: 
         return {
             ...state,
-            count:action.payload
+            inventory:action.payload
         };
         default:
         return state;

@@ -1,6 +1,5 @@
 import { createStore , combineReducers } from 'redux';
-
-import updateInventoryReducer from '../reducers_redux'
+import  updateInventoryReducer  from '../reducers_redux/updateInventoryReducer';
 
 const rootReducer = combineReducers (  
         {inventory: updateInventoryReducer}   

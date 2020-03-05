@@ -71,12 +71,6 @@ class SupplierInventoryScreen extends Component {
 
     actions.updateInventory(inventoryArray)
 
-
-
-
-
-    
-
   }
 
   fetchProductsForEachInventoryRef = async (inventoryRefArray) => {
@@ -162,7 +156,9 @@ class SupplierInventoryScreen extends Component {
     } = styles
 
     const {
-      navigation
+      navigation,
+      actions,
+      inventoryItems
     } = this.props
 
     const componentLoading =
@@ -210,7 +206,7 @@ class SupplierInventoryScreen extends Component {
         <SectionList
           scrollEnabled={this.state.inventoryItems.length ? true : false}
           contentContainerStyle={{ minHeight: SCREEN_HEIGHT + HEADER_COLLAPSED_HEIGHT }}
-          sections={this.state.search ? this.state.searchInventory : this.state.inventoryItems}
+          sections={this.state.search ? this.state.searchInventory : inventoryItems}
           renderItem={({ item }) => SectionContent(item, this.props)}
           renderSectionHeader={({ section }) => SectionHeader(section, this.props)}
           keyExtractor={(item, index) => index}
@@ -260,7 +256,7 @@ class SupplierInventoryScreen extends Component {
       </View>
     )
   }
-
+  
   updateSearch = search => {
     this.setState({ search })
     if (search == '') {
@@ -330,15 +326,18 @@ function mapStateToProps(state) {
   }
 }
 
-const actionCreators = Objects.assign(
+const actionCreators = Object.assign(
   {},
   updateInventory
 )
 
+const mapDispatchToProps = dispatch => ({
 
-function mapDispatchToProps(dispatch) {
-  actions: bindActionCreators(actionCreators, dispatch)
-}
+  
+    actions: bindActionCreators(updateInventory, dispatch)
+
+  
+})
 
 const SectionHeader = (section) => {
 
