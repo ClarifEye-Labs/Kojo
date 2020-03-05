@@ -326,15 +326,14 @@ function mapStateToProps(state) {
   }
 }
 
-const actionCreators = Object.assign(
+const ActionCreators = Object.assign(
   {},
   updateInventory
 )
 
 const mapDispatchToProps = dispatch => ({
 
-  
-    actions: bindActionCreators(updateInventory, dispatch)
+    actions: bindActionCreators(ActionCreators, dispatch)
 
   
 })
