@@ -192,7 +192,7 @@ class AddressScreen extends Component {
     } = this.props
     return (
       <ScrollView style={mainContainer}>
-        <Icon nameAndroid={iconNames.crossAndroid} nameIOS={iconNames.crossIOS} size={42} style={commonStyling.crossStyle} />
+        <Icon nameAndroid={iconNames.crossAndroid} nameIOS={iconNames.crossIOS} size={42} style={commonStyling.crossStyle} onPress={() => this.state.navigation.goBack()} />
         <Heading title={strings.addressHeading} containerStyle={headingContainerStyle} />
         <Text style={subHeadingStyle}>{strings.addressSubHeading}</Text>
         <View style={inputContainerStyle}>

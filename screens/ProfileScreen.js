@@ -104,7 +104,7 @@ class ProfileScreen extends Component {
 
         <ScrollView style={scrollView}>
           <View style={rowContainer}>
-            <TouchableOpacity style={editIcon} onPress={() => null}>
+            <TouchableOpacity style={editIcon} onPress={null}>
               <Text style={editIconText}>Edit</Text>
             </TouchableOpacity>
             <TextWithSubheading
@@ -115,7 +115,7 @@ class ProfileScreen extends Component {
               textTitle={this.state.userEmail ? this.state.userEmail : strings.pleaseProvideThis} />
           </View>
           <View style={rowContainer}>
-            <TouchableOpacity style={editIcon}>
+            <TouchableOpacity style={editIcon} onPress={() => this.state.navigation.navigate(screens.AddressScreen)} >
               <Text style={editIconText}>Edit</Text>
             </TouchableOpacity>
             <TextWithSubheading
@@ -126,7 +126,7 @@ class ProfileScreen extends Component {
               textTitle={this.state.userAddress ? this.state.userAddress : strings.pleaseProvideThis} />
           </View>
           <View style={rowContainer}>
-            <TouchableOpacity style={editIcon}>
+            <TouchableOpacity style={editIcon} onPress={() => this.state.navigation.navigate(screens.PhoneScreen)}> 
               <Text style={editIconText}>Edit</Text>
             </TouchableOpacity>
             <TextWithSubheading
