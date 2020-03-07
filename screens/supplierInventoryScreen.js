@@ -14,9 +14,7 @@ import Utils from '../utils/Utils';
 import { connect } from 'react-redux';
 import { LinearGradient } from 'expo-linear-gradient';
 import collectionNames from '../config/collectionNames';
-import { updateInventory } from '../actions_redux/updateInventory';
-import { bindActionCreators } from 'redux';
-
+import { watchInventoryData } from './../redux/app-redux'
 
 
 const HEADER_EXPANDED_HEIGHT = 250;
@@ -27,6 +25,7 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen")
 class SupplierInventoryScreen extends Component {
   constructor(props) {
     super(props);
+    this.props.watchInventoryData(firebase.auth().currentUser.uid);
     this.state = {
       name: 'SupplierInventoryScreen',
       loadingContent: true,
@@ -44,89 +43,88 @@ class SupplierInventoryScreen extends Component {
   }
 
   componentDidMount = () => {
-    this.getInventory();
+      // this.getInventory();
+      // console.log("props data is")
+      // console.log(this.props.inventoryData)
+      this.formulateListToShowOfProducts()
   }
 
-  getInventory = async () => {
-    let { inventoryItems, actions } = this.props;
-    let inventoryArray = []
-    let db = firebase.firestore()
-    let inventoryRefArray = []
-    await db
-      .collection(collectionNames.suppliers)
-      .doc(this.state.supplierID)
-      .get()
-      .then((doc) => {
-        if (doc.exists) {
-          const data = doc.data()
-          inventoryRefArray = data.inventory
-          inventoryRefArray ? this.fetchProductsForEachInventoryRef(inventoryRefArray) : console.log('No products for user')
-        }
-      })
+  // getInventory = async () => {
+  //   console.log("get inventory called")
+  //   let inventoryArray = []
+  //   let db = firebase.firestore()
+  //   let inventoryRefArray = []
+  //   await db
+  //     .collection(collectionNames.suppliers)
+  //     .doc(this.state.supplierID)
+  //     .get()
+  //     .then((doc) => {
+  //       if (doc.exists) {
+  //         const data = doc.data()
+  //         inventoryRefArray = data.inventory
+  //         inventoryRefArray ? this.fetchProductsForEachInventoryRef(inventoryRefArray) : console.log('No products for user')
+  //       }
+  //     })
 
-    this.setState({
-      inventoryItems: inventoryArray,
-      loadingContent: false
-    })
+  //   this.setState({
+  //     inventoryItems: inventoryArray,
+  //     loadingContent: false
+  //   })
 
-    actions.updateInventory(inventoryArray)
+  // }
 
-  }
+  // fetchProductsForEachInventoryRef = async (inventoryRefArray) => {
+  //   let db = firebase.firestore()
+  //   let products = []
+  //   for (let index in inventoryRefArray) {
+  //     const inventoryRef = inventoryRefArray[index]
+  //     await db.doc(inventoryRef)
+  //       .get()
+  //       .then((doc) => {
+  //         if (doc.exists) {
+  //           products.push({ ...{id: doc.id}, ...{...doc.data()} } )
+  //         } else {
+  //           console.log('Werent able to fetch products')
+  //         }
+  //       })
+  //   }
 
-  fetchProductsForEachInventoryRef = async (inventoryRefArray) => {
-    let db = firebase.firestore()
-    let products = []
-    for (let index in inventoryRefArray) {
-      const inventoryRef = inventoryRefArray[index]
-      await db.doc(inventoryRef)
-        .get()
-        .then((doc) => {
-          if (doc.exists) {
-            products.push({ ...{id: doc.id}, ...{...doc.data()} } )
-          } else {
-            console.log('Werent able to fetch products')
-          }
-        })
-    }
+  //   this.setState({
+  //     productsOfUser: products
+  //   }, () => { products ? this.formulateListToShowOfProducts() : null })
+  // }
 
-    this.setState({
-      productsOfUser: products
-    }, () => { products ? this.formulateListToShowOfProducts() : null })
-  }
+  // formulateListToShowOfProducts() {
+  //   const productsOfUser =  this.props.inventoryData 
+  //   let inventoryDictionary = {}
+  //   for(let index in productsOfUser) {
+  //     const product = productsOfUser[index]
+  //     const category = product.type
+  //     if(Array.isArray(inventoryDictionary[category])){
+  //       const products = inventoryDictionary[category]
+  //       products.push(product)
+  //       inventoryDictionary[category] = products
+  //     }else{
+  //       inventoryDictionary[category] = [product]
+  //     }
+  //   }
 
-  formulateListToShowOfProducts() {
-    const {
-      productsOfUser
-    } = this.state
-    let inventoryDictionary = {}
-    for(let index in productsOfUser) {
-      const product = productsOfUser[index]
-      const category = product.type
-      if(Array.isArray(inventoryDictionary[category])){
-        const products = inventoryDictionary[category]
-        products.push(product)
-        inventoryDictionary[category] = products
-      }else{
-        inventoryDictionary[category] = [product]
-      }
-    }
+  //   const list = this.constructFlatListItems(inventoryDictionary)
+  //   this.setState({
+  //     inventoryItems: list,
+  //     loadingContent: false
+  //   })
+  // }
 
-    const list = this.constructFlatListItems(inventoryDictionary)
-    this.setState({
-      inventoryItems: list,
-      loadingContent: false
-    })
-  }
-
-  constructFlatListItems = (dictionary) => {
-    let listToReturn = []
-    if(dictionary){
-      for(let key in dictionary){
-        listToReturn.push({title: key, data: dictionary[key]})
-      }
-    }
-    return listToReturn
-  }
+  // constructFlatListItems = (dictionary) => {
+  //   let listToReturn = []
+  //   if(dictionary){
+  //     for(let key in dictionary){
+  //       listToReturn.push({title: key, data: dictionary[key]})
+  //     }
+  //   }
+  //   return listToReturn
+  // }
 
   render() {
     const headerHeight = this.state.scrollY.interpolate({
@@ -156,9 +154,7 @@ class SupplierInventoryScreen extends Component {
     } = styles
 
     const {
-      navigation,
-      actions,
-      inventoryItems
+      navigation
     } = this.props
 
     const componentLoading =
@@ -206,7 +202,7 @@ class SupplierInventoryScreen extends Component {
         <SectionList
           scrollEnabled={this.state.inventoryItems.length ? true : false}
           contentContainerStyle={{ minHeight: SCREEN_HEIGHT + HEADER_COLLAPSED_HEIGHT }}
-          sections={this.state.search ? this.state.searchInventory : inventoryItems}
+          sections={this.state.search ? this.state.searchInventory : this.props.inventoryData}
           renderItem={({ item }) => SectionContent(item, this.props)}
           renderSectionHeader={({ section }) => SectionHeader(section, this.props)}
           keyExtractor={(item, index) => index}
@@ -256,7 +252,7 @@ class SupplierInventoryScreen extends Component {
       </View>
     )
   }
-  
+
   updateSearch = search => {
     this.setState({ search })
     if (search == '') {
@@ -322,21 +318,15 @@ class SupplierInventoryScreen extends Component {
 
 function mapStateToProps(state) {
   return {
-    inventoryItems: state.inventoryItems
+    inventoryData : state.inventoryData
   }
 }
 
-const ActionCreators = Object.assign(
-  {},
-  updateInventory
-)
-
-const mapDispatchToProps = dispatch => ({
-
-    actions: bindActionCreators(ActionCreators, dispatch)
-
-  
-})
+function mapDispatchToProps(dispatch) {
+  return {
+    watchInventoryData: () => {dispatch(watchInventoryData())}
+  }
+}
 
 const SectionHeader = (section) => {
 
@@ -531,4 +521,4 @@ SupplierInventoryScreen.navigationOptions = {
   header: null
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SupplierInventoryScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(SupplierInventoryScreen);

@@ -25,7 +25,7 @@ import AddressComplete from './screens/AddressComplete';
 import SupplierHome from './screens/SupplierHome';
 import ProfileScreen from './screens/ProfileScreen';
 import EditInventoryScreen from './screens/EditInventoryScreen';
-//import configureStore from './store_redux/configureStore';
+import configureStore from './store_redux/configureStore';
 import { store } from './redux/app-redux'
 
 // store = configureStore()
@@ -57,7 +57,7 @@ const AppNavigator = createStackNavigator({
 
 const AppContainer = createAppContainer(AppNavigator);
 
-const store = configureStore()
+//const store = configureStore()
 
 class App extends Component {
   
