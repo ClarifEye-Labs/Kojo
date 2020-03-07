@@ -87,7 +87,11 @@ const strings = {
   searchItems: 'Search Items',
   editYourItemsBelow: 'Edit your items below',
   viewYourItemsBelow: 'View your items below',
-  inventory: 'Inventory'
+  inventory: 'Inventory',
+  viewSuppliers: 'View Suppliers',
+  viewOrders: 'View Orders',
+  addSupplier: 'Add Supplier'
+  
 }
 
 export default strings

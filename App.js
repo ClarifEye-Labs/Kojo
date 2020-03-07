@@ -26,6 +26,10 @@ import AddressComplete from './screens/AddressComplete';
 import SupplierHome from './screens/SupplierHome';
 import ProfileScreen from './screens/ProfileScreen';
 import EditInventoryScreen from './screens/EditInventoryScreen';
+import ClientWelcomeScreen from './screens/ClientWelcomeScreen';
+import ViewSupplierScreen from './screens/ViewSupplierScreen';
+import ClientHome from './screens/ClientHome';
+import ViewOrdersClient from './screens/ViewOrdersClient';
 
 const AppNavigator = createStackNavigator({
   LoginScreen: LoginScreen,
@@ -46,10 +50,14 @@ const AppNavigator = createStackNavigator({
   AddressComplete: AddressComplete,
   SupplierHome: SupplierHome,
   ProfileScreen: ProfileScreen,
-  EditInventoryScreen: EditInventoryScreen
+  EditInventoryScreen: EditInventoryScreen,
+  ClientWelcomeScreen: ClientWelcomeScreen,
+  ViewSupplierScreen: ViewSupplierScreen,
+  ClientHome: ClientHome,
+  ViewOrdersClient: ViewOrdersClient
 },
 {
-  initialRouteName: screens.SplashScreen,
+  initialRouteName: screens.ClientHome
 })
 
 

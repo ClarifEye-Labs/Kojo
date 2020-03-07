@@ -7,33 +7,26 @@ import {
 import { WelcomeItem } from '../Components'
 import { dimens, colors, strings, screens } from '../constants'
 import { commonStyling } from '../common'
-import Constants from 'expo-constants'
 import * as Animatable from 'react-native-animatable'
-import RegistrationScreen from './RegistrationScreen';
-import WelcomeScreen from './WelcomeScreen'
 import { Icon } from 'react-native-elements';
 
-class SupplierWelcomeScreen extends Component {
-  
+class ClientWelcomeScreen extends Component {
   constructor(props){
     super(props)
     this.state = {
-      supplierData: [{
+      clientData: [{
         id: '0',
-        title: strings.viewInventory,
+        title: strings.viewSuppliers,
       },
       {
         id: '1',
-        title: strings.editItems,
+        title: strings.viewOrders,
       },
       {
         id: '2',
-        title: strings.addItems,
+        title: strings.addSupplier,
       },
-      {
-        id: '3',
-        title: strings.viewClients,
-      },]
+    ]
     }
   }
 
@@ -52,7 +45,7 @@ class SupplierWelcomeScreen extends Component {
         <FlatList 
           style={listStyle}
           contentContainerStyle={listStyle}
-          data={this.state.supplierData}
+          data={this.state.clientData}
           renderItem={({ item }) => ListItem(item, navigation)}
           keyExtractor={item => item.id}
         />
@@ -71,32 +64,25 @@ function ListItem(item, navigation) {
 
 
   switch (item.title) {
-    case 'Add Items': {
+    case strings.viewSuppliers: {
       backgroundImage = require('../assets/Supplier/addItems.jpg')
       backgroundColorOverlay = colors.blueTransluscent
       textColor = colors.colorAccent
-      onPress = () => navigation.navigate(screens.SupplierAddInventoryScreen)
+      onPress = () => navigation.navigate(screens.ViewSupplierScreen)
       break;
     }
-    case 'View Inventory': {
+    case strings.viewOrders: {
       backgroundImage = require('../assets/Supplier/viewInventory.jpeg')
       backgroundColorOverlay = colors.blackTransluscent
       textColor = colors.colorAccent
-      onPress = () => navigation.navigate(screens.SupplierInventoryScreen)
+      onPress = () => navigation.navigate(screens.ViewOrdersClient)
       break;
     }
-    case 'Edit Items': {
-      backgroundImage = require('../assets/Supplier/editItem.jpeg')
-      backgroundColorOverlay = colors.orangeHueTransluscent
+    case strings.addSupplier: {
+      backgroundImage = require('../assets/Supplier/viewInventory.jpeg')
+      backgroundColorOverlay = colors.blackTransluscent
       textColor = colors.colorAccent
-      onPress = () => navigation.navigate(screens.EditInventoryScreen)
-      break;
-    }
-    case 'View Clients': {
-      backgroundImage = require('../assets/Supplier/client.jpg')
-      backgroundColorOverlay = colors.colorPrimaryTransluscent
-      textColor = colors.colorAccent
-      onPress = () => navigation.navigate('SupplierClientsScreen')
+      onPress = () => navigation.navigate(screens.ViewOrdersClient)
       break;
     }
     default: {
@@ -126,8 +112,8 @@ const styles = StyleSheet.create({
   }
 })
 
-SupplierWelcomeScreen.navigationOptions = {
+ClientWelcomeScreen.navigationOptions = {
   header: null
 }
 
-export default SupplierWelcomeScreen
+export default ClientWelcomeScreen

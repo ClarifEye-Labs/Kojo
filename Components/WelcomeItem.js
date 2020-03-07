@@ -9,7 +9,7 @@ import { dimens, colors, customFonts } from '../constants'
 import { commonStyling } from '../common' 
 import Card from './Card';
 
-export default  class SupplierWelcomeItem extends Component {
+export default  class WelcomeItem extends Component {
   constructor(props){
     super(props)
     this.state = {

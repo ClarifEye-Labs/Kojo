@@ -16,7 +16,11 @@ const screens = {
   AddressScreen: 'AddressScreen',
   SupplierHome: 'SupplierHome',
   ProfileScreen: 'ProfileScreen',
-  EditInventoryScreen: 'EditInventoryScreen'
+  EditInventoryScreen: 'EditInventoryScreen',
+  ClientWelcomeScreen: 'ClientWelcomeScreen',
+  ViewSupplierScreen: 'ViewSupplierScreen',
+  ClientHome: 'ClientHome',
+  ViewOrdersClient: 'ViewOrdersClient'
 }
 
 export default screens;
