@@ -20,11 +20,11 @@ class ClientWelcomeScreen extends Component {
       },
       {
         id: '1',
-        title: strings.viewOrders,
+        title: strings.addSupplier,
       },
       {
         id: '2',
-        title: strings.addSupplier,
+        title: strings.viewOrders,
       },
     ]
     }
@@ -82,14 +82,14 @@ function ListItem(item, navigation) {
       backgroundImage = require('../assets/Supplier/viewInventory.jpeg')
       backgroundColorOverlay = colors.blackTransluscent
       textColor = colors.colorAccent
-      onPress = () => navigation.navigate(screens.ViewOrdersClient)
+      onPress = () => navigation.navigate(screens.AddSupplierScreen)
       break;
     }
     default: {
       backgroundImage = require('../assets/Supplier/viewInventory.jpeg')
       backgroundColorOverlay = colors.googleOrangeTransluscent
       textColor = colors.colorAccent
-      onPress = () => navigation.navigate('RegistrationScreen')
+      onPress = () => null
     }
   }
 

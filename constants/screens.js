@@ -20,7 +20,8 @@ const screens = {
   ClientWelcomeScreen: 'ClientWelcomeScreen',
   ViewSupplierScreen: 'ViewSupplierScreen',
   ClientHome: 'ClientHome',
-  ViewOrdersClient: 'ViewOrdersClient'
+  ViewOrdersClient: 'ViewOrdersClient',
+  AddSupplierScreen: 'AddSupplierScreen'
 }
 
 export default screens;

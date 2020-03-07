@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, ScrollView } from 'react-native'
-import { dimens, colors, customFonts, strings, screens } from '../constants'
+import { View, StyleSheet, Text, ScrollView, TouchableOpacity } from 'react-native'
+import { dimens, colors, customFonts, strings, screens, iconNames } from '../constants'
 import { commonStyling } from '../common'
 import { LinearGradient } from 'expo-linear-gradient';
 import { PropTypes } from 'prop-types'
 import firebase from '../config/firebase'
-import { Loading, TextWithSubheading, Button } from '../Components';
+import { Loading, TextWithSubheading, Button, Icon } from '../Components';
 import Utils from '../utils/Utils';
 
 class ProfileScreen extends Component {
@@ -14,7 +14,7 @@ class ProfileScreen extends Component {
     this.state = {
       navigation: props.navigation,
       user: firebase.auth().currentUser,
-      userNameInitials: null, 
+      userNameInitials: null,
       loading: true,
       userAddress: null,
       userPhone: null,
@@ -32,7 +32,7 @@ class ProfileScreen extends Component {
     await ref.doc(user.uid).get().then((doc) => {
       if (doc.exists) {
         const userData = doc.data()
-        const userInitialsArray = userData.name.split(' ').map( (name) => name[0])
+        const userInitialsArray = userData.name.split(' ').map((name) => name[0])
         this.setState({
           userAddress: userData.address.formattedName,
           userPhone: userData.phone.number,
@@ -73,58 +73,76 @@ class ProfileScreen extends Component {
       textStyle,
       buttonContainer,
       signOutButton,
-      scrollView
+      scrollView,
+      rowContainer,
+      editIcon,
+      editIconText
     } = styles
 
     const {
       navigation
     } = this.props
-    
-    const loadingScreen = 
-    <Loading size={32}
-      color={colors.grayBlue}
-      textColor={colors.grayBlue}
-      textStyle ={{fontSize: 20, fontFamily: customFonts.regular}} />
 
-    const mainContent = 
-    <View style={mainContainer}>
-      <View style={headerContainer}>
-        <LinearGradient
-          colors={[colors.colorPrimary, colors.colorSecondary]}
-          style={gradientStyle}>
-        </LinearGradient>
-        <View style={profileIconContainer}>
-          <Text style={profileIconText}>{this.state.userNameInitials}</Text>
+    const loadingScreen =
+      <Loading size={32}
+        color={colors.grayBlue}
+        textColor={colors.grayBlue}
+        textStyle={{ fontSize: 20, fontFamily: customFonts.regular }} />
+
+    const mainContent =
+      <View style={mainContainer}>
+        <View style={headerContainer}>
+          <LinearGradient
+            colors={[colors.colorPrimary, colors.colorSecondary]}
+            style={gradientStyle}>
+          </LinearGradient>
+          <View style={profileIconContainer}>
+            <Text style={profileIconText}>{this.state.userNameInitials}</Text>
+          </View>
+          <Text style={fullNameText}>{this.state.userName}</Text>
         </View>
-        <Text style={fullNameText}>{this.state.userName}</Text>
-      </View>
-      
-      <ScrollView style={scrollView}>
-          <TextWithSubheading
-            containerStyle={infoItemContainer}
-            subHeadingStyle={subHeadingStyle}
-            textStyle={textStyle}
-            subHeadingTitle={strings.registeredEmail}
-            textTitle={this.state.userEmail ? this.state.userEmail : strings.pleaseProvideThis} />
-          <TextWithSubheading
-            containerStyle={infoItemContainer}
-            subHeadingStyle={subHeadingStyle}
-            textStyle={textStyle}
-            subHeadingTitle='Address'
-            textTitle={this.state.userAddress ? this.state.userAddress : strings.pleaseProvideThis} />
-          <TextWithSubheading
-            containerStyle={infoItemContainer}
-            subHeadingStyle={subHeadingStyle}
-            textStyle={textStyle}
-            subHeadingTitle='Phone'
-            textTitle={this.state.userPhone ? this.state.userPhone : strings.pleaseProvideThis} />
+
+        <ScrollView style={scrollView}>
+          <View style={rowContainer}>
+            <TouchableOpacity style={editIcon} onPress={() => null}>
+              <Text style={editIconText}>Edit</Text>
+            </TouchableOpacity>
+            <TextWithSubheading
+              containerStyle={infoItemContainer}
+              subHeadingStyle={subHeadingStyle}
+              textStyle={textStyle}
+              subHeadingTitle={strings.registeredEmail}
+              textTitle={this.state.userEmail ? this.state.userEmail : strings.pleaseProvideThis} />
+          </View>
+          <View style={rowContainer}>
+            <TouchableOpacity style={editIcon}>
+              <Text style={editIconText}>Edit</Text>
+            </TouchableOpacity>
+            <TextWithSubheading
+              containerStyle={infoItemContainer}
+              subHeadingStyle={subHeadingStyle}
+              textStyle={textStyle}
+              subHeadingTitle='Address'
+              textTitle={this.state.userAddress ? this.state.userAddress : strings.pleaseProvideThis} />
+          </View>
+          <View style={rowContainer}>
+            <TouchableOpacity style={editIcon}>
+              <Text style={editIconText}>Edit</Text>
+            </TouchableOpacity>
+            <TextWithSubheading
+              containerStyle={infoItemContainer}
+              subHeadingStyle={subHeadingStyle}
+              textStyle={textStyle}
+              subHeadingTitle='Phone'
+              textTitle={this.state.userPhone ? this.state.userPhone : strings.pleaseProvideThis} />
+          </View>
 
           <View style={buttonContainer}>
             <Button style={signOutButton} textColor={colors.colorAccent} title={strings.signOut} isLoading={this.state.signOutButtonLoading} onPress={this.signOutUser} />
           </View>
-         
-      </ScrollView>
-    </View>
+
+        </ScrollView>
+      </View>
 
     const componentToRender = this.state.loading ? loadingScreen : mainContent
     return componentToRender
@@ -174,12 +192,9 @@ const styles = StyleSheet.create({
     marginTop: 12
   },
   infoItemContainer: {
-    marginLeft: 10,
-    marginRight: 10,
     paddingTop: 10,
     paddingBottom: 10,
-    borderBottomColor: colors.grayTransluscent,
-    borderBottomWidth: 1
+    zIndex: -1
   },
   subHeadingStyle: {
     fontSize: 18,
@@ -204,6 +219,23 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     paddingTop: 20
+  },
+  rowContainer: {
+    marginLeft: 10,
+    marginRight: 10,
+    paddingVertical: 4,
+    borderBottomColor: colors.grayTransluscent,
+    borderBottomWidth: 1
+  },
+  editIcon: {
+    position: 'absolute',
+    right: 20,
+    top: 14
+  },
+  editIconText: {
+    color: colors.facebookBlue,
+    fontSize: 15,
+    fontFamily: customFonts.regular
   }
 })
 
