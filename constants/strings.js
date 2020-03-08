@@ -16,6 +16,7 @@ const strings = {
   facebook: 'Facebook',
   google: 'Google',
   forgotPassword: 'Forgot Password?',
+  editEmailAddress: 'Edit Email Address',
   login: 'Login',
   dontHaveAnAccount: 'Don\'t have an account?',
   registerNow: 'Register Now.',
@@ -90,8 +91,11 @@ const strings = {
   inventory: 'Inventory',
   viewSuppliers: 'View Suppliers',
   viewOrders: 'View Orders',
-  addSupplier: 'Add Supplier'
-  
+  addSupplier: 'Add Supplier',
+  address: 'Address',
+  phone: 'Phone',
+  enterNewEmail: 'Enter new email address:',
+  confirmEmail: 'Confirm Email'
 }
 
 export default strings

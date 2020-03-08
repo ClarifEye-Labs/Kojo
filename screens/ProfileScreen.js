@@ -29,7 +29,7 @@ class ProfileScreen extends Component {
     const firestore = firebase.firestore()
     const ref = firestore.collection('users')
     const user = firebase.auth().currentUser
-    await ref.doc(user.uid).get().then((doc) => {
+    await ref.doc(user && user.uid).get().then((doc) => {
       if (doc.exists) {
         const userData = doc.data()
         const userInitialsArray = userData.name.split(' ').map((name) => name[0])
@@ -104,8 +104,8 @@ class ProfileScreen extends Component {
 
         <ScrollView style={scrollView}>
           <View style={rowContainer}>
-            <TouchableOpacity style={editIcon} onPress={null}>
-              <Text style={editIconText}>Edit</Text>
+            <TouchableOpacity style={editIcon} onPress={()=> this.state.navigation.navigate(screens.EditEmailScreen)}>
+              <Text style={editIconText}>{strings.edit}</Text>
             </TouchableOpacity>
             <TextWithSubheading
               containerStyle={infoItemContainer}
@@ -116,24 +116,24 @@ class ProfileScreen extends Component {
           </View>
           <View style={rowContainer}>
             <TouchableOpacity style={editIcon} onPress={() => this.state.navigation.navigate(screens.AddressScreen)} >
-              <Text style={editIconText}>Edit</Text>
+              <Text style={editIconText}>{strings.edit}</Text>
             </TouchableOpacity>
             <TextWithSubheading
               containerStyle={infoItemContainer}
               subHeadingStyle={subHeadingStyle}
               textStyle={textStyle}
-              subHeadingTitle='Address'
+              subHeadingTitle={strings.address}
               textTitle={this.state.userAddress ? this.state.userAddress : strings.pleaseProvideThis} />
           </View>
           <View style={rowContainer}>
             <TouchableOpacity style={editIcon} onPress={() => this.state.navigation.navigate(screens.PhoneScreen)}> 
-              <Text style={editIconText}>Edit</Text>
+              <Text style={editIconText}>{strings.edit}</Text>
             </TouchableOpacity>
             <TextWithSubheading
               containerStyle={infoItemContainer}
               subHeadingStyle={subHeadingStyle}
               textStyle={textStyle}
-              subHeadingTitle='Phone'
+              subHeadingTitle={strings.phone}
               textTitle={this.state.userPhone ? this.state.userPhone : strings.pleaseProvideThis} />
           </View>
 
