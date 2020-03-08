@@ -87,6 +87,7 @@ class EditInventoryScreen extends Component {
     this.setState({
       productsOfUser: products
     }, () => { products ? this.formulateListToShowOfProducts() : null })
+    
   }
 
   formulateListToShowOfProducts() {

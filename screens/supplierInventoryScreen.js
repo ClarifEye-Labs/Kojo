@@ -14,8 +14,8 @@ import Utils from '../utils/Utils';
 import { connect } from 'react-redux';
 import { LinearGradient } from 'expo-linear-gradient';
 import collectionNames from '../config/collectionNames';
-import { watchInventoryData } from './../redux/app-redux'
-
+// import { watchInventoryData } from '.'
+import { watchInventoryData } from './../redux/actions/watchInventoryData'
 
 const HEADER_EXPANDED_HEIGHT = 250;
 const HEADER_COLLAPSED_HEIGHT = 100;
@@ -28,7 +28,7 @@ class SupplierInventoryScreen extends Component {
     this.props.watchInventoryData(firebase.auth().currentUser.uid);
     this.state = {
       name: 'SupplierInventoryScreen',
-      loadingContent: true,
+      loadingContent: false,
       firestore: undefined,
       suppliersData: undefined,
       scrollY: new Animated.Value(0),
@@ -37,7 +37,7 @@ class SupplierInventoryScreen extends Component {
       showSearch: false,
       searchInventory: [],
       inventoryType: [],
-      inventoryItems: [],
+      inventoryItems: [1,2,3],
       productsOfUser: [],
     }
   }
@@ -45,8 +45,9 @@ class SupplierInventoryScreen extends Component {
   componentDidMount = () => {
       // this.getInventory();
       // console.log("props data is")
-      // console.log(this.props.inventoryData)
-      this.formulateListToShowOfProducts()
+
+      // this.formulateListToShowOfProducts()
+
   }
 
   // getInventory = async () => {
@@ -198,9 +199,8 @@ class SupplierInventoryScreen extends Component {
           contentContainerStyle={colors.colorAccent}
           value={this.state.search}
         /> : null}
-
         <SectionList
-          scrollEnabled={this.state.inventoryItems.length ? true : false}
+          scrollEnabled={this.props.inventoryData.length ? true : false}
           contentContainerStyle={{ minHeight: SCREEN_HEIGHT + HEADER_COLLAPSED_HEIGHT }}
           sections={this.state.search ? this.state.searchInventory : this.props.inventoryData}
           renderItem={({ item }) => SectionContent(item, this.props)}
@@ -317,8 +317,10 @@ class SupplierInventoryScreen extends Component {
 }
 
 function mapStateToProps(state) {
+
   return {
-    inventoryData : state.inventoryData
+
+    inventoryData : state.inventoryReducer.inventoryData
   }
 }
 
@@ -515,7 +517,6 @@ const styles = StyleSheet.create({
     marginTop: dimens.screenSafeUpperNotchDistance + 18
   }
 })
-
 
 SupplierInventoryScreen.navigationOptions = {
   header: null

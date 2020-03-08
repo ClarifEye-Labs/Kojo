@@ -25,10 +25,9 @@ import AddressComplete from './screens/AddressComplete';
 import SupplierHome from './screens/SupplierHome';
 import ProfileScreen from './screens/ProfileScreen';
 import EditInventoryScreen from './screens/EditInventoryScreen';
-import configureStore from './store_redux/configureStore';
-import { store } from './redux/app-redux'
+import { configureStore } from './redux/app-redux'
 
-// store = configureStore()
+const store = configureStore()
 
 const AppNavigator = createStackNavigator({
   LoginScreen: LoginScreen,
