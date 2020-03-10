@@ -13,7 +13,7 @@ const HEADER_COLLAPSED_HEIGHT = 100;
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("screen")
 
-class ViewOrdersClient extends Component {
+class ViewAllOrders extends Component {
   constructor(props){
     super(props)
     this.state = {
@@ -379,12 +379,12 @@ const styles = StyleSheet.create({
 })
 
 
-ViewOrdersClient.navigationOptions = {
+ViewAllOrders.navigationOptions = {
   header: null
 }
 
-ViewOrdersClient.propTypes = {
+ViewAllOrders.propTypes = {
   navigation: PropTypes.object
 }
 
-export default ViewOrdersClient
+export default ViewAllOrders

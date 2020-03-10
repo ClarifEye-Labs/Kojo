@@ -96,9 +96,10 @@ const strings = {
   enterNewEmail: 'Enter new email address:',
   confirmEmail: 'Confirm Email',
   viewSuppliers: 'Suppliers',
-  viewClients: 'Clients',
   viewYourClientsBelow: 'View your Clients Below: ',
-  viewYourSuppliersBelow: 'View your Suppliers Below: '
+  viewYourSuppliersBelow: 'View your Suppliers Below: ',
+  orders: 'Orders',
+  viewYourOrdersBelow: 'View your orders below'
 }
 
 export default strings
