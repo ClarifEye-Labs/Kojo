@@ -61,7 +61,7 @@ const AppNavigator = createStackNavigator({
   EditEmailScreen: EditEmailScreen
 },
 {
-  initialRouteName: screens.SplashScreen
+  initialRouteName: screens.ClientHome
 })
 
 

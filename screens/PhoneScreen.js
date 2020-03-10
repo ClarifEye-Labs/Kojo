@@ -302,6 +302,7 @@ class PhoneScreen extends Component {
     this.setState({
       phoneSubmitIsLoading: false
     })
+    //check here for role of user and then proceed to according screen 
     Utils.dispatchScreen(screens.SupplierHome, undefined, this.state.navigation)
   }
 

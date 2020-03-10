@@ -95,7 +95,9 @@ const strings = {
   address: 'Address',
   phone: 'Phone',
   enterNewEmail: 'Enter new email address:',
-  confirmEmail: 'Confirm Email'
+  confirmEmail: 'Confirm Email',
+  viewSuppliers: 'Suppliers',
+  viewYourSuppliersBelow: 'View your Suppliers Below: '
 }
 
 export default strings
