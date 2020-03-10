@@ -22,7 +22,8 @@ const screens = {
   ClientHome: 'ClientHome',
   ViewOrdersClient: 'ViewOrdersClient',
   AddSupplierScreen: 'AddSupplierScreen',
-  EditEmailScreen: 'EditEmailScreen'
+  EditEmailScreen: 'EditEmailScreen',
+  ViewClientsScreen: 'ViewClientsScreen'
 }
 
 export default screens;

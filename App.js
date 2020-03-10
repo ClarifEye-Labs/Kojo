@@ -32,6 +32,7 @@ import ClientHome from './screens/ClientHome';
 import ViewOrdersClient from './screens/ViewOrdersClient';
 import AddSupplierScreen from './screens/AddSupplierScreen';
 import EditEmailScreen from './screens/EditEmailScreen';
+import ViewClientsScreen from './screens/ViewClientsScreen';
 
 const AppNavigator = createStackNavigator({
   LoginScreen: LoginScreen,
@@ -58,10 +59,11 @@ const AppNavigator = createStackNavigator({
   ClientHome: ClientHome,
   ViewOrdersClient: ViewOrdersClient,
   AddSupplierScreen: AddSupplierScreen,
-  EditEmailScreen: EditEmailScreen
+  EditEmailScreen: EditEmailScreen,
+  ViewClientsScreen: ViewClientsScreen
 },
 {
-  initialRouteName: screens.ClientHome
+  initialRouteName: screens.ViewClientsScreen
 })
 
 

@@ -89,7 +89,6 @@ const strings = {
   editYourItemsBelow: 'Edit your items below',
   viewYourItemsBelow: 'View your items below',
   inventory: 'Inventory',
-  viewSuppliers: 'View Suppliers',
   viewOrders: 'View Orders',
   addSupplier: 'Add Supplier',
   address: 'Address',
@@ -97,6 +96,8 @@ const strings = {
   enterNewEmail: 'Enter new email address:',
   confirmEmail: 'Confirm Email',
   viewSuppliers: 'Suppliers',
+  viewClients: 'Clients',
+  viewYourClientsBelow: 'View your Clients Below: ',
   viewYourSuppliersBelow: 'View your Suppliers Below: '
 }
 
