@@ -63,7 +63,7 @@ const AppNavigator = createStackNavigator({
   ViewClientsScreen: ViewClientsScreen
 },
 {
-  initialRouteName: screens.ViewClientsScreen
+  initialRouteName: screens.ClientHome
 })
 
 

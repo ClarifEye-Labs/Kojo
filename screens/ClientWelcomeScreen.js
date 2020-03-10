@@ -79,8 +79,8 @@ function ListItem(item, navigation) {
       break;
     }
     case strings.addSupplier: {
-      backgroundImage = require('../assets/Supplier/viewInventory.jpeg')
-      backgroundColorOverlay = colors.blackTransluscent
+      backgroundImage = require('../assets/Supplier/client.jpg')
+      backgroundColorOverlay = colors.colorPrimaryTransluscent
       textColor = colors.colorAccent
       onPress = () => navigation.navigate(screens.AddSupplierScreen)
       break;
