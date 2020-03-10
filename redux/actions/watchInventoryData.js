@@ -10,10 +10,10 @@ const watchInventoryData = (supplierID) => {
         db
         .collection('suppliers')
         .doc(firebase.auth().currentUser.uid)
-        .onSnapshot(
+        .onSnapshot( //ADD CRUD CHECKS
             function(doc) {
                 if(doc.exists)
-                {
+                {      
                     let data = doc.data()
                     inventoryRefArray = data.inventory
                     if(inventoryRefArray) {

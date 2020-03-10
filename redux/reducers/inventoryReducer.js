@@ -3,7 +3,7 @@ import { inventoryData } from '../constants/index'
 
 
 const initialState = {
-    inventoryData: {},
+    inventoryData: [],
 }
 
 const inventoryReducer = (state = initialState, action) => {
