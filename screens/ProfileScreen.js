@@ -7,10 +7,14 @@ import { PropTypes } from 'prop-types'
 import firebase from '../config/firebase'
 import { Loading, TextWithSubheading, Button } from '../Components';
 import Utils from '../utils/Utils';
+import { connect } from 'react-redux'
+import { watchFirebaseAuthUser, watchUserFirestoreData } from '../redux/actions/watchUserData'
 
 class ProfileScreen extends Component {
   constructor(props) {
     super(props)
+    this.props.watchFirebaseAuthUser();
+    this.props.watchUserFirestoreData();
     this.state = {
       navigation: props.navigation,
       user: firebase.auth().currentUser,
@@ -29,23 +33,43 @@ class ProfileScreen extends Component {
     const firestore = firebase.firestore()
     const ref = firestore.collection('users')
     const user = firebase.auth().currentUser
-    await ref.doc(user.uid).get().then((doc) => {
-      if (doc.exists) {
-        const userData = doc.data()
-        const userInitialsArray = userData.name.split(' ').map( (name) => name[0])
-        this.setState({
-          userAddress: userData.address.formattedName,
-          userPhone: userData.phone.number,
-          userRole: userData.role,
-          userName: userData.name,
-          userEmail: userData.email,
-          userNameInitials: (userInitialsArray[0] + userInitialsArray[userInitialsArray.length - 1]).toUpperCase(),
-          loading: false
-        })
-      } else {
-        console.log('No such document')
-      }
-    })
+    const userData = this.props.userFirestoreData
+    if(userData)
+    {
+      const userInitialsArray = userData.name.split(' ').map( (name) => name[0])
+      this.setState({
+        userAddress: userData.address.formattedName,
+        userPhone: userData.phone.number,
+        userRole: userData.role,
+        userName: userData.name,
+        userEmail: userData.email,
+        userNameInitials: (userInitialsArray[0] + userInitialsArray[userInitialsArray.length - 1]).toUpperCase(),
+        loading: false
+      })
+
+    }
+
+    else {
+             console.log('No such document')
+         }
+
+    // await ref.doc(user.uid).get().then((doc) => {
+    //   if (doc.exists) {
+    //     const userData = doc.data()
+    //     const userInitialsArray = userData.name.split(' ').map( (name) => name[0])
+    //     this.setState({
+    //       userAddress: userData.address.formattedName,
+    //       userPhone: userData.phone.number,
+    //       userRole: userData.role,
+    //       userName: userData.name,
+    //       userEmail: userData.email,
+    //       userNameInitials: (userInitialsArray[0] + userInitialsArray[userInitialsArray.length - 1]).toUpperCase(),
+    //       loading: false
+    //     })
+    //   } else {
+    //     console.log('No such document')
+    //   }
+    // })
   }
 
   signOutUser = async () => {
@@ -131,6 +155,27 @@ class ProfileScreen extends Component {
   }
 }
 
+const mapStateToProps = state => ({
+  firebaseAuthUser: state.userDetailsReducer.firebaseAuthUser,
+  userFirestoreData: state.userDetailsReducer.userFirestoreData
+});
+
+
+// const ActionCreators = Object.assign(
+//   {},
+//   watchFirebaseAuthUser,
+//   watchUserFirestoreData
+// );
+
+// const mapDispatchToProps = dispatch => ({
+//   actions: bindActionCreators(ActionCreators, dispatch),
+// })
+
+const mapDispatchToProps = dispatch => ({
+    watchFirebaseAuthUser: () => {dispatch(watchFirebaseAuthUser())},
+    watchUserFirestoreData: () => {dispatch(watchUserFirestoreData())}
+})
+
 const styles = StyleSheet.create({
   mainContainer: {
     ...commonStyling.mainContainer,
@@ -215,4 +260,4 @@ ProfileScreen.propTypes = {
   navigation: PropTypes.object
 }
 
-export default ProfileScreen
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileScreen)

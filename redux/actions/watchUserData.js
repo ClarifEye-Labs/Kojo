@@ -21,32 +21,37 @@ const watchUserFirestoreData = () => {
             let userFirestore = null
             userRef.doc(userID)
                          .onSnapshot (
-                             function(snapshot) {
-                                 snapshot.docChanges().forEach(function(change) {
-                                    if(change.type === "added") {
-                                        userFirestore = change.doc.data()
-                                        let actionSetUserFirestoreData = setUserFirestoreData(userFirestore)
-                                        dispatch(actionSetUserFirestoreData)
-                                        console.log("helloadded")
-                                        console.log(change.doc.data())
-                                    }
-    
-                                    if(change.type === "modified") {
-                                        userFirestore = change.doc.data()
-                                        let actionSetUserFirestoreData = setUserFirestoreData(userFirestore)
-                                        dispatch(actionSetUserFirestoreData)
-                                        console.log("hellomodified")
-                                        console.log(change.doc.data())
-                                    }
-    
-                                    if(change.type === "removed") {
-                                        userFirestore = null
-                                        let actionSetUserFirestoreData = setUserFirestoreData(userFirestore)
-                                        dispatch(actionSetUserFirestoreData)
-                                    }
-    
-                                 })
+                             function(doc) {
+                                userFirestore = doc.data()
+                                let actionSetUserFirestoreData = setUserFirestoreData(userFirestore)
+                                dispatch(actionSetUserFirestoreData)
                              }
+                            //  function(snapshot) {
+                            //      snapshot.docChanges().forEach(function(change) {
+                            //         if(change.type === "added") {
+                            //             userFirestore = change.doc.data()
+                            //             let actionSetUserFirestoreData = setUserFirestoreData(userFirestore)
+                            //             dispatch(actionSetUserFirestoreData)
+                            //             console.log("helloadded")
+                            //             console.log(change.doc.data())
+                            //         }
+    
+                            //         if(change.type === "modified") {
+                            //             userFirestore = change.doc.data()
+                            //             let actionSetUserFirestoreData = setUserFirestoreData(userFirestore)
+                            //             dispatch(actionSetUserFirestoreData)
+                            //             console.log("hellomodified")
+                            //             console.log(change.doc.data())
+                            //         }
+    
+                            //         if(change.type === "removed") {
+                            //             userFirestore = null
+                            //             let actionSetUserFirestoreData = setUserFirestoreData(userFirestore)
+                            //             dispatch(actionSetUserFirestoreData)
+                            //         }
+    
+                            //      })
+                            //  }
                          )
 
         }
