@@ -8,7 +8,7 @@ const initialState = {
 
 const inventoryReducer = (state = initialState, action) => {
     switch(action.type) {
-
+        
         case "inventoryData":
             return { ...state, inventoryData: action.value }
 

@@ -1,14 +1,15 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import inventoryReducer from './reducers/inventoryReducer'
+import userDetailsReducer from './reducers/userDetailsReducer'
 import thunkMiddleware from 'redux-thunk';
 
-const initialState = {
-    inventoryData : [],
-}
+
 
 //Reducer Code
 const rootReducer = combineReducers(
-    { inventoryReducer : inventoryReducer }
+    { inventoryReducer : inventoryReducer,
+      userDetailsReducer: userDetailsReducer    
+    }
 );
 
 

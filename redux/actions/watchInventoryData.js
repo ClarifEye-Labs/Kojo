@@ -10,7 +10,7 @@ const watchInventoryData = (supplierID) => {
         db
         .collection('suppliers')
         .doc(firebase.auth().currentUser.uid)
-        .onSnapshot( //ADD CRUD CHECKS
+        .onSnapshot( //ADD CRUD CHECKS 
             function(doc) {
                 if(doc.exists)
                 {      
@@ -22,7 +22,9 @@ const watchInventoryData = (supplierID) => {
                           let inventoryRef = inventoryRefArray[index]
                               db
                               .doc(inventoryRef)
-                              .onSnapshot(        
+                              .onSnapshot( 
+                                  
+                                
                                 (doc) => {
                                     if (doc.exists) {
                                         let product_found = false
@@ -33,10 +35,10 @@ const watchInventoryData = (supplierID) => {
                                                 product_found = true
                                             }
                                         }
-                                        if(product_found == false)
-                                        {
-                                            products.push({ ...{id: doc.id}, ...{...doc.data()} })
-                                        }
+                                            if(product_found == false)
+                                            {
+                                                products.push({ ...{id: doc.id}, ...{...doc.data()} })
+                                            }
 
                                         const productsOfUser = products
                                         let inventoryDictionary = {}

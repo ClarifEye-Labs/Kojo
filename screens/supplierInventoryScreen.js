@@ -241,9 +241,9 @@ function mapStateToProps(state) {
   if( state.inventoryReducer.inventoryData ) 
   { 
     return {
-    inventoryData : state.inventoryReducer.inventoryData
-
-  }
+      inventoryData : state.inventoryReducer.inventoryData
+    }
+    
   }
 
   else
@@ -251,6 +251,7 @@ function mapStateToProps(state) {
     return {
       inventoryData: []
     }
+
   }
 }
 
