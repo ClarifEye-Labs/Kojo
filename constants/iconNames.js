@@ -4,7 +4,9 @@ const iconNames = {
   crossIOS: 'ios-close',
   crossAndroid: 'md-close',
   editIOS: 'ios-create',
-  editAndroid: 'md-create'
+  editAndroid: 'md-create',
+  addIOS: 'ios-add',
+  addAndroid: 'md-add'
 }
 
 export default iconNames

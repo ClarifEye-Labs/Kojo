@@ -37,7 +37,7 @@ class ViewAllOrders extends Component {
     return (
       <View style={expandedHeaderContainerStyle}>
         <Text style={headingStyle}>{strings.orders} </Text>
-        <Text style={subHeadingStyle}>{strings.viewYourOrdersBelow} </Text>
+        <Text style={subHeadingStyle}>{strings.viewYourOrdersBelwo} </Text>
       </View>
     )
   }

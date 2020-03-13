@@ -99,7 +99,8 @@ const strings = {
   viewYourClientsBelow: 'View your Clients Below: ',
   viewYourSuppliersBelow: 'View your Suppliers Below: ',
   orders: 'Orders',
-  viewYourOrdersBelow: 'View your orders below'
+  viewYourOrdersBelow: 'View your orders below',
+  chooseASupplierToAdd: 'Choose a Supplier to Add: '
 }
 
 export default strings
