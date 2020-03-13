@@ -30,9 +30,9 @@ class ProfileScreen extends Component {
   }
 
   fetchUserDetialsFromOurDB = async () => {
-    const firestore = firebase.firestore()
-    const ref = firestore.collection('users')
-    const user = firebase.auth().currentUser
+    // const firestore = firebase.firestore()
+    // const ref = firestore.collection('users')
+    // const user = firebase.auth().currentUser
     const userData = this.props.userFirestoreData
     if(userData)
     {
