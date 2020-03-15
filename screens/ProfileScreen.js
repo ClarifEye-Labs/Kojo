@@ -9,10 +9,12 @@ import { Loading, TextWithSubheading, Button } from '../Components';
 import Utils from '../utils/Utils';
 import { connect } from 'react-redux'
 import { watchFirebaseAuthUser, watchUserFirestoreData } from '../redux/actions/watchUserData'
+import { userLogOut } from '../redux/app-redux'
 
 class ProfileScreen extends Component {
   constructor(props) {
     super(props)
+    console.log("calling from profile screen")
     this.props.watchFirebaseAuthUser();
     this.props.watchUserFirestoreData();
     this.state = {
@@ -25,17 +27,18 @@ class ProfileScreen extends Component {
       userRole: null,
       userName: null,
       userEmail: null,
-      signOutButtonLoading: false
+      signOutButtonLoading: false,
+      userData: this.props.userFirestoreData
     }
   }
 
   fetchUserDetialsFromOurDB = async () => {
     // const firestore = firebase.firestore()
     // const ref = firestore.collection('users')
-    // const user = firebase.auth().currentUser
+    // const user = firebase.auth().currentUser 
     const userData = this.props.userFirestoreData
-    if(userData)
-    {
+    console.log("userData is", userData)
+    if(userData) {
       const userInitialsArray = userData.name.split(' ').map( (name) => name[0])
       this.setState({
         userAddress: userData.address.formattedName,
@@ -51,7 +54,7 @@ class ProfileScreen extends Component {
 
     else {
              console.log('No such document')
-         }
+    }
 
     // await ref.doc(user.uid).get().then((doc) => {
     //   if (doc.exists) {
@@ -72,17 +75,26 @@ class ProfileScreen extends Component {
     // })
   }
 
+
   signOutUser = async () => {
     this.setState({
       signOutButtonLoading: true
     })
-    await firebase.auth().signOut()
+    this.props.userLogOut()
+    // await firebase.auth().signOut()
     Utils.dispatchScreen(screens.WelcomeScreen, 1000, this.state.navigation)
   }
 
   componentDidMount = () => {
     this.fetchUserDetialsFromOurDB()
   }
+
+  componentWillReceiveProps(nextProps) {
+    if(this.props.userFirestoreData !== nextProps.userFirestoreData) {
+      this.fetchUserDetialsFromOurDB()
+    }
+  }
+ 
 
   render() {
     const {
@@ -155,10 +167,14 @@ class ProfileScreen extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  firebaseAuthUser: state.userDetailsReducer.firebaseAuthUser,
-  userFirestoreData: state.userDetailsReducer.userFirestoreData
+const mapStateToProps = state =>  ({
+firebaseAuthUser: state.userDetailsReducer.firebaseAuthUser,
+userFirestoreData: state.userDetailsReducer.userFirestoreData
 });
+
+
+
+
 
 
 // const ActionCreators = Object.assign(
@@ -173,7 +189,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     watchFirebaseAuthUser: () => {dispatch(watchFirebaseAuthUser())},
-    watchUserFirestoreData: () => {dispatch(watchUserFirestoreData())}
+    watchUserFirestoreData: () => {dispatch(watchUserFirestoreData())},
+    userLogOut: () => {dispatch(userLogOut())}
 })
 
 const styles = StyleSheet.create({

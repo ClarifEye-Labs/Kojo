@@ -2,6 +2,7 @@ import { setUserFirestoreData , setFirebaseAuthUser} from '../actions/setUserDet
 import collectionNames from '../../config/collectionNames'
 import firebase from '../../config/firebase'
 
+
 const watchFirebaseAuthUser = () => {
     return function(dispatch) {
         let user = firebase.auth().currentUser
@@ -26,32 +27,6 @@ const watchUserFirestoreData = () => {
                                 let actionSetUserFirestoreData = setUserFirestoreData(userFirestore)
                                 dispatch(actionSetUserFirestoreData)
                              }
-                            //  function(snapshot) {
-                            //      snapshot.docChanges().forEach(function(change) {
-                            //         if(change.type === "added") {
-                            //             userFirestore = change.doc.data()
-                            //             let actionSetUserFirestoreData = setUserFirestoreData(userFirestore)
-                            //             dispatch(actionSetUserFirestoreData)
-                            //             console.log("helloadded")
-                            //             console.log(change.doc.data())
-                            //         }
-    
-                            //         if(change.type === "modified") {
-                            //             userFirestore = change.doc.data()
-                            //             let actionSetUserFirestoreData = setUserFirestoreData(userFirestore)
-                            //             dispatch(actionSetUserFirestoreData)
-                            //             console.log("hellomodified")
-                            //             console.log(change.doc.data())
-                            //         }
-    
-                            //         if(change.type === "removed") {
-                            //             userFirestore = null
-                            //             let actionSetUserFirestoreData = setUserFirestoreData(userFirestore)
-                            //             dispatch(actionSetUserFirestoreData)
-                            //         }
-    
-                            //      })
-                            //  }
                          )
 
         }
@@ -59,5 +34,8 @@ const watchUserFirestoreData = () => {
             
     }
 }
+
+
+
 
 export { watchFirebaseAuthUser, watchUserFirestoreData }

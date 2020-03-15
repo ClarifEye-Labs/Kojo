@@ -9,6 +9,7 @@ import appConfig from '../config/appConfig'
 import Utils from '../utils/Utils'
 
 class RegistrationScreen extends React.Component {
+
   constructor(props) {
     super(props)
     this.state = {
@@ -195,6 +196,7 @@ class RegistrationScreen extends React.Component {
   }
 
   performRegistration() {
+
     const {
       emailEntered,
       passwordEntered,
@@ -210,6 +212,7 @@ class RegistrationScreen extends React.Component {
   }
 
   successfulRegistration = async (user) => {
+
     await firebase.auth().currentUser.updateProfile({
       displayName: this.state.nameEntered
     })
@@ -223,6 +226,7 @@ class RegistrationScreen extends React.Component {
   }
 
   writeUserToFireStore = async () => {
+
     const firestore = firebase.firestore()
     const ref = firestore.collection('users')
     const user = firebase.auth().currentUser

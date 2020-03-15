@@ -3,7 +3,8 @@ import { inventoryData } from '../constants/index'
 
 const initialState = {
     firebaseAuthUser: null,
-    userFirstoreData: null
+    userFirstoreData: null,
+    
 }
 
 const userDetailsReducer = (state = initialState, action) => {

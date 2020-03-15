@@ -10,7 +10,9 @@ import collectionNames from '../config/collectionNames';
 import Utils from '../utils/Utils';
 import { connect } from 'react-redux'
 import { watchFirebaseAuthUser, watchUserFirestoreData } from '../redux/actions/watchUserData'
+import { userLogOut } from '../redux/app-redux'
 import { bindActionCreators } from 'redux';
+
 
 class SplashScreen extends Component {
   constructor(props) {
@@ -34,23 +36,24 @@ class SplashScreen extends Component {
 
   navigateToScreenLogic = async () => {
 
-    const user = firebase.auth().currentUser
+    const user = this.props.firebaseAuthUser
     const firestore = firebase.firestore()
 
     if(user) {
 
-      const userRef = firestore.collection(collectionNames.users)
-      const userID = user.uid
-      let userFirestore = null
+      // const userRef = firestore.collection(collectionNames.users)
+      // const userID = user.uid
+      let userFirestore = this.props.userFirestoreData
 
-      await userRef.doc(userID).get().then( (doc) => doc.exists ? userFirestore = doc.data() : null )
+      // await userRef.doc(userID).get().then( (doc) => doc.exists ? userFirestore = doc.data() : null )
       //if user has been deleted from our database then reinit the entire thing
       if(userFirestore) {
         const screenToDispatch = Utils.screenToLoadForUser(userFirestore)
         Utils.dispatchScreen(screenToDispatch, 1000, this.state.navigation)
       }
-      else{
-        await firebase.auth().signOut()
+      else {
+        // await firebase.auth().signOut()
+        this.props.userLogOut()
         console.log('User has been deleted from our database')
         Utils.dispatchScreen(screens.WelcomeScreen, 1000, this.state.navigation)
       }
@@ -94,10 +97,17 @@ class SplashScreen extends Component {
   
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = state => (
+
+  {
   firebaseAuthUser: state.userDetailsReducer.firebaseAuthUser,
   userFirestoreData: state.userDetailsReducer.userFirestoreData
-});
+}
+
+);
+
+
+
 
 
 // const ActionCreators = Object.assign(
@@ -112,7 +122,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     watchFirebaseAuthUser: () => {dispatch(watchFirebaseAuthUser())},
-    watchUserFirestoreData: () => {dispatch(watchUserFirestoreData())}
+    watchUserFirestoreData: () => {dispatch(watchUserFirestoreData())},
+    userLogOut: () => {dispatch(userLogOut())}
 })
 
 const styles = StyleSheet.create({
