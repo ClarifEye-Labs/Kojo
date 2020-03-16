@@ -1,6 +1,7 @@
 
 import { NavigationActions, StackActions } from 'react-navigation'
 import screens from '../constants/screens';
+import appConfig from '../config/appConfig'
 export default class Utils {
   //Function to support async await in forEach
   static asyncForEach = async (array, callback) => {
@@ -28,7 +29,7 @@ export default class Utils {
     }else if (!phone) {
       return screens.PhoneScreen
     }else {
-      return screens.SupplierHome
+      return role === appConfig.userRoleSupplier ? screens.SupplierHome : screens.ClientHome
     }
   }
 

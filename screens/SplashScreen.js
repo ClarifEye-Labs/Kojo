@@ -20,34 +20,31 @@ class SplashScreen extends Component {
     this.props.watchFirebaseAuthUser();
     this.props.watchUserFirestoreData();
     this.state = {
-      name: 'SplashScreen',
       navigation: props.navigation,
       user: undefined,
       userExists: false,
       supplierRestaurantSelected: false,
-      phoneEntered: false, 
-
+      phoneEntered: false,
+      navigateToScreenLogic: this.navigateToScreenLogic
     }
   }
 
-  componentDidMount = async () => {
-    this.navigateToScreenLogic()
+  static getDerivedStateFromProps(props, state) {
+    console.log('Props: ', props)
+    console.log('State: ', state)
+    return state
   }
 
   navigateToScreenLogic = async () => {
-
     const user = this.props.firebaseAuthUser
     const firestore = firebase.firestore()
-
-    if(user) {
-
+    if (user) {
       // const userRef = firestore.collection(collectionNames.users)
       // const userID = user.uid
       let userFirestore = this.props.userFirestoreData
-
       // await userRef.doc(userID).get().then( (doc) => doc.exists ? userFirestore = doc.data() : null )
       //if user has been deleted from our database then reinit the entire thing
-      if(userFirestore) {
+      if (userFirestore) {
         const screenToDispatch = Utils.screenToLoadForUser(userFirestore)
         Utils.dispatchScreen(screenToDispatch, 1000, this.state.navigation)
       }
@@ -58,12 +55,10 @@ class SplashScreen extends Component {
         Utils.dispatchScreen(screens.WelcomeScreen, 1000, this.state.navigation)
       }
     }
-    
-    else{
+    else {
       //no user signed in 
       Utils.dispatchScreen(screens.WelcomeScreen, 2000, this.state.navigation)
     }
-
   }
 
   render() {
@@ -94,15 +89,15 @@ class SplashScreen extends Component {
     );
   }
 
-  
+
 }
 
 const mapStateToProps = state => (
 
   {
-  firebaseAuthUser: state.userDetailsReducer.firebaseAuthUser,
-  userFirestoreData: state.userDetailsReducer.userFirestoreData
-}
+    firebaseAuthUser: state.userDetailsReducer.firebaseAuthUser,
+    userFirestoreData: state.userDetailsReducer.userFirestoreData
+  }
 
 );
 
@@ -121,9 +116,9 @@ const mapStateToProps = state => (
 // })
 
 const mapDispatchToProps = dispatch => ({
-    watchFirebaseAuthUser: () => {dispatch(watchFirebaseAuthUser())},
-    watchUserFirestoreData: () => {dispatch(watchUserFirestoreData())},
-    userLogOut: () => {dispatch(userLogOut())}
+  watchFirebaseAuthUser: () => { dispatch(watchFirebaseAuthUser()) },
+  watchUserFirestoreData: () => { dispatch(watchUserFirestoreData()) },
+  userLogOut: () => { dispatch(userLogOut()) }
 })
 
 const styles = StyleSheet.create({

@@ -1,15 +1,12 @@
 import { inventoryData } from '../constants/index'
-
-
+import firebase from '../../config/firebase'
 const initialState = {
-    firebaseAuthUser: null,
+    firebaseAuthUser: firebase.auth().currentUser,
     userFirstoreData: null,
-    
 }
 
 const userDetailsReducer = (state = initialState, action) => {
     switch(action.type) {
-        
         case "firebaseAuthUser":
             return { ...state, firebaseAuthUser: action.value }
 
@@ -20,5 +17,4 @@ const userDetailsReducer = (state = initialState, action) => {
             return state;
     }    
 }
-
 export default userDetailsReducer
