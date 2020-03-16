@@ -15,7 +15,7 @@ import { connect } from 'react-redux';
 import { LinearGradient } from 'expo-linear-gradient';
 import collectionNames from '../config/collectionNames';
 // import { watchInventoryData } from '.'
-import { watchInventoryData } from './../redux/actions/watchInventoryData'
+import { watchInventoryData } from '../redux/actions/watchInventoryData'
 
 const HEADER_EXPANDED_HEIGHT = 250;
 const HEADER_COLLAPSED_HEIGHT = 100;

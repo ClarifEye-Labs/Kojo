@@ -67,7 +67,7 @@ const AppNavigator = createStackNavigator({
   ViewAllOrders: ViewAllOrders
 },
   {
-    initialRouteName: screens.ClientHome
+    initialRouteName: screens.SplashScreen
   })
 
 const AppContainer = createAppContainer(AppNavigator);

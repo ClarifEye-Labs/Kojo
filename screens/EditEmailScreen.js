@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, TextInput } from 'react-native'
+import { View, StyleSheet, Text, TextInput, ScrollView } from 'react-native'
 import { Heading, Back, Icon, Button } from '../Components'
 import { dimens, colors, strings, customFonts } from '../constants'
 import { commonStyling } from '../common'
@@ -113,7 +113,7 @@ class EditEmailScreen extends Component {
     } = this.props
 
     return (
-      <View style={mainContainer}>
+      <ScrollView style={mainContainer}>
         <Icon nameIOS={iconNames.backIOS} nameAndroid={iconNames.backAndroid} style={commonStyling.backButtonStyling} size={34} onPress={()=> navigation.goBack() } />
         <Icon nameIOS={iconNames.crossIOS} nameAndroid={iconNames.crossAndroid} style={crossStyle} size={50} onPress={()=> navigation.goBack() } />
         <Heading containerStyle={headingContainerStyle} title={strings.editEmailAddress} />
@@ -149,7 +149,7 @@ class EditEmailScreen extends Component {
           onPress={this.submitButtonPressed} 
           style={buttonStyle} 
           textColor={colors.colorAccent} />
-      </View>
+      </ScrollView>
     );
   }
 }
@@ -198,7 +198,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.submitGreen,
     width: '90%',
     marginStart: dimens.screenHorizontalMargin,
-    marginRight: dimens.screenHorizontalMargin
+    marginRight: dimens.screenHorizontalMargin,
+    marginBottom: 20
   },
   animationContainerStyle: {
     marginTop: 50,

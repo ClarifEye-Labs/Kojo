@@ -67,10 +67,24 @@ class ProfileScreen extends Component {
     this.fetchUserDetialsFromOurDB()
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.userFirestoreData !== nextProps.userFirestoreData) {
-      this.fetchUserDetialsFromOurDB()
+  static getDerivedStateFromProps(props, state) {
+    if (props.userFirestoreData !== state.userFirestoreData) {
+      const userData = props.userFirestoreData
+      if (userData) {
+        const userInitialsArray = userData.name.split(' ').map((name) => name[0])
+        state.userAddress = userData.address.formattedName
+        state.userPhone = userData.phone.number
+        state.userRole = userData.role
+        state.userName = userData.name
+        state.userEmail = userData.email
+        state.userNameInitials = (userInitialsArray[0] + userInitialsArray[userInitialsArray.length - 1]).toUpperCase()
+        state.loading = false
+      }
     }
+    else {
+      console.log('No such document')
+    }
+    return state
   }
 
 
