@@ -97,20 +97,6 @@ const mapStateToProps = state => ({
     userFirestoreData: state.userDetailsReducer.userFirestoreData
 });
 
-
-
-
-
-// const ActionCreators = Object.assign(
-//   {},
-//   watchFirebaseAuthUser,
-//   watchUserFirestoreData
-// );
-
-// const mapDispatchToProps = dispatch => ({
-//   actions: bindActionCreators(ActionCreators, dispatch),
-// })
-
 const mapDispatchToProps = dispatch => ({
   watchFirebaseAuthUser: () => { dispatch(watchFirebaseAuthUser()) },
   watchUserFirestoreData: () => { dispatch(watchUserFirestoreData()) },
