@@ -92,14 +92,10 @@ class SplashScreen extends Component {
 
 }
 
-const mapStateToProps = state => (
-
-  {
+const mapStateToProps = state => ({
     firebaseAuthUser: state.userDetailsReducer.firebaseAuthUser,
     userFirestoreData: state.userDetailsReducer.userFirestoreData
-  }
-
-);
+});
 
 
 
