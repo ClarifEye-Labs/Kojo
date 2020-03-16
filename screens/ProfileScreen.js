@@ -14,7 +14,6 @@ import { userLogOut } from '../redux/app-redux'
 class ProfileScreen extends Component {
   constructor(props) {
     super(props)
-    console.log("calling from profile screen")
     this.props.watchFirebaseAuthUser();
     this.props.watchUserFirestoreData();
     this.state = {
@@ -34,7 +33,6 @@ class ProfileScreen extends Component {
 
   fetchUserDetialsFromOurDB = async () => {
     const userData = this.props.userFirestoreData
-    console.log("userData is", userData)
     if (userData) {
       const userInitialsArray = userData.name.split(' ').map((name) => name[0])
       this.setState({

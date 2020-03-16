@@ -3,13 +3,8 @@ import {
   View,
   StyleSheet,
   Text,
-  Animated,
-  Dimensions,
-  ImageBackground,
   ScrollView,
   TouchableOpacity,
-  TouchableWithoutFeedback,
-  Alert,
   Modal,
   TextInput,
   FlatList
@@ -23,6 +18,8 @@ import firebase from '../config/firebase'
 import LottieView from 'lottie-react-native';
 import { Utils } from '../utils';
 import collectionNames from '../config/collectionNames'
+import { connect } from 'react-redux'
+import appConfig from '../config/appConfig';
 
 class PhoneScreen extends Component {
   constructor(props) {
@@ -303,29 +300,22 @@ class PhoneScreen extends Component {
       phoneSubmitIsLoading: false
     })
     //check here for role of user and then proceed to according screen 
-    Utils.dispatchScreen(screens.SupplierHome, undefined, this.state.navigation)
+    const screenToDispatch = this.props.user.role === appConfig.userRoleSupplier ? screens.SupplierHome : screens.ClientHome
+    Utils.dispatchScreen(screenToDispatch, undefined, this.state.navigation)
   }
 
   render() {
     const {
       mainContainer,
-      itemNameStyle,
-      editButton,
       imageContainer,
-      imageStyling,
       gradientStyle,
       headerContainer,
-      infoItemContainer,
       subHeadingStyle,
-      textStyle,
       buttonContainer,
-      deleteButtonStyle,
       headingStyle,
-      expandedHeaderContainerStyle,
       inputContainerStyle,
       inputContainerTouchableStyle,
       inputCountryTextStyle,
-      addButtonStyle,
       phoneTextInput,
       inputsContainer,
       submitButtonStyle
@@ -591,6 +581,15 @@ const styles = StyleSheet.create({
   }
 })
 
+const mapStateToProps = state => ({
+  user: state.userDetailsReducer.userFirestoreData
+});
+
+const mapDispatchToProps = dispatch => ({
+  
+})
+
+
 PhoneScreen.navigationOptions = {
   header: null
 }
@@ -599,4 +598,4 @@ PhoneScreen.propTypes = {
   navigation: PropTypes.object
 }
 
-export default PhoneScreen
+export default connect(mapStateToProps, mapDispatchToProps)(PhoneScreen)
