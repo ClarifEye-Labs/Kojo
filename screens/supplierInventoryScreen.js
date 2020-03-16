@@ -14,20 +14,21 @@ import Utils from '../utils/Utils';
 import { connect } from 'react-redux';
 import { LinearGradient } from 'expo-linear-gradient';
 import collectionNames from '../config/collectionNames';
-
-
+// import { watchInventoryData } from '.'
+import { watchInventoryData } from './../redux/actions/watchInventoryData'
 
 const HEADER_EXPANDED_HEIGHT = 250;
 const HEADER_COLLAPSED_HEIGHT = 100;
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen")
 
-class EditInventoryScreen extends Component {
+class SupplierInventoryScreen extends Component {
   constructor(props) {
     super(props);
+    this.props.watchInventoryData(firebase.auth().currentUser.uid);
     this.state = {
-      name: 'EditInventoryScreen',
-      loadingContent: true,
+      name: 'SupplierInventoryScreen',
+      loadingContent: false,
       firestore: undefined,
       suppliersData: undefined,
       scrollY: new Animated.Value(0),
@@ -36,92 +37,13 @@ class EditInventoryScreen extends Component {
       showSearch: false,
       searchInventory: [],
       inventoryType: [],
-      inventoryItems: [],
+      inventoryItems: [1,2,3],
       productsOfUser: [],
     }
   }
 
   componentDidMount = () => {
-    this.getInventory();
-  }
 
-  getInventory = async () => {
-    let inventoryArray = []
-    let db = firebase.firestore()
-    let inventoryRefArray = []
-    await db
-      .collection(collectionNames.suppliers)
-      .doc(this.state.supplierID)
-      .get()
-      .then((doc) => {
-        if (doc.exists) {
-          const data = doc.data()
-          inventoryRefArray = data.inventory
-          inventoryRefArray ? this.fetchProductsForEachInventoryRef(inventoryRefArray) : console.log('No products for user')
-        }
-      })
-
-    this.setState({
-      inventoryItems: inventoryArray,
-      loadingContent: false
-    })
-
-  }
-
-  fetchProductsForEachInventoryRef = async (inventoryRefArray) => {
-    let db = firebase.firestore()
-    let products = []
-    for (let index in inventoryRefArray) {
-      const inventoryRef = inventoryRefArray[index]
-      await db.doc(inventoryRef)
-        .get()
-        .then((doc) => {
-          if (doc.exists) {
-            products.push({ ...{id: doc.id}, ...{...doc.data()} } )
-          } else {
-            console.log('Werent able to fetch products')
-          }
-        })
-    }
-
-    this.setState({
-      productsOfUser: products
-    }, () => { products ? this.formulateListToShowOfProducts() : null })
-    
-  }
-
-  formulateListToShowOfProducts() {
-    const {
-      productsOfUser
-    } = this.state
-    let inventoryDictionary = {}
-    for(let index in productsOfUser) {
-      const product = productsOfUser[index]
-      const category = product.type
-      if(Array.isArray(inventoryDictionary[category])){
-        const products = inventoryDictionary[category]
-        products.push(product)
-        inventoryDictionary[category] = products
-      }else{
-        inventoryDictionary[category] = [product]
-      }
-    }
-
-    const list = this.constructFlatListItems(inventoryDictionary)
-    this.setState({
-      inventoryItems: list,
-      loadingContent: false
-    })
-  }
-
-  constructFlatListItems = (dictionary) => {
-    let listToReturn = []
-    if(dictionary){
-      for(let key in dictionary){
-        listToReturn.push({title: key, data: dictionary[key]})
-      }
-    }
-    return listToReturn
   }
 
   render() {
@@ -188,7 +110,7 @@ class EditInventoryScreen extends Component {
           color={colors.colorAccent} />
 
         {this.state.showSearch ? <SearchBar
-          placeholder={strings.searchItems}
+          placeholder="Search Item"
           onChangeText={this.updateSearch}
           platform={(Platform.OS === 'ios') ? 'ios' : 'android'}
           showCancel={true}
@@ -198,9 +120,9 @@ class EditInventoryScreen extends Component {
         /> : null}
 
         <SectionList
-          scrollEnabled={this.state.inventoryItems.length ? true : false}
+          scrollEnabled={this.props.inventoryData ? true : false}
           contentContainerStyle={{ minHeight: SCREEN_HEIGHT + HEADER_COLLAPSED_HEIGHT }}
-          sections={this.state.search ? this.state.searchInventory : this.state.inventoryItems}
+          sections={this.state.search ? this.state.searchInventory : this.props.inventoryData}
           renderItem={({ item }) => SectionContent(item, this.props)}
           renderSectionHeader={({ section }) => SectionHeader(section, this.props)}
           keyExtractor={(item, index) => index}
@@ -232,8 +154,8 @@ class EditInventoryScreen extends Component {
 
     return (
       <View style={expandedHeaderContainerStyle}>
-        <Text style={headingStyle}>{strings.inventory}</Text>
-        <Text style={subHeadingStyle}>{strings.editYourItemsBelow}</Text>
+        <Text style={headingStyle}>{strings.inventory} </Text>
+        <Text style={subHeadingStyle}>{strings.viewYourItemsBelow} </Text>
       </View>
     )
   }
@@ -252,17 +174,18 @@ class EditInventoryScreen extends Component {
   }
 
   updateSearch = search => {
+
     this.setState({ search })
     if (search == '') {
       this.setState({
-        searchInventory: this.state.inventoryItems
+        searchInventory: this.props.inventoryData
       })
     }
     const searchEntered = search.toUpperCase()
     const newListToShow = []
-    for (let index in this.state.inventoryItems) {
-      const title = this.state.inventoryItems[index].title
-      let itemObject = this.state.inventoryItems[index]
+    for (let index in this.props.inventoryData) {
+      const title = this.props.inventoryData[index].title
+      let itemObject = this.props.inventoryData[index]
       const itemsToShow = []
       for (let index in itemObject.data) {
         let item = itemObject.data[index]
@@ -315,14 +238,26 @@ class EditInventoryScreen extends Component {
 }
 
 function mapStateToProps(state) {
-  return {
-    inventoryItems: state.inventoryItems
+  if( state.inventoryReducer.inventoryData ) 
+  { 
+    return {
+      inventoryData : state.inventoryReducer.inventoryData
+    }
+    
+  }
+
+  else
+  { 
+    return {
+      inventoryData: []
+    }
+
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    updateInventory: () => dispatch({ type: 'UPDATE_INVENTORY' })
+    watchInventoryData: () => {dispatch(watchInventoryData())}
   }
 }
 
@@ -372,7 +307,7 @@ const SectionContent = (sectionContent, props) => {
 
     <View style={sectionContentContainerInner}>
       <TouchableOpacity style={sectionContentTouchableContainer} onPress={() => {
-        navigation.navigate(screens.EditItemScreen, {
+        navigation.navigate(screens.InventoryItemScreen, {
           item: sectionContent
         })
       }}>
@@ -514,8 +449,8 @@ const styles = StyleSheet.create({
   }
 })
 
-EditInventoryScreen.navigationOptions = {
+SupplierInventoryScreen.navigationOptions = {
   header: null
 }
 
-export default connect(mapStateToProps)(EditInventoryScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(SupplierInventoryScreen);

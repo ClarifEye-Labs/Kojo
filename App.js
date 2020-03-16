@@ -10,8 +10,7 @@ import SupplierRestaurantScreen from './screens/SupplierRestaurantScreen'
 import EmailScreen from './screens/EmailScreen'
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import { createStore } from 'redux';
-import { Provider } from 'react-redux';
+import { Provider, connect } from 'react-redux';
 import InventoryItemScreen from './screens/InventoryItemScreen'
 import SupplierInventoryScreen from './screens/SupplierInventoryScreen';
 import SupplierClientsScreen from './screens/SupplierClientsScreen';
@@ -34,6 +33,9 @@ import AddSupplierScreen from './screens/AddSupplierScreen';
 import EditEmailScreen from './screens/EditEmailScreen';
 import ViewClientsScreen from './screens/ViewClientsScreen';
 import ViewAllOrders from './screens/ViewAllOrders';
+import { configureStore } from './redux/app-redux'
+
+const store = configureStore()
 
 const AppNavigator = createStackNavigator({
   LoginScreen: LoginScreen,
@@ -64,41 +66,15 @@ const AppNavigator = createStackNavigator({
   ViewClientsScreen: ViewClientsScreen,
   ViewAllOrders: ViewAllOrders
 },
-{ 
-  initialRouteName: screens.ClientHome
-})
-
+  {
+    initialRouteName: screens.ClientHome
+  })
 
 const AppContainer = createAppContainer(AppNavigator);
 
-const initialState = {
-  dummyInventory: [
-    { title: 'Alcohol', data: ['ALTERED', 'ABBY', 'ACTION U.S.A.', 'AMUCK', 'ANGUISH'] },
-    { title: 'Dairy', data: ['BEST MEN', 'BEYOND JUSTICE', 'BLACK GUNN', 'BLOOD RANCH', 'BEASTIES'] },
-    { title: 'Meat', data: ['CARTEL', 'CASTLE OF EVIL', 'CHANCE', 'COP GAME', 'CROSS FIRE',] },
-  ]
-}
-
-const reducer = (state = initialState, action) => {
-  switch (action.type) {
-    case 'UPDATE_INVENTORY':
-      return {
-        dummyInventory: [
-          { title: 'Alcohol', data: ['ALTERED', 'ABBY', 'ACTION U.S.A.', 'AMUCK', 'ANGUISH'] },
-          { title: 'Dairy', data: ['BEST MEN', 'BEYOND JUSTICE', 'BLACK GUNN', 'BLOOD RANCH', 'BEASTIES'] },
-          { title: 'Meat', data: ['CARTEL', 'CASTLE OF EVIL', 'CHANCE', 'COP GAME', 'CROSS FIRE',] },
-        ]
-      }
-  }
-  return state
-}
-
-const store = createStore(reducer)
-
-
+//const store = configureStore()
 
 class App extends Component {
-
 
   constructor(props) {
     super(props)

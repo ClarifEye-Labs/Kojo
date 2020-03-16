@@ -8,10 +8,17 @@ import screens from '../constants/screens'
 import firebase from '../config/firebase'
 import collectionNames from '../config/collectionNames';
 import Utils from '../utils/Utils';
+import { connect } from 'react-redux'
+import { watchFirebaseAuthUser, watchUserFirestoreData } from '../redux/actions/watchUserData'
+import { userLogOut } from '../redux/app-redux'
+import { bindActionCreators } from 'redux';
+
 
 class SplashScreen extends Component {
   constructor(props) {
     super(props)
+    this.props.watchFirebaseAuthUser();
+    this.props.watchUserFirestoreData();
     this.state = {
       name: 'SplashScreen',
       navigation: props.navigation,
@@ -28,25 +35,31 @@ class SplashScreen extends Component {
   }
 
   navigateToScreenLogic = async () => {
-    const user = firebase.auth().currentUser
+
+    const user = this.props.firebaseAuthUser
     const firestore = firebase.firestore()
 
     if(user) {
-      const userRef = firestore.collection(collectionNames.users)
-      const userID = user.uid
-      let userFirestore = null
-  
-      await userRef.doc(userID).get().then( (doc) => doc.exists ? userFirestore = doc.data() : null )
+
+      // const userRef = firestore.collection(collectionNames.users)
+      // const userID = user.uid
+      let userFirestore = this.props.userFirestoreData
+
+      // await userRef.doc(userID).get().then( (doc) => doc.exists ? userFirestore = doc.data() : null )
       //if user has been deleted from our database then reinit the entire thing
       if(userFirestore) {
         const screenToDispatch = Utils.screenToLoadForUser(userFirestore)
         Utils.dispatchScreen(screenToDispatch, 1000, this.state.navigation)
-      }else{
-        await firebase.auth().signOut()
+      }
+      else {
+        // await firebase.auth().signOut()
+        this.props.userLogOut()
         console.log('User has been deleted from our database')
         Utils.dispatchScreen(screens.WelcomeScreen, 1000, this.state.navigation)
       }
-    }else{
+    }
+    
+    else{
       //no user signed in 
       Utils.dispatchScreen(screens.WelcomeScreen, 2000, this.state.navigation)
     }
@@ -80,7 +93,38 @@ class SplashScreen extends Component {
       </ImageBackground>
     );
   }
+
+  
 }
+
+const mapStateToProps = state => (
+
+  {
+  firebaseAuthUser: state.userDetailsReducer.firebaseAuthUser,
+  userFirestoreData: state.userDetailsReducer.userFirestoreData
+}
+
+);
+
+
+
+
+
+// const ActionCreators = Object.assign(
+//   {},
+//   watchFirebaseAuthUser,
+//   watchUserFirestoreData
+// );
+
+// const mapDispatchToProps = dispatch => ({
+//   actions: bindActionCreators(ActionCreators, dispatch),
+// })
+
+const mapDispatchToProps = dispatch => ({
+    watchFirebaseAuthUser: () => {dispatch(watchFirebaseAuthUser())},
+    watchUserFirestoreData: () => {dispatch(watchUserFirestoreData())},
+    userLogOut: () => {dispatch(userLogOut())}
+})
 
 const styles = StyleSheet.create({
   mainContainer: {
@@ -115,4 +159,4 @@ SplashScreen.propTypes = {
   navigation: PropTypes.object
 }
 
-export default SplashScreen
+export default connect(mapStateToProps, mapDispatchToProps)(SplashScreen)

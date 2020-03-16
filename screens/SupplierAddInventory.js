@@ -1199,7 +1199,7 @@ class SupplierAddInventoryScreen extends Component {
       showLoadingDialog: false
     }, () => { this.reInitScreen() })
   }
-
+  
   uploadImageOnClick = async () => {
     let result = null
     if (this.state.imagePickerValue == "library") {

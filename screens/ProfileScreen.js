@@ -7,10 +7,16 @@ import { PropTypes } from 'prop-types'
 import firebase from '../config/firebase'
 import { Loading, TextWithSubheading, Button, Icon } from '../Components';
 import Utils from '../utils/Utils';
+import { connect } from 'react-redux'
+import { watchFirebaseAuthUser, watchUserFirestoreData } from '../redux/actions/watchUserData'
+import { userLogOut } from '../redux/app-redux'
 
 class ProfileScreen extends Component {
   constructor(props) {
     super(props)
+    console.log("calling from profile screen")
+    this.props.watchFirebaseAuthUser();
+    this.props.watchUserFirestoreData();
     this.state = {
       navigation: props.navigation,
       user: firebase.auth().currentUser,
@@ -21,44 +27,52 @@ class ProfileScreen extends Component {
       userRole: null,
       userName: null,
       userEmail: null,
-      signOutButtonLoading: false
+      signOutButtonLoading: false,
+      userData: this.props.userFirestoreData
     }
   }
 
   fetchUserDetialsFromOurDB = async () => {
-    const firestore = firebase.firestore()
-    const ref = firestore.collection('users')
-    const user = firebase.auth().currentUser
-    await ref.doc(user && user.uid).get().then((doc) => {
-      if (doc.exists) {
-        const userData = doc.data()
-        const userInitialsArray = userData.name.split(' ').map((name) => name[0])
-        this.setState({
-          userAddress: userData.address.formattedName,
-          userPhone: userData.phone.number,
-          userRole: userData.role,
-          userName: userData.name,
-          userEmail: userData.email,
-          userNameInitials: (userInitialsArray[0] + userInitialsArray[userInitialsArray.length - 1]).toUpperCase(),
-          loading: false
-        })
-      } else {
-        console.log('No such document')
-      }
-    })
+    const userData = this.props.userFirestoreData
+    console.log("userData is", userData)
+    if (userData) {
+      const userInitialsArray = userData.name.split(' ').map((name) => name[0])
+      this.setState({
+        userAddress: userData.address.formattedName,
+        userPhone: userData.phone.number,
+        userRole: userData.role,
+        userName: userData.name,
+        userEmail: userData.email,
+        userNameInitials: (userInitialsArray[0] + userInitialsArray[userInitialsArray.length - 1]).toUpperCase(),
+        loading: false
+      })
+
+    }
+    else {
+      console.log('No such document')
+    }
   }
+
 
   signOutUser = async () => {
     this.setState({
       signOutButtonLoading: true
     })
-    await firebase.auth().signOut()
+    this.props.userLogOut()
+    // await firebase.auth().signOut()
     Utils.dispatchScreen(screens.WelcomeScreen, 1000, this.state.navigation)
   }
 
   componentDidMount = () => {
     this.fetchUserDetialsFromOurDB()
   }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.userFirestoreData !== nextProps.userFirestoreData) {
+      this.fetchUserDetialsFromOurDB()
+    }
+  }
+
 
   render() {
     const {
@@ -104,7 +118,7 @@ class ProfileScreen extends Component {
 
         <ScrollView style={scrollView}>
           <View style={rowContainer}>
-            <TouchableOpacity style={editIcon} onPress={()=> this.state.navigation.navigate(screens.EditEmailScreen)}>
+            <TouchableOpacity style={editIcon} onPress={() => this.state.navigation.navigate(screens.EditEmailScreen)}>
               <Text style={editIconText}>{strings.edit}</Text>
             </TouchableOpacity>
             <TextWithSubheading
@@ -126,7 +140,7 @@ class ProfileScreen extends Component {
               textTitle={this.state.userAddress ? this.state.userAddress : strings.pleaseProvideThis} />
           </View>
           <View style={rowContainer}>
-            <TouchableOpacity style={editIcon} onPress={() => this.state.navigation.navigate(screens.PhoneScreen)}> 
+            <TouchableOpacity style={editIcon} onPress={() => this.state.navigation.navigate(screens.PhoneScreen)}>
               <Text style={editIconText}>{strings.edit}</Text>
             </TouchableOpacity>
             <TextWithSubheading
@@ -148,6 +162,32 @@ class ProfileScreen extends Component {
     return componentToRender
   }
 }
+
+const mapStateToProps = state => ({
+  firebaseAuthUser: state.userDetailsReducer.firebaseAuthUser,
+  userFirestoreData: state.userDetailsReducer.userFirestoreData
+});
+
+
+
+
+
+
+// const ActionCreators = Object.assign(
+//   {},
+//   watchFirebaseAuthUser,
+//   watchUserFirestoreData
+// );
+
+// const mapDispatchToProps = dispatch => ({
+//   actions: bindActionCreators(ActionCreators, dispatch),
+// })
+
+const mapDispatchToProps = dispatch => ({
+  watchFirebaseAuthUser: () => { dispatch(watchFirebaseAuthUser()) },
+  watchUserFirestoreData: () => { dispatch(watchUserFirestoreData()) },
+  userLogOut: () => { dispatch(userLogOut()) }
+})
 
 const styles = StyleSheet.create({
   mainContainer: {
@@ -247,4 +287,4 @@ ProfileScreen.propTypes = {
   navigation: PropTypes.object
 }
 
-export default ProfileScreen
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileScreen)

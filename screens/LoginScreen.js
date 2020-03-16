@@ -24,10 +24,13 @@ import firebase from '../config/firebase'
 import screens from '../constants/screens';
 import collectionNames from '../config/collectionNames';
 import Utils from '../utils/Utils';
+import { watchFirebaseAuthUser, watchUserFirestoreData } from '../redux/actions/watchUserData'
+import { connect } from 'react-redux'
 
 class LoginScreen extends React.Component {
   constructor(props) {
     super(props)
+
     this.state = {
       navigation: props.navigation,
       emailEntered: '',
@@ -147,12 +150,15 @@ class LoginScreen extends React.Component {
       }
     }).then((loginObject) => {
       if (loginObject && loginObject.user) {
+        
         this.onSuccessfulLogin()
       }
     })
   }
 
   onSuccessfulLogin = async () => {
+    this.props.watchFirebaseAuthUser()
+    this.props.watchUserFirestoreData()
     //login has been enabled, check here for the missing props of user and redirect accordingly 
     const user = firebase.auth().currentUser
     const firestore = firebase.firestore()
@@ -314,8 +320,12 @@ class LoginScreen extends React.Component {
       );
       await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);  // Set persistent auth state
       const credential = firebase.auth.FacebookAuthProvider.credential(token);
-      await firebase.auth().signInWithCredential(credential).then().catch((error) => alert(error));  // Sign in with Facebook credential
+      await firebase.auth().signInWithCredential(credential).then(
+        
+      ).catch((error) => alert(error));  // Sign in with Facebook credential
       const facebookUser = firebase.auth().currentUser
+      this.props.watchFirebaseAuthUser()
+      this.props.watchUserFirestoreData()
       //need to check if user is just logging in or registering for first time 
       const firestore = firebase.firestore()
       const usersRef = firestore.collection(collectionNames.users)
@@ -359,6 +369,23 @@ class LoginScreen extends React.Component {
 
 
 }
+
+function mapStateToProps (state) {
+
+
+return {
+  firebaseAuthUser: state.userDetailsReducer.firebaseAuthUser,
+  userFirestoreData: state.userDetailsReducer.userFirestoreData
+}
+
+
+}
+
+
+const mapDispatchToProps = dispatch => ({
+  watchFirebaseAuthUser: () => {dispatch(watchFirebaseAuthUser())},
+  watchUserFirestoreData: () => {dispatch(watchUserFirestoreData())}
+})
 
 const styles = StyleSheet.create({
   mainContainer: {
@@ -461,5 +488,5 @@ LoginScreen.navigationOptions = {
   header: null
 }
 
-export default LoginScreen
+export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen)
 
