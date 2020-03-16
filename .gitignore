@@ -12,3 +12,4 @@ web-report/
 config/aws.js
 # macOS
 .DS_Store
+screens/supplierInventoryScreen.js
