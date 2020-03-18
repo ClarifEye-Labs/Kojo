@@ -120,13 +120,16 @@ class AddSupplierScreen extends Component {
 
 
   showConfirmationModal = (data) => {
-    this.setState({ showConfirmationModal: true,
+    this.setState({
+      showConfirmationModal: true,
       supplierSelectedData: data
     })
   }
 
-  hideConfirmationModal = () => this.setState({ showConfirmationModal: false,
-  supplierSelectedData: null })
+  hideConfirmationModal = () => this.setState({
+    showConfirmationModal: false,
+    supplierSelectedData: null
+  })
 
   showSearchPanel = () => this.setState({ showSearch: true })
 
@@ -138,12 +141,14 @@ class AddSupplierScreen extends Component {
     })
 
     await this.addSupplierToFirebase()
-    .then( 
-     this.hideConfirmationModal()) 
-     .catch(
-       Alert.alert("Supplier not added, try again!")
-     )}
-    
+      .then(
+        this.hideConfirmationModal())
+      .catch(
+        Alert.alert("Supplier not added, try again!")
+      )
+  }
+
+
   addSupplierToFirebase = async () => {
 
     const supplierUID = this.state.supplierSelectedData.uid
@@ -165,16 +170,16 @@ class AddSupplierScreen extends Component {
 
     //Adding client to supplier db
     await firestore
-    .collection(collectionNames.suppliers)
-    .doc(supplierUID)
-    .update({
-      clients: firebase.firestore.FieldValue.arrayUnion(clientReference)
-    })
-    .then(null)
-    .catch((error) => {
-      console.log("TCL: addClient -> error", error)
-    })
-    
+      .collection(collectionNames.suppliers)
+      .doc(supplierUID)
+      .update({
+        clients: firebase.firestore.FieldValue.arrayUnion(clientReference)
+      })
+      .then(null)
+      .catch((error) => {
+        console.log("TCL: addClient -> error", error)
+      })
+
   }
 
   // ----------------- CONFIRMATION MODAL -------------------------
@@ -279,7 +284,7 @@ class AddSupplierScreen extends Component {
           scrollEnabled={true}
           contentContainerStyle={{ minHeight: SCREEN_HEIGHT + HEADER_COLLAPSED_HEIGHT }}
           data={this.state.supplierToAddList}
-          renderItem={({ item }) => SectionContent(item, { ...this.props, showConfirmationModal: this.showConfirmationModal})}
+          renderItem={({ item }) => SectionContent(item, { ...this.props, showConfirmationModal: this.showConfirmationModal })}
           keyExtractor={(item, index) => index}
           onScroll={Animated.event(
             [{
@@ -352,12 +357,8 @@ const SectionContent = (data, props) => {
           style={forwardButton}
           color={colors.black}
           onPress={() => {
-          
-              props.showConfirmationModal(data)
-            
-            
-            {/* showConfirmationModal */}
-          
+
+            props.showConfirmationModal(data)
           }} />
       </TouchableOpacity>
     </View>
