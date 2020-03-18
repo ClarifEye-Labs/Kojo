@@ -336,7 +336,6 @@ class LoginScreen extends React.Component {
           const userData = doc.data()
           const screenToLoadForUser = Utils.screenToLoadForUser(userData)
           Utils.dispatchScreen(screenToLoadForUser, undefined, this.state.navigation)
-
         } else {
           //write the user to database 
           const email = facebookUser.email

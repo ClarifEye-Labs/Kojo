@@ -17,8 +17,8 @@ import { bindActionCreators } from 'redux';
 class SplashScreen extends Component {
   constructor(props) {
     super(props)
-    this.props.watchFirebaseAuthUser();
-    this.props.watchUserFirestoreData();
+    // this.props.watchFirebaseAuthUser();
+    // this.props.watchUserFirestoreData();
     this.state = {
       navigation: props.navigation,
       user: undefined,
@@ -29,20 +29,22 @@ class SplashScreen extends Component {
     }
   }
 
-  static getDerivedStateFromProps(props, state) {
-    console.log('Props: ', props)
-    console.log('State: ', state)
-    return state
+
+
+  componentDidMount = () => {
+    this.navigateToScreenLogic()
   }
 
+
   navigateToScreenLogic = async () => {
-    const user = this.props.firebaseAuthUser
+    const user = firebase.auth().currentUser
+    console.log("user", user)
     const firestore = firebase.firestore()
     if (user) {
-      // const userRef = firestore.collection(collectionNames.users)
-      // const userID = user.uid
-      let userFirestore = this.props.userFirestoreData
-      // await userRef.doc(userID).get().then( (doc) => doc.exists ? userFirestore = doc.data() : null )
+      const userRef = firestore.collection(collectionNames.users)
+      const userID = user.uid
+      let userFirestore = null
+      await userRef.doc(userID).get().then((doc) => doc.exists ? userFirestore = doc.data() : null)
       //if user has been deleted from our database then reinit the entire thing
       if (userFirestore) {
         const screenToDispatch = Utils.screenToLoadForUser(userFirestore)
@@ -93,8 +95,8 @@ class SplashScreen extends Component {
 }
 
 const mapStateToProps = state => ({
-    firebaseAuthUser: state.userDetailsReducer.firebaseAuthUser,
-    userFirestoreData: state.userDetailsReducer.userFirestoreData
+  firebaseAuthUser: state.userDetailsReducer.firebaseAuthUser,
+  userFirestoreData: state.userDetailsReducer.userFirestoreData
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -101,7 +101,8 @@ const strings = {
   orders: 'Orders',
   viewYourOrdersBelow: 'View your orders below',
   chooseASupplierToAdd: 'Choose a Supplier to Add: ',
-  suppliers: 'Suppliers'
+  suppliers: 'Suppliers',
+  chooseAddSupplierOption: 'Add Supplier Confirmation'
 }
 
 export default strings
