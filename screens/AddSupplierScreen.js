@@ -11,6 +11,7 @@ import firebase from '../config/firebase'
 import collectionNames from '../config/collectionNames';
 
 
+
 const HEADER_EXPANDED_HEIGHT = 250;
 const HEADER_COLLAPSED_HEIGHT = 100;
 
@@ -26,7 +27,8 @@ class AddSupplierScreen extends Component {
       supplierToAddList: [],
       searchSupplierList: [],
       loadingContent: false,
-      showConfirmationModal: false
+      showConfirmationModal: false,
+      supplierSelectedData: null
     }
   }
 
@@ -117,14 +119,38 @@ class AddSupplierScreen extends Component {
 
 
 
-  showConfirmationModal = () => {
-    this.setState({ showConfirmationModal: true })
+  showConfirmationModal = (data) => {
+    this.setState({ showConfirmationModal: true,
+      supplierSelectedData: data
+    })
   }
 
-  hideConfirmationModal = () => this.setState({ showConfirmationModal: false })
+  hideConfirmationModal = () => this.setState({ showConfirmationModal: false,
+  supplierSelectedData: null })
 
   showSearchPanel = () => this.setState({ showSearch: true })
 
+  addSupplier = () => {
+
+    let searchSupplierList = this.state.searchSupplierList
+    searchSupplierList.push(this.state.supplierSelectedData)
+    this.setState({
+      searchSupplierList: searchSupplierList
+    })
+
+    this.addSupplierToFirebase()
+
+    this.setState({
+      showConfirmationModal: false
+    })
+
+  }
+
+  addSupplierToFirebase = () => {
+
+    console.log("adding to firebase")
+
+  }
 
   // ----------------- CONFIRMATION MODAL -------------------------
 
@@ -135,7 +161,7 @@ class AddSupplierScreen extends Component {
           firstButtonText="Confirm"
           secondButtonText="Cancel"
           firstButtonFunction={this.addSupplier}
-          secondButtonFunction={() => { console.log("second button clicked") }}
+          secondButtonFunction={this.hideConfirmationModal}
           headingText="Confirm to add this supplier?"
           hideConfirmationModal={this.hideConfirmationModal}
         />
@@ -228,7 +254,7 @@ class AddSupplierScreen extends Component {
           scrollEnabled={true}
           contentContainerStyle={{ minHeight: SCREEN_HEIGHT + HEADER_COLLAPSED_HEIGHT }}
           data={this.state.supplierToAddList}
-          renderItem={({ item }) => SectionContent(item, { ...this.props, showConfirmationModal: this.showConfirmationModal })}
+          renderItem={({ item }) => SectionContent(item, { ...this.props, showConfirmationModal: this.showConfirmationModal})}
           keyExtractor={(item, index) => index}
           onScroll={Animated.event(
             [{
@@ -300,7 +326,14 @@ const SectionContent = (data, props) => {
           nameIOS={iconNames.addIOS}
           style={forwardButton}
           color={colors.black}
-          onPress={showConfirmationModal} />
+          onPress={() => {
+          
+              props.showConfirmationModal(data)
+            
+            
+            {/* showConfirmationModal */}
+          
+          }} />
       </TouchableOpacity>
     </View>
   </View>

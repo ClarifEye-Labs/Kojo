@@ -38,7 +38,6 @@ class SplashScreen extends Component {
 
   navigateToScreenLogic = async () => {
     const user = firebase.auth().currentUser
-    console.log("user", user)
     const firestore = firebase.firestore()
     if (user) {
       const userRef = firestore.collection(collectionNames.users)
