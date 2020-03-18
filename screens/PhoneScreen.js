@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   Modal,
   TextInput,
-  FlatList
+  FlatList,
+  Alert
 } from 'react-native'
 import { Icon, Button } from '../Components'
 import { LinearGradient } from 'expo-linear-gradient';
@@ -288,7 +289,7 @@ class PhoneScreen extends Component {
           number: phoneNumber.number
         }
       }).then(this.successfulUpload).catch((er) => {
-        alert.Alert(er)
+        Alert.alert(er)
       })
     } else {
       console.log('User not signed in, redirect to welcome screen.')
@@ -300,6 +301,7 @@ class PhoneScreen extends Component {
       phoneSubmitIsLoading: false
     })
     //check here for role of user and then proceed to according screen 
+    console.log(this.props.user.role)
     const screenToDispatch = this.props.user.role === appConfig.userRoleSupplier ? screens.SupplierHome : screens.ClientHome
     Utils.dispatchScreen(screenToDispatch, undefined, this.state.navigation)
   }

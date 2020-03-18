@@ -21,6 +21,7 @@ class SupplierRestaurantScreen extends Component {
     const uid = user.uid
     const userRef = firebase.firestore().collection(collectionNames.users)
     const supplierRef = firebase.firestore().collection(collectionNames.suppliers)
+    const clientRef = firebase.firestore().collection(collectionNames.clients)
 
     if(screen === screens.SupplierWelcomeScreen) {
       let role = appConfig.userRoleSupplier
@@ -33,10 +34,16 @@ class SupplierRestaurantScreen extends Component {
         inventory: []
       })
 
-    }else{
+    }
+    else{
       let role = appConfig.userRoleRestaurantOwner
       await userRef.doc(uid).update({
         role: role
+      })
+      await clientRef.doc(uid).set({
+        uid: uid,
+        suppliers: [],
+        orders: []
       })
     }
     Utils.dispatchScreen(screens.AddressScreen, undefined, this.state.navigation);

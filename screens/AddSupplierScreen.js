@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, Animated, FlatList, Dimensions, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, Text, Animated, FlatList, Dimensions, TouchableOpacity, Alert } from 'react-native'
 import { Back, SearchIcon, Loading, Card, Forward, Icon, DualOptionModal } from '../Components'
 import { dimens, colors, customFonts, strings, iconNames } from '../constants'
 import { commonStyling } from '../common'
@@ -130,26 +130,51 @@ class AddSupplierScreen extends Component {
 
   showSearchPanel = () => this.setState({ showSearch: true })
 
-  addSupplier = () => {
-
+  addSupplier = async () => {
     let searchSupplierList = this.state.searchSupplierList
     searchSupplierList.push(this.state.supplierSelectedData)
     this.setState({
       searchSupplierList: searchSupplierList
     })
 
-    this.addSupplierToFirebase()
+    await this.addSupplierToFirebase()
+    .then( 
+     this.hideConfirmationModal()) 
+     .catch(
+       Alert.alert("Supplier not added, try again!")
+     )}
+    
+  addSupplierToFirebase = async () => {
 
-    this.setState({
-      showConfirmationModal: false
+    const supplierUID = this.state.supplierSelectedData.uid
+    const supplierReference = "/suppliers/" + supplierUID
+    const clientReference = "/clients/" + firebase.auth().currentUser.uid
+    const firestore = firebase.firestore()
+
+    //Adding supplier to client db
+    await firestore
+      .collection(collectionNames.clients)
+      .doc(firebase.auth().currentUser.uid)
+      .update({
+        suppliers: firebase.firestore.FieldValue.arrayUnion(supplierReference)
+      })
+      .then(null)
+      .catch((error) => {
+        console.log("TCL: addSupplier -> error", error)
+      })
+
+    //Adding client to supplier db
+    await firestore
+    .collection(collectionNames.suppliers)
+    .doc(supplierUID)
+    .update({
+      clients: firebase.firestore.FieldValue.arrayUnion(clientReference)
     })
-
-  }
-
-  addSupplierToFirebase = () => {
-
-    console.log("adding to firebase")
-
+    .then(null)
+    .catch((error) => {
+      console.log("TCL: addClient -> error", error)
+    })
+    
   }
 
   // ----------------- CONFIRMATION MODAL -------------------------

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, TextInput, ScrollView } from 'react-native'
+import { View, StyleSheet, Text, TextInput, ScrollView, Alert} from 'react-native'
 import { Heading, Back, Icon, Button } from '../Components'
 import { dimens, colors, strings, customFonts } from '../constants'
 import { commonStyling } from '../common'
@@ -72,7 +72,7 @@ class EditEmailScreen extends Component {
         await userRef.doc(uid).update({
           email: this.state.emailEntered
         }).then(this.successfulUpload).catch((er) => {
-          alert.Alert(er)
+          Alert.Alert(er)
         })
       } else {
         console.log('User not signed in, redirect to welcome screen.')
