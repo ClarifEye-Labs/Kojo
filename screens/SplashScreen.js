@@ -30,8 +30,7 @@ class SplashScreen extends Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    console.log('Props: ', props)
-    console.log('State: ', state)
+    state.navigateToScreenLogic()
     return state
   }
 

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, Animated, SectionList, Dimensions } from 'react-native'
-import { Back, SearchIcon, Loading } from '../Components'
-import { dimens, colors, customFonts, strings } from '../constants'
-import { commonStyling } from '../common' 
-import {PropTypes} from 'prop-types'
+import { View, StyleSheet, Text, Animated, FlatList, Dimensions, TouchableOpacity } from 'react-native'
+import { Back, SearchIcon, Loading, Card, Icon } from '../Components'
+import { dimens, colors, customFonts, strings, iconNames } from '../constants'
+import { commonStyling } from '../common'
+import { PropTypes } from 'prop-types'
 import { SearchBar } from 'react-native-elements'
 import * as Animatable from 'react-native-animatable'
 import { LinearGradient } from 'expo-linear-gradient';
@@ -14,17 +14,17 @@ const HEADER_COLLAPSED_HEIGHT = 100;
 const { height: SCREEN_HEIGHT } = Dimensions.get("screen")
 
 class ViewSupplierScreen extends Component {
-  constructor(props){
+  constructor(props) {
     super(props)
     this.state = {
       navigation: props.navigation,
       scrollY: new Animated.Value(0),
       showSearch: false,
-      suppliersList: [],
+      suppliersList: [{ supplierID: '4D7oaz4m8ihmYGfEmL6jbuYy5S43', name: 'Aziza' }],
       loadingContent: false
     }
   }
-  
+
 
   getMainHeaderView = () => {
     const {
@@ -84,7 +84,7 @@ class ViewSupplierScreen extends Component {
     })
   }
 
-  showSearchPanel = () => this.setState({showSearch: true})
+  showSearchPanel = () => this.setState({ showSearch: true })
 
 
   render() {
@@ -160,12 +160,11 @@ class ViewSupplierScreen extends Component {
           value={this.state.search}
         /> : null}
 
-        <SectionList
-          scrollEnabled={false}
+        <FlatList
+          scrollEnabled={true}
           contentContainerStyle={{ minHeight: SCREEN_HEIGHT + HEADER_COLLAPSED_HEIGHT }}
-          sections={this.state.search ? this.state.searchInventory : this.state.inventoryItems}
+          data={this.state.suppliersList}
           renderItem={({ item }) => SectionContent(item, this.props)}
-          renderSectionHeader={({ section }) => SectionHeader(section, this.props)}
           keyExtractor={(item, index) => index}
           onScroll={Animated.event(
             [{
@@ -188,7 +187,7 @@ class ViewSupplierScreen extends Component {
 
 }
 
-const SectionContent = (sectionContent, props) => {
+const SectionContent = (data, props) => {
   const {
     sectionContentContainerOuter,
     sectionContentContainerInner,
@@ -196,48 +195,50 @@ const SectionContent = (sectionContent, props) => {
     sectionContentText,
     imageStyle,
     cardContainerStyle,
-    thinLine,
-    forwardButton
+    initials,
+    forwardButton,
+    initalsContentContainer
   } = styles
 
   const {
     navigation
   } = props
 
-  if(!sectionContent.imageURL){
-    sectionContent.imageURL = 'https://screenshotlayer.com/images/assets/placeholder.png'
+  if (!data.imageURL) {
+    data.imageURL = 'https://screenshotlayer.com/images/assets/placeholder.png'
   }
-  
+
+  const userInitialsArray = data.name.trim().split(' ').map((name) => name[0])
+  const userInitals = (userInitialsArray[0] + userInitialsArray[userInitialsArray.length - 1]).toUpperCase()
+
   const sectionContentToRender = <View style={sectionContentContainerOuter}>
     <View style={cardContainerStyle}>
-      <Card width={65} height={65} elevation={dimens.defaultBorderRadius}>
-        <ImageBackground
-          style={imageStyle}
-          imageStyle={{ borderRadius: dimens.defaultBorderRadius }}
-          source={ { uri: sectionContent.imageURL }} />
+      <Card width={65} height={65} elevation={dimens.defaultBorderRadius} >
+        <View style={initalsContentContainer}>
+          <Text style={initials}>{userInitals}</Text>
+        </View>
       </Card>
     </View>
 
     <View style={sectionContentContainerInner}>
       <TouchableOpacity style={sectionContentTouchableContainer} onPress={() => {
-        navigation.navigate(screens.InventoryItemScreen, {
-          item: sectionContent
-        })
+
       }}>
-        <Text style={sectionContentText}>{sectionContent.name}</Text>
-        <Forward
+        <Text style={sectionContentText}>{data.name}</Text>
+        <Icon
+          nameAndroid={iconNames.forwardAndroid}
+          nameIOS={iconNames.forwardIOS}
           style={forwardButton}
           color={colors.black}
           onPress={() => {
-            navigation.navigate(screens.InventoryItemScreen, {
-              item: sectionContent
-            })
+
           }} />
       </TouchableOpacity>
     </View>
   </View>
 
   return sectionContentToRender
+
 }
 
 const SectionHeader = (section) => {
@@ -374,6 +375,18 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: dimens.screenHorizontalMargin,
     marginTop: dimens.screenSafeUpperNotchDistance + 18
+  },
+  initalsContentContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.colorPrimary,
+    height: '100%',
+    borderRadius: 8
+  },
+  initials: {
+    color: colors.colorAccent,
+    fontSize: 14,
+    fontFamily: customFonts.medium
   }
 })
 

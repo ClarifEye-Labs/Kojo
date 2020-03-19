@@ -6,7 +6,9 @@ const iconNames = {
   editIOS: 'ios-create',
   editAndroid: 'md-create',
   addIOS: 'ios-add',
-  addAndroid: 'md-add'
+  addAndroid: 'md-add',
+  forwardIOS: 'ios-arrow-round-forward',
+  forwardAndroid: 'md-arrow-round-forward'
 }
 
 export default iconNames

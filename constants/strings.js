@@ -101,7 +101,9 @@ const strings = {
   orders: 'Orders',
   viewYourOrdersBelow: 'View your orders below',
   chooseASupplierToAdd: 'Choose a Supplier to Add: ',
-  suppliers: 'Suppliers'
+  suppliers: 'Suppliers',
+  itemToOrder: 'Items',
+  findTheItemsToOrderBelow: 'Find the items to order below'
 }
 
 export default strings

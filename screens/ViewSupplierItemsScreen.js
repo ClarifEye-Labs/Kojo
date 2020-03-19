@@ -1,57 +1,45 @@
 import React, { Component } from 'react';
-import {
-  SectionList, View, StyleSheet, Text, TouchableOpacity, ImageBackground, Animated,
-  Dimensions,
-  Platform
-} from 'react-native'
-import { SearchBar } from 'react-native-elements'
-import { Loading, Card, SearchIcon, Back, Forward } from '../Components'
-import { dimens, colors, customFonts, screens, strings } from '../constants'
+import { View, StyleSheet, Text, Animated, SectionList, ImageBackground, Dimensions, TouchableOpacity } from 'react-native'
+import { Back, SearchIcon, Loading, Card, Icon } from '../Components'
+import { dimens, colors, customFonts, strings, iconNames } from '../constants'
 import { commonStyling } from '../common'
+import { PropTypes } from 'prop-types'
+import { SearchBar } from 'react-native-elements'
 import * as Animatable from 'react-native-animatable'
-import firebase from '../config/firebase'
-import Utils from '../utils/Utils';
-import { connect } from 'react-redux';
 import { LinearGradient } from 'expo-linear-gradient';
+import firebase from '../config/firebase'
 import collectionNames from '../config/collectionNames';
-
-
 
 const HEADER_EXPANDED_HEIGHT = 250;
 const HEADER_COLLAPSED_HEIGHT = 100;
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen")
+const { height: SCREEN_HEIGHT } = Dimensions.get("screen")
 
-class SupplierInventoryScreen extends Component {
+class ViewSupplierItemScreen extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
-      name: 'SupplierInventoryScreen',
-      loadingContent: true,
-      firestore: undefined,
-      suppliersData: undefined,
+      navigation: props.navigation,
       scrollY: new Animated.Value(0),
-      supplierID: firebase.auth().currentUser.uid,
-      search: '',
       showSearch: false,
-      searchInventory: [],
-      inventoryType: [],
-      inventoryItems: [],
-      productsOfUser: [],
+      itemsList: [],
+      itemsSearchList: [],
+      cartList: [],
+      productsOfSupplier: [],
+      loadingContent: true
     }
   }
 
   componentDidMount = () => {
-    this.getInventory();
+    this.getInventory()
   }
 
   getInventory = async () => {
-    let inventoryArray = []
     let db = firebase.firestore()
     let inventoryRefArray = []
     await db
       .collection(collectionNames.suppliers)
-      .doc(this.state.supplierID)
+      .doc('qA4NHEmeo8UeELuTmxGN0Do9lFI3')
       .get()
       .then((doc) => {
         if (doc.exists) {
@@ -60,12 +48,6 @@ class SupplierInventoryScreen extends Component {
           inventoryRefArray ? this.fetchProductsForEachInventoryRef(inventoryRefArray) : console.log('No products for user')
         }
       })
-
-    this.setState({
-      inventoryItems: inventoryArray,
-      loadingContent: false
-    })
-
   }
 
   fetchProductsForEachInventoryRef = async (inventoryRefArray) => {
@@ -83,16 +65,10 @@ class SupplierInventoryScreen extends Component {
           }
         })
     }
-
-    this.setState({
-      productsOfUser: products
-    }, () => { products ? this.formulateListToShowOfProducts() : null })
+    products ? this.formulateListToShowOfProducts(products) : null 
   }
 
-  formulateListToShowOfProducts() {
-    const {
-      productsOfUser
-    } = this.state
+  formulateListToShowOfProducts(productsOfUser) {
     let inventoryDictionary = {}
     for(let index in productsOfUser) {
       const product = productsOfUser[index]
@@ -108,7 +84,7 @@ class SupplierInventoryScreen extends Component {
 
     const list = this.constructFlatListItems(inventoryDictionary)
     this.setState({
-      inventoryItems: list,
+      itemsList: list,
       loadingContent: false
     })
   }
@@ -122,6 +98,68 @@ class SupplierInventoryScreen extends Component {
     }
     return listToReturn
   }
+
+
+  getMainHeaderView = () => {
+    const {
+      headingStyle,
+      subHeadingStyle,
+      expandedHeaderContainerStyle
+    } = styles
+
+    return (
+      <View style={expandedHeaderContainerStyle}>
+        <Text style={headingStyle}>{strings.orders} </Text>
+        <Text style={subHeadingStyle}>{strings.findTheItemsToOrderBelow} </Text>
+      </View>
+    )
+  }
+
+  getCollapsedHeaderView = () => {
+    const {
+      collpasedHeaderContainer,
+      collpasedHeaderTitle,
+    } = styles
+
+    return (
+      <View style={collpasedHeaderContainer}>
+        <Text style={collpasedHeaderTitle}>{strings.orders}</Text>
+      </View>
+    )
+  }
+
+  updateSearch = search => {
+    this.setState({ search })
+    if (search == '') {
+      this.setState({
+        searchInventory: this.state.itemsList
+      })
+    }
+    const searchEntered = search.toUpperCase()
+    const newListToShow = []
+    for (let index in this.state.itemsList) {
+      const title = this.state.itemsList[index].title
+      let itemObject = this.state.itemsList[index]
+      const itemsToShow = []
+      for (let index in itemObject.data) {
+        let item = itemObject.data[index]
+        if (item.name.toUpperCase().includes(searchEntered)) {
+          itemsToShow.push(item)
+        }
+      }
+      let objectToShow = {}
+      objectToShow.title = title
+      objectToShow.data = itemsToShow
+      newListToShow.push(objectToShow)
+    }
+
+    this.setState({
+      itemsSearchList: newListToShow
+    })
+  }
+
+  showSearchPanel = () => this.setState({ showSearch: true })
+
 
   render() {
     const headerHeight = this.state.scrollY.interpolate({
@@ -139,8 +177,6 @@ class SupplierInventoryScreen extends Component {
       outputRange: [1, 0],
       extrapolate: 'clamp'
     });
-
-    const headerTitle = 'HEADER'
 
     const {
       mainContainer,
@@ -197,9 +233,9 @@ class SupplierInventoryScreen extends Component {
         /> : null}
 
         <SectionList
-          scrollEnabled={this.state.inventoryItems.length ? true : false}
+          scrollEnabled={this.state.itemsList.length ? true : false}
           contentContainerStyle={{ minHeight: SCREEN_HEIGHT + HEADER_COLLAPSED_HEIGHT }}
-          sections={this.state.search ? this.state.searchInventory : this.state.inventoryItems}
+          sections={this.state.search ? this.state.itemsSearchList : this.state.itemsList}
           renderItem={({ item }) => SectionContent(item, this.props)}
           renderSectionHeader={({ section }) => SectionHeader(section, this.props)}
           keyExtractor={(item, index) => index}
@@ -222,107 +258,61 @@ class SupplierInventoryScreen extends Component {
     return componentToRender
   }
 
-  getMainHeaderView = () => {
-    const {
-      headingStyle,
-      subHeadingStyle,
-      expandedHeaderContainerStyle
-    } = styles
-
-    return (
-      <View style={expandedHeaderContainerStyle}>
-        <Text style={headingStyle}>{strings.inventory} </Text>
-        <Text style={subHeadingStyle}>{strings.viewYourItemsBelow} </Text>
-      </View>
-    )
-  }
-
-  getCollapsedHeaderView = () => {
-    const {
-      collpasedHeaderContainer,
-      collpasedHeaderTitle,
-    } = styles
-
-    return (
-      <View style={collpasedHeaderContainer}>
-        <Text style={collpasedHeaderTitle}>Inventory</Text>
-      </View>
-    )
-  }
-
-  updateSearch = search => {
-    this.setState({ search })
-    if (search == '') {
-      this.setState({
-        searchInventory: this.state.inventoryItems
-      })
-    }
-    const searchEntered = search.toUpperCase()
-    const newListToShow = []
-    for (let index in this.state.inventoryItems) {
-      const title = this.state.inventoryItems[index].title
-      let itemObject = this.state.inventoryItems[index]
-      const itemsToShow = []
-      for (let index in itemObject.data) {
-        let item = itemObject.data[index]
-        if (item.name.toUpperCase().includes(searchEntered)) {
-          itemsToShow.push(item)
-        }
-      }
-      let objectToShow = {}
-      objectToShow.title = title
-      objectToShow.data = itemsToShow
-      newListToShow.push(objectToShow)
-    }
-
-    this.setState({
-      searchInventory: newListToShow
-    })
-  }
-
-
-  showSearchPanel = () => {
-    this.setState({
-      showSearch: true
-    })
-  }
-
-  getDataFromDatabase = async (suppliersData, supplierID) => {
-    let supplierInventoryReference
-    let supplierInventoryData = []
-
-    await suppliersData.doc(supplierID).get().then((docRef) => {
-      supplierInventoryReference = docRef.data().inventory
-    }).catch((err) => {
-      console.log('Error getting documents', err);
-    })
-
-    //ready to proceed to get data 
-    await Utils.asyncForEach(supplierInventoryReference, async (inventory) => {
-      await inventory.get().then(async (inventoryData) => {
-        await supplierInventoryData.push(inventoryData.data())
-      }).catch((err) => {
-        console.log('Error getting documents', err);
-      })
-    })
-
-    this.setState({
-      inventory: supplierInventoryData,
-      loadingContent: false
-    })
-  }
 }
 
-function mapStateToProps(state) {
-  return {
-    inventoryItems: state.inventoryItems
-  }
-}
+const SectionContent = (data, props) => {
+  const {
+    sectionContentContainerOuter,
+    sectionContentContainerInner,
+    sectionContentTouchableContainer,
+    sectionContentText,
+    imageStyle,
+    cardContainerStyle,
+    initials,
+    forwardButton,
+    initalsContentContainer
+  } = styles
 
-function mapDispatchToProps(dispatch) {
-  return {
-    updateInventory: () => dispatch({ type: 'UPDATE_INVENTORY' })
+  const {
+    navigation
+  } = props
+
+  if (!data.imageURL) {
+    data.imageURL = 'https://screenshotlayer.com/images/assets/placeholder.png'
   }
+
+  const userInitialsArray = data.name.trim().split(' ').map((name) => name[0])
+  const userInitals = (userInitialsArray[0] + userInitialsArray[userInitialsArray.length - 1]).toUpperCase()
+
+  const sectionContentToRender = <View style={sectionContentContainerOuter}>
+    <View style={cardContainerStyle}>
+      <Card width={65} height={65} elevation={dimens.defaultBorderRadius}>
+        <ImageBackground
+          style={imageStyle}
+          imageStyle={{ borderRadius: dimens.defaultBorderRadius }}
+          source={ { uri: data.imageURL }} />
+      </Card>
+    </View>
+
+    <View style={sectionContentContainerInner}>
+      <TouchableOpacity style={sectionContentTouchableContainer} onPress={() => {
+
+      }}>
+        <Text style={sectionContentText}>{data.name}</Text>
+        <Icon
+          nameAndroid={iconNames.addAndroid}
+          nameIOS={iconNames.addIOS}
+          style={forwardButton}
+          color={colors.black}
+          onPress={() => {
+
+          }} />
+      </TouchableOpacity>
+    </View>
+  </View>
+
+  return sectionContentToRender
+
 }
 
 const SectionHeader = (section) => {
@@ -339,57 +329,6 @@ const SectionHeader = (section) => {
 
 }
 
-const SectionContent = (sectionContent, props) => {
-  const {
-    sectionContentContainerOuter,
-    sectionContentContainerInner,
-    sectionContentTouchableContainer,
-    sectionContentText,
-    imageStyle,
-    cardContainerStyle,
-    thinLine,
-    forwardButton
-  } = styles
-
-  const {
-    navigation
-  } = props
-
-  if(!sectionContent.imageURL){
-    sectionContent.imageURL = 'https://screenshotlayer.com/images/assets/placeholder.png'
-  }
-  
-  const sectionContentToRender = <View style={sectionContentContainerOuter}>
-    <View style={cardContainerStyle}>
-      <Card width={65} height={65} elevation={dimens.defaultBorderRadius}>
-        <ImageBackground
-          style={imageStyle}
-          imageStyle={{ borderRadius: dimens.defaultBorderRadius }}
-          source={ { uri: sectionContent.imageURL }} />
-      </Card>
-    </View>
-
-    <View style={sectionContentContainerInner}>
-      <TouchableOpacity style={sectionContentTouchableContainer} onPress={() => {
-        navigation.navigate(screens.InventoryItemScreen, {
-          item: sectionContent
-        })
-      }}>
-        <Text style={sectionContentText}>{sectionContent.name}</Text>
-        <Forward
-          style={forwardButton}
-          color={colors.black}
-          onPress={() => {
-            navigation.navigate(screens.InventoryItemScreen, {
-              item: sectionContent
-            })
-          }} />
-      </TouchableOpacity>
-    </View>
-  </View>
-
-  return sectionContentToRender
-}
 
 const styles = StyleSheet.create({
   mainContainer: {
@@ -526,8 +465,12 @@ const styles = StyleSheet.create({
 })
 
 
-SupplierInventoryScreen.navigationOptions = {
+ViewSupplierItemScreen.navigationOptions = {
   header: null
 }
 
-export default connect(mapStateToProps)(SupplierInventoryScreen)
+ViewSupplierItemScreen.propTypes = {
+  navigation: PropTypes.object
+}
+
+export default ViewSupplierItemScreen
