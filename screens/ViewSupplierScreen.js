@@ -104,8 +104,6 @@ class ViewSupplierScreen extends Component {
       extrapolate: 'clamp'
     });
 
-    const headerTitle = 'HEADER'
-
     const {
       mainContainer,
       mainHeaderContainerStyle,

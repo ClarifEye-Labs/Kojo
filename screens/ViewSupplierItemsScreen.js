@@ -379,7 +379,7 @@ class ViewSupplierItemScreen extends Component {
           scrollEnabled={this.state.itemsList.length ? true : false}
           contentContainerStyle={{ minHeight: SCREEN_HEIGHT + HEADER_COLLAPSED_HEIGHT }}
           sections={this.state.search ? this.state.itemsSearchList : this.state.itemsList}
-          renderItem={({ item }) => SectionContent(item, this.props)}
+          renderItem={({ item }) => this.SectionContent(item, this.props)}
           renderSectionHeader={({ section }) => SectionHeader(section, this.props)}
           keyExtractor={(item, index) => index}
           onScroll={Animated.event(
@@ -407,60 +407,81 @@ class ViewSupplierItemScreen extends Component {
     return componentToRender
   }
 
-}
+  SectionContent = (data, props) => {
+    const {
+      sectionContentContainerOuter,
+      sectionContentContainerInner,
+      sectionContentTouchableContainer,
+      sectionContentText,
+      imageStyle,
+      cardContainerStyle,
+      initials,
+      forwardButton,
+      initalsContentContainer,
+    } = styles
+  
+    const {
+      navigation
+    } = props
+  
+    if (!data.imageURL) {
+      data.imageURL = 'https://screenshotlayer.com/images/assets/placeholder.png'
+    }
+  
+    const userInitialsArray = data.name.trim().split(' ').map((name) => name[0])
+    const userInitals = (userInitialsArray[0] + userInitialsArray[userInitialsArray.length - 1]).toUpperCase()
 
-const SectionContent = (data, props) => {
-  const {
-    sectionContentContainerOuter,
-    sectionContentContainerInner,
-    sectionContentTouchableContainer,
-    sectionContentText,
-    imageStyle,
-    cardContainerStyle,
-    initials,
-    forwardButton,
-    initalsContentContainer,
-  } = styles
+    const {
+      cartList,
+      itemsList
+    } = this.state
+    
+    let itemHasBeenAddedByUser = false
 
-  const {
-    navigation
-  } = props
+    for (let index in cartList) {
+      if(cartList[index].id === data.id) {
+        itemHasBeenAddedByUser = true
+        break
+      }
+    }
 
-  if (!data.imageURL) {
-    data.imageURL = 'https://screenshotlayer.com/images/assets/placeholder.png'
-  }
 
-  const userInitialsArray = data.name.trim().split(' ').map((name) => name[0])
-  const userInitals = (userInitialsArray[0] + userInitialsArray[userInitialsArray.length - 1]).toUpperCase()
-
-  const sectionContentToRender = <View style={sectionContentContainerOuter}>
-    <View style={cardContainerStyle}>
-      <Card width={65} height={65} elevation={dimens.defaultBorderRadius}>
-        <ImageBackground
-          style={imageStyle}
-          imageStyle={{ borderRadius: dimens.defaultBorderRadius }}
-          source={{ uri: data.imageURL }} />
-      </Card>
-    </View>
-
-    <View style={sectionContentContainerInner}>
-      <TouchableOpacity style={sectionContentTouchableContainer} onPress={() => {
-
-      }}>
-        <Text style={sectionContentText}>{data.name}</Text>
-        <Icon
+    const sectionContentToRender = <View style={sectionContentContainerOuter}>
+      <View style={cardContainerStyle}>
+        <Card width={65} height={65} elevation={dimens.defaultBorderRadius}>
+          <ImageBackground
+            style={imageStyle}
+            imageStyle={{ borderRadius: dimens.defaultBorderRadius }}
+            source={{ uri: data.imageURL }} />
+        </Card>
+      </View>
+      <View style={sectionContentContainerInner}>
+        <View style={sectionContentTouchableContainer}>
+          <Text style={sectionContentText}>{data.name}</Text>
+          {itemHasBeenAddedByUser 
+          ?  <Icon
+          nameAndroid={iconNames.checkAndroid}
+          nameIOS={iconNames.checkIOS}
+          style={forwardButton}
+          color={colors.black}/>
+          : <Icon
           nameAndroid={iconNames.addAndroid}
           nameIOS={iconNames.addIOS}
           style={forwardButton}
           color={colors.black}
           onPress={() => {
-
-          }} />
-      </TouchableOpacity>
+            cartList.push(data)
+            this.setState({
+              cartList: cartList
+            })
+          }} />}
+         
+        </View>
+      </View>
     </View>
-  </View>
-
-  return sectionContentToRender
+  
+    return sectionContentToRender
+  }
 
 }
 
