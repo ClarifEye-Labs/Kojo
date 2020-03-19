@@ -103,7 +103,8 @@ const strings = {
   chooseASupplierToAdd: 'Choose a Supplier to Add: ',
   suppliers: 'Suppliers',
   itemToOrder: 'Items',
-  findTheItemsToOrderBelow: 'Find the items to order below'
+  findTheItemsToOrderBelow: 'Find the items to order below',
+  yourOrder: 'Your Order'
 }
 
 export default strings

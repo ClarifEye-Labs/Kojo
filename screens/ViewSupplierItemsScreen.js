@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, Animated, SectionList, ImageBackground, Dimensions, TouchableOpacity } from 'react-native'
-import { Back, SearchIcon, Loading, Card, Icon } from '../Components'
+import { View, StyleSheet, Text, Animated, SectionList, ImageBackground, Dimensions, TouchableOpacity, FlatList, Modal } from 'react-native'
+import { Back, SearchIcon, Loading, Card, Icon, Button } from '../Components'
 import { dimens, colors, customFonts, strings, iconNames } from '../constants'
 import { commonStyling } from '../common'
 import { PropTypes } from 'prop-types'
@@ -21,12 +21,14 @@ class ViewSupplierItemScreen extends Component {
     this.state = {
       navigation: props.navigation,
       scrollY: new Animated.Value(0),
+      // supplierID: props.navigation.state.params.supplierID,
       showSearch: false,
       itemsList: [],
       itemsSearchList: [],
       cartList: [],
       productsOfSupplier: [],
-      loadingContent: true
+      loadingContent: false,
+      showOrderModal: false
     }
   }
 
@@ -39,6 +41,7 @@ class ViewSupplierItemScreen extends Component {
     let inventoryRefArray = []
     await db
       .collection(collectionNames.suppliers)
+      // .doc(this.state.supplierID)
       .doc('qA4NHEmeo8UeELuTmxGN0Do9lFI3')
       .get()
       .then((doc) => {
@@ -59,25 +62,25 @@ class ViewSupplierItemScreen extends Component {
         .get()
         .then((doc) => {
           if (doc.exists) {
-            products.push({ ...{id: doc.id}, ...{...doc.data()} } )
+            products.push({ ...{ id: doc.id }, ...{ ...doc.data() } })
           } else {
             console.log('Werent able to fetch products')
           }
         })
     }
-    products ? this.formulateListToShowOfProducts(products) : null 
+    products ? this.formulateListToShowOfProducts(products) : null
   }
 
   formulateListToShowOfProducts(productsOfUser) {
     let inventoryDictionary = {}
-    for(let index in productsOfUser) {
+    for (let index in productsOfUser) {
       const product = productsOfUser[index]
       const category = product.type
-      if(Array.isArray(inventoryDictionary[category])){
+      if (Array.isArray(inventoryDictionary[category])) {
         const products = inventoryDictionary[category]
         products.push(product)
         inventoryDictionary[category] = products
-      }else{
+      } else {
         inventoryDictionary[category] = [product]
       }
     }
@@ -91,9 +94,9 @@ class ViewSupplierItemScreen extends Component {
 
   constructFlatListItems = (dictionary) => {
     let listToReturn = []
-    if(dictionary){
-      for(let key in dictionary){
-        listToReturn.push({title: key, data: dictionary[key]})
+    if (dictionary) {
+      for (let key in dictionary) {
+        listToReturn.push({ title: key, data: dictionary[key] })
       }
     }
     return listToReturn
@@ -160,6 +163,144 @@ class ViewSupplierItemScreen extends Component {
 
   showSearchPanel = () => this.setState({ showSearch: true })
 
+  closeOrderModal = () => this.setState({ showOrderModal: false })
+
+  showOrderModal = () => this.setState({ showOrderModal: true })
+
+  getOrderModal = () => {
+    const styles = {
+      modalContainerStyle: {
+        flex: 1,
+        backgroundColor: colors.blackTransluscent,
+      },
+      mainContainer: {
+        flex: 1,
+        marginTop: 50,
+        flexDirection: 'column',
+        backgroundColor: '#f2f2f2',
+        borderRadius: dimens.defaultBorderRadius,
+      },
+      headingContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row',
+        paddingTop: 20,
+        borderTopLeftRadius: dimens.defaultBorderRadius,
+        borderTopRightRadius: dimens.defaultBorderRadius,
+        zIndex: -1,
+        paddingBottom: 20,
+        backgroundColor: colors.whiteTransluscent,
+        borderBottomWidth: dimens.inputTextBorderWidth,
+        borderBottomColor: colors.grayTransluscent,
+      },
+      subHeadingButtons: {
+        color: colors.colorPrimary,
+        fontSize: 16,
+        fontFamily: customFonts.semiBold,
+      },
+      headingStyle: {
+        fontSize: 20,
+        color: colors.black,
+        fontFamily: customFonts.bold
+      },
+      cancelButton: {
+        position: 'absolute',
+        top: 22,
+        left: 20
+      },
+      setButton: {
+        position: 'absolute',
+        top: 22,
+        right: 20
+      },
+      addCategoryContainer: {
+        width: '100%',
+        marginTop: 35,
+        height: 120,
+      },
+      pickCategoryContainer: {
+        flex: 1,
+        overflow: 'hidden',
+        marginTop: 35,
+        marginBottom: 35
+      },
+      sectionHeading: {
+        color: colors.colorPrimary,
+        fontFamily: customFonts.semiBold,
+        fontSize: 18,
+        marginLeft: dimens.screenHorizontalMargin
+      },
+      inputContainerStyle: {
+        paddingHorizontal: dimens.screenHorizontalMargin,
+        paddingVertical: 18,
+        marginTop: 8,
+        backgroundColor: colors.whiteTransluscent,
+        borderTopWidth: dimens.inputTextBorderWidth,
+        borderTopColor: colors.grayTransluscent,
+        borderBottomWidth: dimens.inputTextBorderWidth,
+        borderBottomColor: colors.grayTransluscent,
+      },
+      categoryListContainer: {
+        marginTop: 8,
+        paddingVertical: 8,
+        backgroundColor: colors.whiteTransluscent
+      },
+      flatListStyle: {
+        width: '100%',
+        paddingBottom: 20,
+      },
+      categoryError: {
+        marginTop: 8,
+        width: '100%',
+        fontSize: 17,
+        fontFamily: customFonts.regular,
+        color: colors.errorRed,
+        textAlign: 'center'
+      },
+      errorStyle: {
+        marginTop: 8
+      },
+      subTextStyle: {
+        fontSize: 13,
+        fontFamily: customFonts.regular
+      },
+      subHeadingErrorStyling: {
+        marginTop: 8,
+        width: '100%',
+        fontSize: 17,
+        fontFamily: customFonts.regular,
+        color: colors.errorRed,
+        textAlign: 'center'
+      }
+
+    }
+    return (
+      <Modal
+        visible={this.state.showOrderModal}
+        transparent={true}
+        animationType='slide'
+        onBackButtonPress={this.closeDeleteModal}>
+        <View style={styles.modalContainerStyle}>
+
+          <View style={styles.mainContainer}>
+            <TouchableOpacity style={styles.cancelButton} onPress={this.closeOrderModal}>
+              <Text style={styles.subHeadingButtons}>Cancel</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.setButton} onPress={this.showOrderModal}>
+              <Text style={styles.subHeadingButtons}>Confirm</Text>
+            </TouchableOpacity>
+            {/* HEADING  */}
+            <View style={styles.headingContainer}>
+              <Text style={styles.headingStyle}>{strings.yourOrder}</Text>
+            </View>
+
+
+          </View>
+        </View>
+      </Modal>
+    )
+  }
 
   render() {
     const headerHeight = this.state.scrollY.interpolate({
@@ -183,7 +324,9 @@ class ViewSupplierItemScreen extends Component {
       mainHeaderContainerStyle,
       headerBackStyling,
       headerSearchStyling,
-      gradientStyle
+      gradientStyle,
+      showCartButton,
+      buttonContainer
     } = styles
 
     const {
@@ -250,6 +393,12 @@ class ViewSupplierItemScreen extends Component {
           }
           scrollEventThrottle={16}
         />
+        {this.getOrderModal()}
+        {this.state.cartList.length
+          ? <View style={buttonContainer}>
+              <Button style={showCartButton} textColor={colors.colorAccent} onPress={this.showOrderModal} title='Show Cart' />
+            </View>
+          : null}
       </Animatable.View>
 
     const componentToRender = this.state.loadingContent ? componentLoading : componentLoaded
@@ -270,7 +419,7 @@ const SectionContent = (data, props) => {
     cardContainerStyle,
     initials,
     forwardButton,
-    initalsContentContainer
+    initalsContentContainer,
   } = styles
 
   const {
@@ -290,7 +439,7 @@ const SectionContent = (data, props) => {
         <ImageBackground
           style={imageStyle}
           imageStyle={{ borderRadius: dimens.defaultBorderRadius }}
-          source={ { uri: data.imageURL }} />
+          source={{ uri: data.imageURL }} />
       </Card>
     </View>
 
@@ -461,6 +610,17 @@ const styles = StyleSheet.create({
     color: colors.colorAccent,
     fontSize: 14,
     fontFamily: customFonts.medium
+  },
+  showCartButton: {
+    width: '90%',
+    backgroundColor: colors.colorSecondary
+  },
+  buttonContainer: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 99,
+    marginBottom: 20
   }
 })
 

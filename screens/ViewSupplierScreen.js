@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Text, Animated, FlatList, Dimensions, TouchableOpacity } from 'react-native'
 import { Back, SearchIcon, Loading, Card, Icon } from '../Components'
-import { dimens, colors, customFonts, strings, iconNames } from '../constants'
+import { dimens, colors, customFonts, strings, iconNames, screens } from '../constants'
 import { commonStyling } from '../common'
 import { PropTypes } from 'prop-types'
 import { SearchBar } from 'react-native-elements'
@@ -20,7 +20,7 @@ class ViewSupplierScreen extends Component {
       navigation: props.navigation,
       scrollY: new Animated.Value(0),
       showSearch: false,
-      suppliersList: [{ supplierID: '4D7oaz4m8ihmYGfEmL6jbuYy5S43', name: 'Aziza' }],
+      suppliersList: [{ supplierID: 'qA4NHEmeo8UeELuTmxGN0Do9lFI3', name: 'Aziza' }],
       loadingContent: false
     }
   }
@@ -222,7 +222,9 @@ const SectionContent = (data, props) => {
 
     <View style={sectionContentContainerInner}>
       <TouchableOpacity style={sectionContentTouchableContainer} onPress={() => {
-
+        navigation.navigate(screens.ViewSupplierItemScreen, {
+          supplierID: data.supplierID
+        })
       }}>
         <Text style={sectionContentText}>{data.name}</Text>
         <Icon
@@ -231,7 +233,9 @@ const SectionContent = (data, props) => {
           style={forwardButton}
           color={colors.black}
           onPress={() => {
-
+            navigation.navigate(screens.ViewSupplierItemScreen, {
+              supplierID: data.supplierID
+            })
           }} />
       </TouchableOpacity>
     </View>
