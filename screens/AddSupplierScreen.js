@@ -36,7 +36,7 @@ class AddSupplierScreen extends Component {
     this.getAllSuppliers()
   }
 
-  getAllSuppliers = async () => {
+  getAllSuppliers = async () => { 
     let db = firebase.firestore()
     const supplierListIDs = []
     const supplierDataList = []

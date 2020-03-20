@@ -21,7 +21,6 @@ class EditEmailScreen extends Component {
     }
   }
 
-
   setEmailEntered = (text) => {
     this.setState({
       emailEntered: text
