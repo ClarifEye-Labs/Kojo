@@ -21,14 +21,14 @@ class ViewSupplierItemScreen extends Component {
     this.state = {
       navigation: props.navigation,
       scrollY: new Animated.Value(0),
-      // supplierID: props.navigation.state.params.supplierID,
+      supplierID: props.navigation.state.params.supplierID,
       showSearch: false,
       itemsList: [],
       itemsSearchList: [],
       productsOfSupplier: [],
       loadingContent: false,
-      showOrderModal: true,
-      cartList: [{ id: '1', name: 'shikhar', qty: 1, imageURL: 'https://kojoinventoryimages.s3.amazonaws.com/images%2FIdsjdip.png' }]
+      showOrderModal: false,
+      cartList: []
     }
   }
 
@@ -42,7 +42,7 @@ class ViewSupplierItemScreen extends Component {
     await db
       .collection(collectionNames.suppliers)
       // .doc(this.state.supplierID)
-      .doc('qA4NHEmeo8UeELuTmxGN0Do9lFI3')
+      .doc(this.state.supplierID)
       .get()
       .then((doc) => {
         if (doc.exists) {
@@ -275,10 +275,26 @@ class ViewSupplierItemScreen extends Component {
       subHeadingTextStyle: {
         fontSize: 16,
         fontFamily: customFonts.medium,
-        marginTop: 8,
+        marginTop: 16,
+        marginBottom: 16,
         marginLeft: dimens.screenDefaultMargin,
-        color: customFonts.colorPrimary
+        color: colors.colorPrimary
+      },
+      buttonStyle: {
+        width: '90%',
+        backgroundColor: colors.colorPrimary
+      },
+      buttonContainer: {
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'absolute',
+        bottom: 40,
       }
+    }
+
+    const confirmOrder = () => {
+      alert('Order Placed!')
     }
 
     return (
@@ -294,7 +310,7 @@ class ViewSupplierItemScreen extends Component {
               <Text style={styles.subHeadingButtons}>Cancel</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.setButton} onPress={this.showOrderModal}>
+            <TouchableOpacity style={styles.setButton} onPress={confirmOrder}>
               <Text style={styles.subHeadingButtons}>Confirm</Text>
             </TouchableOpacity>
             {/* HEADING  */}
@@ -302,17 +318,17 @@ class ViewSupplierItemScreen extends Component {
               <Text style={styles.headingStyle}>{strings.yourOrder}</Text>
             </View>
 
-            <View >
-              <Text style={styles.subHeadingTextStyle}>Find your items below: </Text>
+            <View>
+              <Text style={styles.subHeadingTextStyle}>{strings.findYourOrderBelow}</Text>
               <FlatList
                 data={this.state.cartList}
                 renderItem={({ item }) => this.CartItem(item)}
                 keyExtractor={item => item.id}
               />
-
             </View>
-
-
+            <View style={styles.buttonContainer}>
+              <Button textColor={colors.colorAccent} title='Confirm' style={styles.buttonStyle} onPress={confirmOrder}/>
+            </View>
           </View>
         </View>
       </Modal>
@@ -337,7 +353,7 @@ class ViewSupplierItemScreen extends Component {
       numberContainer: {
         borderWidth: 1,
         borderRadius: 4,
-        width: 80,
+        width: 120,
         flexDirection: 'row',
         justifyContent: 'space-evenly',
         alignItems: 'center',
@@ -353,18 +369,32 @@ class ViewSupplierItemScreen extends Component {
       },
       qty: {
         color: colors.colorPrimary,
-        fontSize: 14
-      }
+        fontSize: 14,
+        marginRight: 4
+      },
+      unit: {
+        color: colors.colorPrimary,
+        fontSize: 14,
+        width: 40
+      },
+      imageStyle: {
+        width: '100%',
+        height: '100%',
+        borderRadius: dimens.defaultBorderRadius
+      },
+      cardContainerStyle: {
+        position: 'absolute',
+        left: dimens.screenHorizontalMargin
+      },
     }
 
-
     const reduceQty = () => {
-      const {cartList} = this.state
+      const { cartList } = this.state
       for (let index in cartList) {
         const cartItem = cartList[index]
-        if(cartItem.id === data.id){
-          data.qty = data.qty -1
-          if(data.qty <= 0) {
+        if (cartItem.id === data.id) {
+          data.qty = data.qty - 1
+          if (data.qty <= 0) {
             cartList.splice(index, 1)
             this.setState({
               cartList: cartList
@@ -381,10 +411,10 @@ class ViewSupplierItemScreen extends Component {
     }
 
     const addQty = () => {
-      const {cartList} = this.state
+      const { cartList } = this.state
       for (let index in cartList) {
         const cartItem = cartList[index]
-        if(cartItem.id === data.id){
+        if (cartItem.id === data.id) {
           data.qty = data.qty + 1
           cartList[index] = data
           this.setState({
@@ -397,10 +427,17 @@ class ViewSupplierItemScreen extends Component {
 
     const componentToRender =
       <View style={styles.itemContainer}>
+        <Card width={65} height={65} elevation={dimens.defaultBorderRadius}>
+          <ImageBackground
+            style={styles.imageStyle}
+            imageStyle={{ borderRadius: dimens.defaultBorderRadius }}
+            source={{ uri: data.imageURL }} />
+        </Card>
         <Text style={styles.itemName}>{data.name}</Text>
         <View style={styles.numberContainer}>
           <Icon nameAndroid={iconNames.removeAndroid} nameIOS={iconNames.removeIOS} onPress={reduceQty} size={15} />
           <Text style={styles.qty}>{data.qty}</Text>
+          <Text style={styles.unit} numberOfLines={1} ellipsizeMode='tail'>{data.unit}</Text>
           <Icon nameAndroid={iconNames.addAndroid} nameIOS={iconNames.addIOS} size={15} onPress={addQty} />
         </View>
       </View>
@@ -503,7 +540,7 @@ class ViewSupplierItemScreen extends Component {
           ? <View style={buttonContainer}>
             <Button style={showCartButton} textColor={colors.colorAccent} onPress={this.showOrderModal} title='Show Cart' />
           </View>
-          : null}
+          : null }
       </Animatable.View>
 
     const componentToRender = this.state.loadingContent ? componentLoading : componentLoaded

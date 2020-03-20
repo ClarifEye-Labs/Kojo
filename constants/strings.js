@@ -104,7 +104,8 @@ const strings = {
   suppliers: 'Suppliers',
   itemToOrder: 'Items',
   findTheItemsToOrderBelow: 'Find the items to order below',
-  yourOrder: 'Your Order'
+  yourOrder: 'Your Order',
+  findYourOrderBelow: 'Find your order below: '
 }
 
 export default strings
