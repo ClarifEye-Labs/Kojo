@@ -25,10 +25,10 @@ class ViewSupplierItemScreen extends Component {
       showSearch: false,
       itemsList: [],
       itemsSearchList: [],
-      cartList: [],
       productsOfSupplier: [],
       loadingContent: false,
-      showOrderModal: false
+      showOrderModal: true,
+      cartList: [{ id: '1', name: 'shikhar', qty: 1, imageURL: 'https://kojoinventoryimages.s3.amazonaws.com/images%2FIdsjdip.png' }]
     }
   }
 
@@ -271,9 +271,16 @@ class ViewSupplierItemScreen extends Component {
         fontFamily: customFonts.regular,
         color: colors.errorRed,
         textAlign: 'center'
+      },
+      subHeadingTextStyle: {
+        fontSize: 16,
+        fontFamily: customFonts.medium,
+        marginTop: 8,
+        marginLeft: dimens.screenDefaultMargin,
+        color: customFonts.colorPrimary
       }
-
     }
+
     return (
       <Modal
         visible={this.state.showOrderModal}
@@ -295,11 +302,109 @@ class ViewSupplierItemScreen extends Component {
               <Text style={styles.headingStyle}>{strings.yourOrder}</Text>
             </View>
 
+            <View >
+              <Text style={styles.subHeadingTextStyle}>Find your items below: </Text>
+              <FlatList
+                data={this.state.cartList}
+                renderItem={({ item }) => this.CartItem(item)}
+                keyExtractor={item => item.id}
+              />
+
+            </View>
+
 
           </View>
         </View>
       </Modal>
     )
+  }
+
+  CartItem(data) {
+    const styles = {
+      itemContainer: {
+        borderBottomWidth: 1,
+        paddingTop: 12,
+        paddingBottom: 12,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingLeft: 20,
+        paddingRight: 20,
+        marginLeft: dimens.screenDefaultMargin,
+        marginRight: dimens.screenDefaultMargin,
+        borderBottomColor: colors.grayTransluscent
+      },
+      numberContainer: {
+        borderWidth: 1,
+        borderRadius: 4,
+        width: 80,
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
+        height: 'auto',
+        paddingTop: 4,
+        paddingBottom: 4,
+        borderColor: colors.colorPrimaryTransluscent
+      },
+      itemName: {
+        fontSize: 18,
+        color: colors.colorPrimary,
+        fontFamily: customFonts.medium
+      },
+      qty: {
+        color: colors.colorPrimary,
+        fontSize: 14
+      }
+    }
+
+
+    const reduceQty = () => {
+      const {cartList} = this.state
+      for (let index in cartList) {
+        const cartItem = cartList[index]
+        if(cartItem.id === data.id){
+          data.qty = data.qty -1
+          if(data.qty <= 0) {
+            cartList.splice(index, 1)
+            this.setState({
+              cartList: cartList
+            })
+            break
+          }
+          cartList[index] = data
+          this.setState({
+            cartList: cartList
+          })
+          break
+        }
+      }
+    }
+
+    const addQty = () => {
+      const {cartList} = this.state
+      for (let index in cartList) {
+        const cartItem = cartList[index]
+        if(cartItem.id === data.id){
+          data.qty = data.qty + 1
+          cartList[index] = data
+          this.setState({
+            cartList: cartList
+          })
+          break
+        }
+      }
+    }
+
+    const componentToRender =
+      <View style={styles.itemContainer}>
+        <Text style={styles.itemName}>{data.name}</Text>
+        <View style={styles.numberContainer}>
+          <Icon nameAndroid={iconNames.removeAndroid} nameIOS={iconNames.removeIOS} onPress={reduceQty} size={15} />
+          <Text style={styles.qty}>{data.qty}</Text>
+          <Icon nameAndroid={iconNames.addAndroid} nameIOS={iconNames.addIOS} size={15} onPress={addQty} />
+        </View>
+      </View>
+    return componentToRender
   }
 
   render() {
@@ -396,8 +501,8 @@ class ViewSupplierItemScreen extends Component {
         {this.getOrderModal()}
         {this.state.cartList.length
           ? <View style={buttonContainer}>
-              <Button style={showCartButton} textColor={colors.colorAccent} onPress={this.showOrderModal} title='Show Cart' />
-            </View>
+            <Button style={showCartButton} textColor={colors.colorAccent} onPress={this.showOrderModal} title='Show Cart' />
+          </View>
           : null}
       </Animatable.View>
 
@@ -419,15 +524,15 @@ class ViewSupplierItemScreen extends Component {
       forwardButton,
       initalsContentContainer,
     } = styles
-  
+
     const {
       navigation
     } = props
-  
+
     if (!data.imageURL) {
       data.imageURL = 'https://screenshotlayer.com/images/assets/placeholder.png'
     }
-  
+
     const userInitialsArray = data.name.trim().split(' ').map((name) => name[0])
     const userInitals = (userInitialsArray[0] + userInitialsArray[userInitialsArray.length - 1]).toUpperCase()
 
@@ -435,11 +540,11 @@ class ViewSupplierItemScreen extends Component {
       cartList,
       itemsList
     } = this.state
-    
+
     let itemHasBeenAddedByUser = false
 
     for (let index in cartList) {
-      if(cartList[index].id === data.id) {
+      if (cartList[index].id === data.id) {
         itemHasBeenAddedByUser = true
         break
       }
@@ -458,28 +563,29 @@ class ViewSupplierItemScreen extends Component {
       <View style={sectionContentContainerInner}>
         <View style={sectionContentTouchableContainer}>
           <Text style={sectionContentText}>{data.name}</Text>
-          {itemHasBeenAddedByUser 
-          ?  <Icon
-          nameAndroid={iconNames.checkAndroid}
-          nameIOS={iconNames.checkIOS}
-          style={forwardButton}
-          color={colors.black}/>
-          : <Icon
-          nameAndroid={iconNames.addAndroid}
-          nameIOS={iconNames.addIOS}
-          style={forwardButton}
-          color={colors.black}
-          onPress={() => {
-            cartList.push(data)
-            this.setState({
-              cartList: cartList
-            })
-          }} />}
-         
+          {itemHasBeenAddedByUser
+            ? <Icon
+              nameAndroid={iconNames.checkAndroid}
+              nameIOS={iconNames.checkIOS}
+              style={forwardButton}
+              color={colors.black} />
+            : <Icon
+              nameAndroid={iconNames.addAndroid}
+              nameIOS={iconNames.addIOS}
+              style={forwardButton}
+              color={colors.black}
+              onPress={() => {
+                data.qty = 1
+                cartList.push(data)
+                this.setState({
+                  cartList: cartList
+                })
+              }} />}
+
         </View>
       </View>
     </View>
-  
+
     return sectionContentToRender
   }
 

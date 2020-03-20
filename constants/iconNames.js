@@ -10,7 +10,9 @@ const iconNames = {
   forwardIOS: 'ios-arrow-round-forward',
   forwardAndroid: 'md-arrow-round-forward',
   checkIOS: 'ios-checkmark',
-  checkAndroid: 'md-checkmark'
+  checkAndroid: 'md-checkmark',
+  removeIOS: 'ios-remove',
+  removeAndroid: 'md-remove'
 }
 
 export default iconNames
