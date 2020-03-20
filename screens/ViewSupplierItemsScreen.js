@@ -297,7 +297,11 @@ class ViewSupplierItemScreen extends Component {
       alert('Order Placed!')
     }
 
-    return (
+
+    const { cartList } = this.state
+
+
+    const modalToRender =
       <Modal
         visible={this.state.showOrderModal}
         transparent={true}
@@ -327,12 +331,14 @@ class ViewSupplierItemScreen extends Component {
               />
             </View>
             <View style={styles.buttonContainer}>
-              <Button textColor={colors.colorAccent} title='Confirm' style={styles.buttonStyle} onPress={confirmOrder}/>
+              <Button textColor={colors.colorAccent} title='Confirm' style={styles.buttonStyle} onPress={confirmOrder} />
             </View>
           </View>
         </View>
       </Modal>
-    )
+
+    const componentToRender = cartList.length ? modalToRender : null
+    return componentToRender
   }
 
   CartItem(data) {
@@ -540,7 +546,7 @@ class ViewSupplierItemScreen extends Component {
           ? <View style={buttonContainer}>
             <Button style={showCartButton} textColor={colors.colorAccent} onPress={this.showOrderModal} title='Show Cart' />
           </View>
-          : null }
+          : null}
       </Animatable.View>
 
     const componentToRender = this.state.loadingContent ? componentLoading : componentLoaded
