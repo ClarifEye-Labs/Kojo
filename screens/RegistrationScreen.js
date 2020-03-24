@@ -7,6 +7,9 @@ import firebase from '../config/firebase'
 import screens from '../constants/screens'
 import appConfig from '../config/appConfig'
 import Utils from '../utils/Utils'
+import { watchFirebaseAuthUser, watchUserFirestoreData } from '../redux/actions/watchUserData'
+import { connect } from 'react-redux'
+
 
 class RegistrationScreen extends React.Component {
 
@@ -112,8 +115,9 @@ class RegistrationScreen extends React.Component {
       return error
     }
 
+  
     if (! /^(([A-Za-z]+[\-\']?)*([A-Za-z]+)?\s)+([A-Za-z]+[\-\']?)*([A-Za-z]+)?$/.test(name)) {
-      error.errorStatus = true,
+       error.errorStatus = true,
         error.errorReason = strings.nameErrorMessage
     }
 
@@ -240,6 +244,8 @@ class RegistrationScreen extends React.Component {
       phone: null
     })
 
+    this.props.watchFirebaseAuthUser()
+    this.props.watchUserFirestoreData()
 
   }
 
@@ -366,6 +372,19 @@ class RegistrationScreen extends React.Component {
   }
 }
 
+function mapStateToProps (state) {
+  return {
+    firebaseAuthUser: state.userDetailsReducer.firebaseAuthUser,
+    userFirestoreData: state.userDetailsReducer.userFirestoreData
+  }
+  }
+  
+  
+  const mapDispatchToProps = dispatch => ({
+    watchFirebaseAuthUser: () => {dispatch(watchFirebaseAuthUser())},
+    watchUserFirestoreData: () => {dispatch(watchUserFirestoreData())}
+  })
+
 const styles = StyleSheet.create({
   mainContainer: {
     ...commonStyling.mainContainer,
@@ -418,5 +437,5 @@ const styles = StyleSheet.create({
 RegistrationScreen.navigationOptions = {
   header: null
 }
-export default RegistrationScreen
+export default connect(mapStateToProps, mapDispatchToProps)(RegistrationScreen)
 
