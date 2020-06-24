@@ -28,11 +28,12 @@ class PhoneScreen extends Component {
       navigation: props.navigation,
       name: 'Phone Screen',
       isCountryModalVisible: false,
-      countryList: [{ 'id': '+852', title: '(+852) Hong Kong' }, { 'id': '+86', title: '(+86) China' }],
+      countryList: [{ 'id': '+852', title: '(+852) Hong Kong', country_code: 'HK', max_length: 8 }, { 'id': '+86', title: '(+86) China' , country_code: 'CN', max_length: 11 }],
       countrySelected: null,
       countryToRender: "Select a country",
       country: null,
       phoneNumber: null,
+      phoneNumberMaxLength: 0,
       placeHolderPhone: 'Phone number',
       phoneSubmitIsLoading: false
     }
@@ -104,6 +105,7 @@ class PhoneScreen extends Component {
     }
     else {
       this.showCountryOnUI(countrySelected)
+      this.setPhoneNumberLength(countrySelected)
       this.hideCountryModal()
     }
   }
@@ -112,6 +114,25 @@ class PhoneScreen extends Component {
     this.setState({
       countryToRender: countryObject.item.title,
       country: countryObject.item
+    })
+  }
+
+  setPhoneNumberLength = (countryObject) => {
+    if(countryObject) {
+      const item = countryObject.item
+      this.setState({
+        phoneNumberMaxLength: item.max_length
+      })
+
+      this.setPlaceholderPhone(item.max_length)
+    }
+  }
+
+  setPlaceholderPhone = (phoneNumberLength) => {
+    const numberLength = phoneNumberLength
+    let newPlaceholderPhone = "X".repeat(numberLength)
+    this.setState({
+      placeHolderPhone: newPlaceholderPhone
     })
   }
 
@@ -363,6 +384,7 @@ class PhoneScreen extends Component {
               placeholder={this.state.placeHolderPhone}
               style={phoneTextInput}
               keyboardType='number-pad'
+              maxLength = {this.state.phoneNumberMaxLength}
             />
           </View>
 
