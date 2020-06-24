@@ -29,29 +29,25 @@ class SplashScreen extends Component {
     }
   }
 
-  static getDerivedStateFromProps(props, state) {
-    console.log('Props: ', props)
-    console.log('State: ', state)
-    return state
+  componentDidMount = async () => {
+    this.navigateToScreenLogic()
   }
 
   navigateToScreenLogic = async () => {
-    const user = this.props.firebaseAuthUser
+    const user = firebase.auth().currentUser
     const firestore = firebase.firestore()
     if (user) {
-      // const userRef = firestore.collection(collectionNames.users)
-      // const userID = user.uid
-      let userFirestore = this.props.userFirestoreData
-      // await userRef.doc(userID).get().then( (doc) => doc.exists ? userFirestore = doc.data() : null )
+      const userRef = firestore.collection(collectionNames.users)
+      const userID = user.uid
+      let userFirestore = null
+      await userRef.doc(userID).get().then( (doc) => doc.exists ? userFirestore = doc.data() : null )
       //if user has been deleted from our database then reinit the entire thing
       if (userFirestore) {
         const screenToDispatch = Utils.screenToLoadForUser(userFirestore)
         Utils.dispatchScreen(screenToDispatch, 1000, this.state.navigation)
       }
       else {
-        // await firebase.auth().signOut()
-        this.props.userLogOut()
-        console.log('User has been deleted from our database')
+        await firebase.auth().signOut()
         Utils.dispatchScreen(screens.WelcomeScreen, 1000, this.state.navigation)
       }
     }

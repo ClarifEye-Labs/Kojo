@@ -327,7 +327,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 const SectionHeader = (section) => {
-
   const {
     sectionHeaderContainer,
     sectionHeaderTitle

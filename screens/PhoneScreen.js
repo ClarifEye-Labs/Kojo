@@ -288,7 +288,7 @@ class PhoneScreen extends Component {
           number: phoneNumber.number
         }
       }).then(this.successfulUpload).catch((er) => {
-        alert.Alert(er)
+        alert(er)
       })
     } else {
       console.log('User not signed in, redirect to welcome screen.')

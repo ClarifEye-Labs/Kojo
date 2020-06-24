@@ -7,6 +7,8 @@ import firebase from '../config/firebase'
 import screens from '../constants/screens'
 import appConfig from '../config/appConfig'
 import Utils from '../utils/Utils'
+import { watchFirebaseAuthUser, watchUserFirestoreData } from '../redux/actions/watchUserData'
+import { connect } from 'react-redux'
 
 class RegistrationScreen extends React.Component {
 
@@ -219,6 +221,9 @@ class RegistrationScreen extends React.Component {
 
     await this.writeUserToFireStore()
 
+    this.props.watchFirebaseAuthUser();
+    this.props.watchUserFirestoreData();
+
     this.setState({
       showLoadingDialog: false
     }, () => { Utils.dispatchScreen(screens.SupplierRestaurantScreen, undefined, this.state.navigation) })
@@ -366,6 +371,15 @@ class RegistrationScreen extends React.Component {
   }
 }
 
+const mapStateToProps = state => ({
+});
+
+
+const mapDispatchToProps = dispatch => ({
+  watchFirebaseAuthUser: () => { dispatch(watchFirebaseAuthUser()) },
+  watchUserFirestoreData: () => { dispatch(watchUserFirestoreData()) }
+})
+
 const styles = StyleSheet.create({
   mainContainer: {
     ...commonStyling.mainContainer,
@@ -418,5 +432,5 @@ const styles = StyleSheet.create({
 RegistrationScreen.navigationOptions = {
   header: null
 }
-export default RegistrationScreen
+export default connect(mapStateToProps, mapDispatchToProps)(RegistrationScreen)
 
