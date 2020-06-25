@@ -25,7 +25,6 @@ const appReducer = combineReducers(
 const rootReducer =  (state, action) => {
     
     if(action.type === 'USER_LOGOUT') {
-        console.log("reached the logout reducer")
         firebase.auth().signOut()
         state = undefined 
     }

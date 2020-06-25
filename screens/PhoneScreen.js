@@ -20,6 +20,7 @@ import { Utils } from '../utils';
 import collectionNames from '../config/collectionNames'
 import { connect } from 'react-redux'
 import appConfig from '../config/appConfig';
+import axios from 'axios'
 
 class PhoneScreen extends Component {
   constructor(props) {
@@ -28,7 +29,7 @@ class PhoneScreen extends Component {
       navigation: props.navigation,
       name: 'Phone Screen',
       isCountryModalVisible: false,
-      countryList: [{ 'id': '+852', title: '(+852) Hong Kong', country_code: 'HK', max_length: 8 }, { 'id': '+86', title: '(+86) China' , country_code: 'CN', max_length: 11 }],
+      countryList: [{ 'id': '+852', title: '(+852) Hong Kong', country_code: 'HK', max_length: 8 }, { 'id': '+86', title: '(+86) China', country_code: 'CN', max_length: 11 }],
       countrySelected: null,
       countryToRender: "Select a country",
       country: null,
@@ -37,9 +38,11 @@ class PhoneScreen extends Component {
       placeHolderPhone: 'Phone number',
       phoneSubmitIsLoading: false
     }
+    // this.getCountryList()
   }
   componentDidMount() {
     this.animation.play();
+
   }
 
   // ----- COUNTRY MODAL --------
@@ -118,7 +121,7 @@ class PhoneScreen extends Component {
   }
 
   setPhoneNumberLength = (countryObject) => {
-    if(countryObject) {
+    if (countryObject) {
       const item = countryObject.item
       this.setState({
         phoneNumberMaxLength: item.max_length
@@ -274,7 +277,7 @@ class PhoneScreen extends Component {
                   contentContainerStyle={styles.flatListStyle}
                   data={this.state.countryList}
                   renderItem={item => this.CountryItem(item)}
-                  keyExtractor={item => item.id}
+                  keyExtractor={item => item.title}
                 />
               </View>
             </View>
@@ -291,12 +294,115 @@ class PhoneScreen extends Component {
   }
 
   submitButtonOnClick = async () => {
+
     let phoneObject = { 'country': this.state.country, 'number': this.state.phoneNumber }
     this.setState({
       phoneSubmitIsLoading: true
     })
-    await this.uploadPhoneNumberToDatabase(phoneObject)
+
+    const errors = {
+      'number': {},
+      'extension': {}
+    }
+
+    errors.extension = this.performExtensionValidation(phoneObject.country)
+    errors.number = await this.performNumberValidation(phoneObject.number)
+
+    this.performUIOperationsForShowingErrors(errors, phoneObject)
+
   }
+
+  performUIOperationsForShowingErrors = async (errors, phoneObject) => {
+    if (!errors.number.errorStatus && !errors.extension.errorStatus) {
+      await this.uploadPhoneNumberToDatabase(phoneObject)
+    }
+
+    else {
+
+      this.setState({
+        phoneSubmitIsLoading: false
+      })
+
+      if (errors.extension.errorStatus) {
+        alert(errors.extension.errorReason)
+      }
+
+      else if (errors.number.errorStatus) {
+        alert(errors.number.errorReason)
+      }
+
+    }
+  }
+
+  performNumberValidation = async (phoneNumber) => {
+    let error = {
+      errorStatus: false,
+      errorReason: null
+    }
+
+    if (!phoneNumber) {
+      error.errorStatus = true
+      error.errorReason = "Phone number cannot be empty"
+    }
+
+    else {
+      if (this.state.country) {
+        let country_code = this.state.country.country_code
+        if (country_code) {
+          if (country_code == "HK") {
+            if (! /^[5,6,9]{1}[0-9]{7}$/.test(phoneNumber)) {
+              error.errorStatus = true
+              error.errorReason = "Invalid Hong Kong phone number"
+            }
+          }
+
+          else if (country_code == "CN") {
+            if (! /^1[0-9]{10}$/.test(phoneNumber)) {
+              error.errorStatus = true
+              error.errorReason = "Invalid China phone number"
+            }
+          }
+        }
+      }
+
+      // Use this code if you want to extend this to any country and check actual validity.
+      // if(country_code) {
+      //   await axios.get('http://apilayer.net/api/validate', {
+      //     params: {
+      //       access_key: '',
+      //       number: phoneNumber,
+      //       country_code: country_code
+      //     }
+      //   })
+      //   .then(function(response) {
+      //     console.log(response.data)
+      //     if(response.data.valid == false) {
+      //       error.errorStatus = true
+      //       error.errorReason = "Invalid Phone Number"
+      //     }
+      //   })
+      // }
+
+
+    }
+
+    return error
+  }
+
+  performExtensionValidation = (extension) => {
+    let error = {
+      errorStatus: false,
+      errorReason: null
+    }
+
+    if (!extension) {
+      error.errorStatus = true
+      error.errorReason = "Extension cannot be empty"
+    }
+
+    return error
+  }
+
 
   uploadPhoneNumberToDatabase = async (phoneNumber) => {
     const user = firebase.auth().currentUser
@@ -315,6 +421,33 @@ class PhoneScreen extends Component {
       console.log('User not signed in, redirect to welcome screen.')
     }
   }
+
+  //   Use this code if we want to get the whole country list, for validating all phone numbers, need to use API, contact developers for access key or create one of your own :)
+
+  // getCountryList = async () => {
+  //   let responseCountryList = this.state.testingFullCountryList
+  //   let countryList = []
+  //   //Can get country list of all countries too
+  //   await axios.get('http://apilayer.net/api/countries', {
+  //     params: {
+  //       access_key : '16863ca1402f241af153ec9b282e6f4c'
+  //     }
+  //   })
+  //   .then(function(response) {
+  //     responseCountryList = response.data
+  //   })
+
+  //   await Object.entries(responseCountryList).map( ([key,value]) => {
+  //     let countryObject = { 'id': '', title: '', country_code: '', max_length: 10 }
+  //     countryObject.id = value.dialling_code
+  //     countryObject.title = '(' + value.dialling_code + ')' + ' ' + value.country_name
+  //     countryObject.country_code = key
+  //     countryList.push(countryObject)
+  //   })
+
+
+  //   this.setState({countryList: countryList})
+  // }
 
   successfulUpload = () => {
     this.setState({
@@ -384,7 +517,7 @@ class PhoneScreen extends Component {
               placeholder={this.state.placeHolderPhone}
               style={phoneTextInput}
               keyboardType='number-pad'
-              maxLength = {this.state.phoneNumberMaxLength}
+              maxLength={this.state.phoneNumberMaxLength}
             />
           </View>
 
@@ -608,7 +741,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  
+
 })
 
 
