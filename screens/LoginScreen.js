@@ -232,6 +232,8 @@ class LoginScreen extends React.Component {
                   style={socialButton}
                   onPress={this.loginWithFacebook} />
               </Card>
+
+              {/* is kept for future use */}
               {/* <Card
                 width={dimens.logoWidthOnboarding}
                 height={dimens.buttonHeight}

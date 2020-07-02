@@ -1,48 +1,59 @@
-import React, { Component } from 'react'; 
-import { View, StyleSheet, Text, TouchableOpacity, ImageBackground} from 'react-native'
-import { colors, customFonts, strings } from '../constants'
-import { commonStyling } from '../common'
-import firebase from '../config/firebase'
-import screens from '../constants/screens';
-import appConfig from '../config/appConfig';
-import collectionNames from '../config/collectionNames';
-import Utils from '../utils/Utils';
+import React, { Component } from "react";
+import {
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  ImageBackground,
+} from "react-native";
+import { colors, customFonts, strings } from "../constants";
+import { commonStyling } from "../common";
+import firebase from "../config/firebase";
+import screens from "../constants/screens";
+import appConfig from "../config/appConfig";
+import collectionNames from "../config/collectionNames";
+import Utils from "../utils/Utils";
+import * as Animatable from "react-native-animatable";
 
 class SupplierRestaurantScreen extends Component {
-  constructor(props){
-    super(props)
+  constructor(props) {
+    super(props);
     this.state = {
-      navigation: props.navigation
-    }
+      navigation: props.navigation,
+    };
   }
-  
-  navigateToScreen = async (screen) => {
-    const user = firebase.auth().currentUser
-    const uid = user.uid
-    const userRef = firebase.firestore().collection(collectionNames.users)
-    const supplierRef = firebase.firestore().collection(collectionNames.suppliers)
 
-    if(screen === screens.SupplierWelcomeScreen) {
-      let role = appConfig.userRoleSupplier
+  navigateToScreen = async (screen) => {
+    const user = firebase.auth().currentUser;
+    const uid = user.uid;
+    const userRef = firebase.firestore().collection(collectionNames.users);
+    const supplierRef = firebase
+      .firestore()
+      .collection(collectionNames.suppliers);
+
+    if (screen === screens.SupplierWelcomeScreen) {
+      let role = appConfig.userRoleSupplier;
       await userRef.doc(uid).update({
-        role: role
-      })
+        role: role,
+      });
       await supplierRef.doc(uid).set({
         uid: uid,
         clients: [],
-        inventory: []
-      })
-
-    }else{
-      let role = appConfig.userRoleRestaurantOwner
+        inventory: [],
+      });
+    } else {
+      let role = appConfig.userRoleRestaurantOwner;
       await userRef.doc(uid).update({
-        role: role
-      })
+        role: role,
+      });
     }
-    Utils.dispatchScreen(screens.AddressScreen, undefined, this.state.navigation);
-  }
+    Utils.dispatchScreen(
+      screens.AddressScreen,
+      undefined,
+      this.state.navigation
+    );
+  };
 
-  
   render() {
     const {
       mainContainer,
@@ -52,85 +63,88 @@ class SupplierRestaurantScreen extends Component {
       mainText,
       textContainer,
       containerSupplyBG,
-      constainerRestaurantOwnerBG
-    } = styles
+      constainerRestaurantOwnerBG,
+    } = styles;
 
-    const screen = 
-    <View style={mainContainer}>
-      <ImageBackground style={upperHalfContainer} source={require('../assets/Onboarding/supplier.jpg')}>
-        <TouchableOpacity 
-          style={{...textContainer,...containerSupplyBG}} 
-          onPress={() => this.navigateToScreen(screens.SupplierWelcomeScreen)}>
+    const screen = (
+      <Animatable.View animation="fadeInUp" style={mainContainer}>
+        <ImageBackground
+          style={upperHalfContainer}
+          source={require("../assets/Onboarding/supplier.jpg")}
+        >
+          <TouchableOpacity
+            style={{ ...textContainer, ...containerSupplyBG }}
+            onPress={() => this.navigateToScreen(screens.SupplierWelcomeScreen)}
+          >
+            <Text style={subText}> {strings.iAmA}</Text>
+            <Text style={mainText}> {strings.supplier} </Text>
+          </TouchableOpacity>
+        </ImageBackground>
+        <ImageBackground
+          source={require("../assets/Onboarding/restaurantOwner.jpg")}
+          style={lowerHalfContainer}
+        >
+          <TouchableOpacity
+            style={{ ...textContainer, ...constainerRestaurantOwnerBG }}
+            onPress={() => this.navigateToScreen(null)}
+          >
+            <Text style={subText}> {strings.iOwnA} </Text>
+            <Text style={mainText}> {strings.restaurant} </Text>
+          </TouchableOpacity>
+        </ImageBackground>
+      </Animatable.View>
+    );
 
-          <Text style={subText}> {strings.iAmA}</Text>
-          <Text style={mainText}> {strings.supplier} </Text>
-        </TouchableOpacity>
-      </ImageBackground>
-      <ImageBackground source={require('../assets/Onboarding/restaurantOwner.jpg')} style={lowerHalfContainer}>
-        <TouchableOpacity 
-          style={{...textContainer,...constainerRestaurantOwnerBG}}
-          onPress={ ()=> this.navigateToScreen(null) }>
-          <Text style={subText}> {strings.iOwnA} </Text>
-          <Text style={mainText}> {strings.restaurant} </Text>
-        </TouchableOpacity>
-      </ImageBackground>
-    </View>
-  
-    return screen
+    return screen;
   }
 }
-
-
 
 const styles = StyleSheet.create({
   mainContainer: {
     ...commonStyling.mainContainer,
-    flexDirection: 'column'
+    flexDirection: "column",
   },
   upperHalfContainer: {
-    flex:1,
-    backgroundColor: 'black'
+    flex: 1,
+    backgroundColor: "black",
   },
   lowerHalfContainer: {
-    flex: 1
+    flex: 1,
   },
-  subText:{
+  subText: {
     fontSize: 28,
     color: colors.colorAccent,
     fontFamily: customFonts.bold,
-    position: 'absolute',
+    position: "absolute",
     left: 20,
-    top: 40
+    top: 40,
   },
   mainText: {
     fontSize: 60,
     fontFamily: customFonts.extraBold,
-    color: colors.colorAccent
+    color: colors.colorAccent,
   },
   textContainer: {
-    flex:1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center'
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
   },
-  containerSupplyBG:{
-    backgroundColor: colors.colorPrimaryTransluscent
+  containerSupplyBG: {
+    backgroundColor: colors.colorPrimaryTransluscent,
   },
-  constainerRestaurantOwnerBG:{
-    backgroundColor: colors.blackTransluscent
+  constainerRestaurantOwnerBG: {
+    backgroundColor: colors.blackTransluscent,
   },
-  crossStyle:{
-    position: 'absolute',
+  crossStyle: {
+    position: "absolute",
     right: 20,
-    top: 32
-  }
-
-})
+    top: 32,
+  },
+});
 
 SupplierRestaurantScreen.navigationOptions = {
-  header:null
-}
+  header: null,
+};
 
-export default SupplierRestaurantScreen
-
-
+export default SupplierRestaurantScreen;
