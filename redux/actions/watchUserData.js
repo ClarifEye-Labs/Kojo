@@ -31,7 +31,4 @@ const watchUserFirestoreData = () => {
   }
 }
 
-
-
-
 export { watchFirebaseAuthUser, watchUserFirestoreData }
