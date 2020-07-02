@@ -201,8 +201,7 @@ class RegistrationScreen extends React.Component {
 
     const {
       emailEntered,
-      passwordEntered,
-      nameEntered
+      passwordEntered
     } = this.state
 
     firebase
@@ -214,7 +213,6 @@ class RegistrationScreen extends React.Component {
   }
 
   successfulRegistration = async (user) => {
-
     await firebase.auth().currentUser.updateProfile({
       displayName: this.state.nameEntered
     })
@@ -235,7 +233,6 @@ class RegistrationScreen extends React.Component {
     const firestore = firebase.firestore()
     const ref = firestore.collection('users')
     const user = firebase.auth().currentUser
-
     await ref.doc(user.uid).set({
       uid: user.uid,
       name: user.displayName,
