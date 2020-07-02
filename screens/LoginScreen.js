@@ -222,7 +222,7 @@ class LoginScreen extends React.Component {
 
             <View style={socialContainer}>
               <Card
-                width={dimens.logoWidthOnboarding}
+                width='85%'
                 height={dimens.buttonHeight}
                 elevation={10}>
                 <SocialButton
@@ -232,7 +232,7 @@ class LoginScreen extends React.Component {
                   style={socialButton}
                   onPress={this.loginWithFacebook} />
               </Card>
-              <Card
+              {/* <Card
                 width={dimens.logoWidthOnboarding}
                 height={dimens.buttonHeight}
                 elevation={10}>
@@ -242,7 +242,7 @@ class LoginScreen extends React.Component {
                   iconColor={colors.googleOrange}
                   style={socialButton}
                   onPress={null} />
-              </Card>
+              </Card> */}
             </View>
 
             <View style={orContainer}>

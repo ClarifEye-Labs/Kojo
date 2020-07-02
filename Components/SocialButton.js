@@ -5,7 +5,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { commonStyling } from '../common'
 
 const SocialButton = (props) => { 
-  const screenName='Button'
   const {
     textStyle,
     socialButtonStyle,
@@ -44,8 +43,7 @@ const styles = StyleSheet.create({
   textStyle:{
     fontSize: 17,
     textAlign: 'center',
-    marginLeft: 13,
-    fontFamily: customFonts.medium
+    fontFamily: customFonts.semiBold
   },
   socialButtonStyle: {
     width: dimens.defaultButtonWidth,
