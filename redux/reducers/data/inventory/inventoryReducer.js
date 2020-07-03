@@ -5,14 +5,14 @@ const initialState = {
 }
 
 const inventoryReducer = (state = initialState, action) => {
-    switch(action.type) {
-        
+    switch (action.type) {
+
         case "inventoryData":
             return { ...state, inventoryData: action.value }
 
         default:
             return state;
-    }    
+    }
 }
 
 export default inventoryReducer

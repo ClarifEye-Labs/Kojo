@@ -41,7 +41,7 @@ class SplashScreen extends Component {
 
   navigateToScreenLogic = async () => {
     const firestore = firebase.firestore();
-    firebase.auth().onAuthStateChanged(async (user) => { 
+    firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
         const userRef = firestore.collection(collectionNames.users);
         const userID = user.uid;
@@ -102,17 +102,17 @@ class SplashScreen extends Component {
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
 
   const userStore = state.user
-  
+
   return {
     firebaseAuthUser: userStore.userDetailsReducer.firebaseAuthUser,
     userFirestoreData: userStore.userDetailsReducer.userFirestoreData
   }
-  
-  
-  }
+
+
+}
 
 const mapDispatchToProps = (dispatch) => ({
   watchFirebaseAuthUser: () => {

@@ -77,7 +77,7 @@ class EditInventoryScreen extends Component {
         .get()
         .then((doc) => {
           if (doc.exists) {
-            products.push({ ...{id: doc.id}, ...{...doc.data()} } )
+            products.push({ ...{ id: doc.id }, ...{ ...doc.data() } })
           } else {
             console.log('Werent able to fetch products')
           }
@@ -87,7 +87,7 @@ class EditInventoryScreen extends Component {
     this.setState({
       productsOfUser: products
     }, () => { products ? this.formulateListToShowOfProducts() : null })
-    
+
   }
 
   formulateListToShowOfProducts() {
@@ -95,14 +95,14 @@ class EditInventoryScreen extends Component {
       productsOfUser
     } = this.state
     let inventoryDictionary = {}
-    for(let index in productsOfUser) {
+    for (let index in productsOfUser) {
       const product = productsOfUser[index]
       const category = product.type
-      if(Array.isArray(inventoryDictionary[category])){
+      if (Array.isArray(inventoryDictionary[category])) {
         const products = inventoryDictionary[category]
         products.push(product)
         inventoryDictionary[category] = products
-      }else{
+      } else {
         inventoryDictionary[category] = [product]
       }
     }
@@ -116,9 +116,9 @@ class EditInventoryScreen extends Component {
 
   constructFlatListItems = (dictionary) => {
     let listToReturn = []
-    if(dictionary){
-      for(let key in dictionary){
-        listToReturn.push({title: key, data: dictionary[key]})
+    if (dictionary) {
+      for (let key in dictionary) {
+        listToReturn.push({ title: key, data: dictionary[key] })
       }
     }
     return listToReturn
@@ -315,7 +315,7 @@ class EditInventoryScreen extends Component {
 }
 
 function mapStateToProps(state) {
-  
+
   const inventoryStore = state.inventory
   return {
     inventoryItems: inventoryStore.inventoryReducer.inventoryData
@@ -357,17 +357,17 @@ const SectionContent = (sectionContent, props) => {
     navigation
   } = props
 
-  if(!sectionContent.imageURL){
+  if (!sectionContent.imageURL) {
     sectionContent.imageURL = 'https://screenshotlayer.com/images/assets/placeholder.png'
   }
-  
+
   const sectionContentToRender = <View style={sectionContentContainerOuter}>
     <View style={cardContainerStyle}>
       <Card width={65} height={65} elevation={dimens.defaultBorderRadius}>
         <ImageBackground
           style={imageStyle}
           imageStyle={{ borderRadius: dimens.defaultBorderRadius }}
-          source={ { uri: sectionContent.imageURL }} />
+          source={{ uri: sectionContent.imageURL }} />
       </Card>
     </View>
 
