@@ -17,14 +17,14 @@ import { connect } from "react-redux";
 import {
   watchFirebaseAuthUser,
   watchUserFirestoreData,
-} from "../redux/actions/watchUserData";
+} from "../redux/actions/data/user/watchUserData";
 import { userLogOut } from "../redux/app-redux";
 
 class SplashScreen extends Component {
   constructor(props) {
     super(props);
-    this.props.watchFirebaseAuthUser();
-    this.props.watchUserFirestoreData();
+    // this.props.watchFirebaseAuthUser();
+    // this.props.watchUserFirestoreData();
     this.state = {
       navigation: props.navigation,
       user: undefined,
@@ -41,7 +41,7 @@ class SplashScreen extends Component {
 
   navigateToScreenLogic = async () => {
     const firestore = firebase.firestore();
-    firebase.auth().onAuthStateChanged(async (user) => { 
+    firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
         const userRef = firestore.collection(collectionNames.users);
         const userID = user.uid;
@@ -102,10 +102,17 @@ class SplashScreen extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  firebaseAuthUser: state.userDetailsReducer.firebaseAuthUser,
-  userFirestoreData: state.userDetailsReducer.userFirestoreData,
-});
+function mapStateToProps(state) {
+
+  const userStore = state.user
+
+  return {
+    firebaseAuthUser: userStore.userDetailsReducer.firebaseAuthUser,
+    userFirestoreData: userStore.userDetailsReducer.userFirestoreData
+  }
+
+
+}
 
 const mapDispatchToProps = (dispatch) => ({
   watchFirebaseAuthUser: () => {

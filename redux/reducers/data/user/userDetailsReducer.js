@@ -1,5 +1,5 @@
-import { inventoryData } from '../constants/index'
-import firebase from '../../config/firebase'
+import { inventoryData } from '../../../constants/index'
+import firebase from '../../../../config/firebase'
 const initialState = {
     firebaseAuthUser: firebase.auth().currentUser,
     userFirstoreData: null,

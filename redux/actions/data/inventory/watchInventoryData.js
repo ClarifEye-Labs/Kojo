@@ -1,6 +1,6 @@
 import { setInventoryData } from '../actions/setInventoryData'
-import collectionNames from '../../config/collectionNames'
-import firebase from '../../config/firebase'
+import collectionNames from '../../../../config/collectionNames'
+import firebase from '../../../../config/firebase'
 
 const watchInventoryData = (supplierID) => {
     return function (dispatch) {

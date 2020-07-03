@@ -1,6 +1,6 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux';
-import inventoryReducer from './reducers/inventoryReducer'
-import userDetailsReducer from './reducers/userDetailsReducer'
+import inventoryReducer from './reducers/data/inventory/inventoryReducer'
+import userDetailsReducer from './reducers/data/user/userDetailsReducer'
 import thunkMiddleware from 'redux-thunk';
 import firebase from '../config/firebase'
 
@@ -15,21 +15,23 @@ const userLogOut = () => {
 
 export { userLogOut }
 
-//Reducer Code
-const appReducer = combineReducers(
-    { inventoryReducer : inventoryReducer,
-      userDetailsReducer: userDetailsReducer    
-    }
-);
+const appReducer = combineReducers({
+    user: combineReducers({
+        userDetailsReducer
+    }),
+    inventory: combineReducers({
+        inventoryReducer
+    })
+})
 
-const rootReducer =  (state, action) => {
-    
-    if(action.type === 'USER_LOGOUT') {
+const rootReducer = (state, action) => {
+
+    if (action.type === 'USER_LOGOUT') {
         firebase.auth().signOut()
-        state = undefined 
+        state = undefined
     }
 
-    return appReducer(state,action)
+    return appReducer(state, action)
 }
 
 //Store

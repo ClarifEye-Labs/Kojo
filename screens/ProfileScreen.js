@@ -8,14 +8,13 @@ import firebase from '../config/firebase'
 import { Loading, TextWithSubheading, Button, Icon } from '../Components';
 import Utils from '../utils/Utils';
 import { connect } from 'react-redux'
-import { watchFirebaseAuthUser, watchUserFirestoreData } from '../redux/actions/watchUserData'
+
 import { userLogOut } from '../redux/app-redux'
 
 class ProfileScreen extends Component {
   constructor(props) {
     super(props)
-    this.props.watchFirebaseAuthUser();
-    this.props.watchUserFirestoreData();
+    
     this.state = {
       navigation: props.navigation,
       user: firebase.auth().currentUser,
@@ -47,6 +46,16 @@ class ProfileScreen extends Component {
 
     }
     else {
+      this.setState({
+        userAddress: '',
+        userPhone: '',
+        userRole: '',
+        userName: '',
+        userEmail: '',
+        userNameInitials: '',
+        loading: false
+      })
+
       console.log('No such document')
     }
   }
@@ -175,29 +184,19 @@ class ProfileScreen extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  firebaseAuthUser: state.userDetailsReducer.firebaseAuthUser,
-  userFirestoreData: state.userDetailsReducer.userFirestoreData
-});
+function mapStateToProps (state) {
 
-
-
-
-
-
-// const ActionCreators = Object.assign(
-//   {},
-//   watchFirebaseAuthUser,
-//   watchUserFirestoreData
-// );
-
-// const mapDispatchToProps = dispatch => ({
-//   actions: bindActionCreators(ActionCreators, dispatch),
-// })
+  const userStore = state.user
+  
+  return {
+    firebaseAuthUser: userStore.userDetailsReducer.firebaseAuthUser,
+    userFirestoreData: userStore.userDetailsReducer.userFirestoreData
+  }
+  
+  
+  }
 
 const mapDispatchToProps = dispatch => ({
-  watchFirebaseAuthUser: () => { dispatch(watchFirebaseAuthUser()) },
-  watchUserFirestoreData: () => { dispatch(watchUserFirestoreData()) },
   userLogOut: () => { dispatch(userLogOut()) }
 })
 

@@ -768,10 +768,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   submitButtonStyle: {
-    width: "90%",
-    backgroundColor: colors.colorPrimary,
-  },
-});
+    width: '90%',
+    backgroundColor: colors.colorPrimary
+  }
+})
+
+function mapStateToProps (state) {
+
+  const userStore = state.user
+  
+  return {
+    user: userStore.userDetailsReducer.userFirestoreData
+  }
+  
+  
+  }
 
 const mapStateToProps = (state) => ({
   user: state.userDetailsReducer.userFirestoreData,
