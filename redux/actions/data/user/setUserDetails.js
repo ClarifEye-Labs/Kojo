@@ -1,6 +1,8 @@
-import { userData } from '../constants'
+import { userData } from '../../../constants'
+
 
 const setUserFirestoreData = (data) => {
+  console.log("setting firebase user data", data)
   return {
     type: 'userFirestoreData',
     value: data

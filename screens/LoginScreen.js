@@ -24,7 +24,7 @@ import firebase from '../config/firebase'
 import screens from '../constants/screens';
 import collectionNames from '../config/collectionNames';
 import Utils from '../utils/Utils';
-import { watchFirebaseAuthUser, watchUserFirestoreData } from '../redux/actions/watchUserData'
+import { watchFirebaseAuthUser, watchUserFirestoreData } from '../redux/actions/data/user/watchUserData'
 import { connect } from 'react-redux'
 
 class LoginScreen extends React.Component {
@@ -150,7 +150,7 @@ class LoginScreen extends React.Component {
       }
     }).then((loginObject) => {
       if (loginObject && loginObject.user) {
-        
+
         this.onSuccessfulLogin()
       }
     })
@@ -321,7 +321,7 @@ class LoginScreen extends React.Component {
       await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);  // Set persistent auth state
       const credential = firebase.auth.FacebookAuthProvider.credential(token);
       await firebase.auth().signInWithCredential(credential).then(
-        
+
       ).catch((error) => alert(error));  // Sign in with Facebook credential
       const facebookUser = firebase.auth().currentUser
       this.props.watchFirebaseAuthUser()
@@ -346,7 +346,7 @@ class LoginScreen extends React.Component {
           await usersRef.doc(uid).set({
             name: name,
             email: email,
-            phone: phone, 
+            phone: phone,
             role: null,
             address: null,
             uid: uid
@@ -370,21 +370,22 @@ class LoginScreen extends React.Component {
 
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
 
+  const userStore = state.user
 
-return {
-  firebaseAuthUser: state.userDetailsReducer.firebaseAuthUser,
-  userFirestoreData: state.userDetailsReducer.userFirestoreData
-}
+  return {
+    firebaseAuthUser: userStore.userDetailsReducer.firebaseAuthUser,
+    userFirestoreData: userStore.userDetailsReducer.userFirestoreData
+  }
 
 
 }
 
 
 const mapDispatchToProps = dispatch => ({
-  watchFirebaseAuthUser: () => {dispatch(watchFirebaseAuthUser())},
-  watchUserFirestoreData: () => {dispatch(watchUserFirestoreData())}
+  watchFirebaseAuthUser: () => { dispatch(watchFirebaseAuthUser()) },
+  watchUserFirestoreData: () => { dispatch(watchUserFirestoreData()) }
 })
 
 const styles = StyleSheet.create({

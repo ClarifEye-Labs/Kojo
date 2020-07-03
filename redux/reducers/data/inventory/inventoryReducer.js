@@ -1,4 +1,4 @@
-import { inventoryData } from '../constants/index'
+import { inventoryData } from '../../../constants/index'
 
 const initialState = {
     inventoryData: [],

@@ -315,8 +315,10 @@ class EditInventoryScreen extends Component {
 }
 
 function mapStateToProps(state) {
+  
+  const inventoryStore = state.inventory
   return {
-    inventoryItems: state.inventoryItems
+    inventoryItems: inventoryStore.inventoryReducer.inventoryData
   }
 }
 

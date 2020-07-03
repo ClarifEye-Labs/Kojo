@@ -736,9 +736,16 @@ const styles = StyleSheet.create({
   }
 })
 
-const mapStateToProps = state => ({
-  user: state.userDetailsReducer.userFirestoreData
-});
+function mapStateToProps (state) {
+
+  const userStore = state.user
+  
+  return {
+    user: userStore.userDetailsReducer.userFirestoreData
+  }
+  
+  
+  }
 
 const mapDispatchToProps = dispatch => ({
 

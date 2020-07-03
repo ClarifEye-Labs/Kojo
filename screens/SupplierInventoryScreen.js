@@ -313,12 +313,16 @@ class SupplierInventoryScreen extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    inventoryItems: state.inventoryItems
-  }
-}
+function mapStateToProps (state) {
 
+  const inventoryStore = state.inventory
+  
+  return {
+    inventoryData: inventoryStore.inventoryReducer.inventoryData
+  }
+  
+  
+  }
 function mapDispatchToProps(dispatch) {
   return {
     updateInventory: () => dispatch({ type: 'UPDATE_INVENTORY' })

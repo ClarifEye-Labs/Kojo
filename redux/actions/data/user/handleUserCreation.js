@@ -1,6 +1,6 @@
 import { setUserFirestoreData, setFirebaseAuthUser } from '../actions/setUserDetails'
-import collectionNames from '../../config/collectionNames'
-import firebase from '../../config/firebase'
+import collectionNames from '../../../../config/collectionNames'
+import firebase from '../../../../config/firebase'
 
 const createFirebaseUser = (emailEntered, passwordEntered, nameEntered) => {
   firebase

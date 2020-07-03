@@ -1,4 +1,4 @@
-import { inventoryData } from '../constants'
+import { inventoryData } from '../../../constants'
 const setInventoryData = (data) => {
     return {
         type: 'inventoryData',

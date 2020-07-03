@@ -10,7 +10,7 @@ import Utils from "../utils/Utils";
 import {
   watchFirebaseAuthUser,
   watchUserFirestoreData,
-} from "../redux/actions/watchUserData";
+} from "../redux/actions/data/user/watchUserData";
 import { connect } from "react-redux";
 
 class RegistrationScreen extends React.Component {
