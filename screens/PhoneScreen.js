@@ -784,10 +784,6 @@ function mapStateToProps (state) {
   
   }
 
-const mapStateToProps = (state) => ({
-  user: state.userDetailsReducer.userFirestoreData,
-});
-
 const mapDispatchToProps = (dispatch) => ({});
 
 PhoneScreen.navigationOptions = {
