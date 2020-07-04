@@ -44,16 +44,16 @@ class SplashScreen extends Component {
       //if user has been deleted from our database then reinit the entire thing
       if (userFirestore) {
         const screenToDispatch = Utils.screenToLoadForUser(userFirestore)
-        Utils.dispatchScreen(screenToDispatch, 1000, this.state.navigation)
+        Utils.dispatchScreen(screenToDispatch, 1000, this.props.navigation)
       }
       else {
         await firebase.auth().signOut()
-        Utils.dispatchScreen(screens.WelcomeScreen, 1000, this.state.navigation)
+        Utils.dispatchScreen(screens.WelcomeScreen, 1000, this.props.navigation)
       }
     }
     else {
       //no user signed in 
-      Utils.dispatchScreen(screens.WelcomeScreen, 2000, this.state.navigation)
+      Utils.dispatchScreen(screens.WelcomeScreen, 2000, this.props.navigation)
     }
   }
 

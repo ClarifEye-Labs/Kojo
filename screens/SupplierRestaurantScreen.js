@@ -7,13 +7,11 @@ import screens from '../constants/screens';
 import appConfig from '../config/appConfig';
 import collectionNames from '../config/collectionNames';
 import Utils from '../utils/Utils';
+import * as Animatable from 'react-native-animatable'
 
 class SupplierRestaurantScreen extends Component {
   constructor(props){
     super(props)
-    this.state = {
-      navigation: props.navigation
-    }
   }
   
   navigateToScreen = async (screen) => {
@@ -39,7 +37,7 @@ class SupplierRestaurantScreen extends Component {
         role: role
       })
     }
-    Utils.dispatchScreen(screens.AddressScreen, undefined, this.state.navigation);
+    Utils.dispatchScreen(screens.AddressScreen, undefined, this.props.navigation);
   }
 
   
@@ -56,7 +54,7 @@ class SupplierRestaurantScreen extends Component {
     } = styles
 
     const screen = 
-    <View style={mainContainer}>
+    <Animatable.View animation="fadeInUpBig" style={mainContainer}>
       <ImageBackground style={upperHalfContainer} source={require('../assets/Onboarding/supplier.jpg')}>
         <TouchableOpacity 
           style={{...textContainer,...containerSupplyBG}} 
@@ -74,7 +72,7 @@ class SupplierRestaurantScreen extends Component {
           <Text style={mainText}> {strings.restaurant} </Text>
         </TouchableOpacity>
       </ImageBackground>
-    </View>
+    </Animatable.View>
   
     return screen
   }

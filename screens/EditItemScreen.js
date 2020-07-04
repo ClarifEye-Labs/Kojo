@@ -212,7 +212,7 @@ class EditItemScreen extends Component {
       })
       .then(() => this.setState({
         isLoading: false
-      }, () => Utils.dispatchScreen(screens.SupplierHome, undefined, this.state.navigation)))
+      }, () => Utils.dispatchScreen(screens.SupplierHome, undefined, this.props.navigation)))
   }
 
 

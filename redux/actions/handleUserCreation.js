@@ -20,7 +20,7 @@ const succesfulRegistration = (user, nameEntered) => {
   await this.writeUserToFireStore()
   this.setState({
     showLoadingDialog: false
-  }, () => { Utils.dispatchScreen(screens.SupplierRestaurantScreen, undefined, this.state.navigation) })
+  }, () => { Utils.dispatchScreen(screens.SupplierRestaurantScreen, undefined, this.props.navigation) })
 
 }
 
