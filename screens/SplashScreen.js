@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, ImageBackground, ActivityIndicator } from 'react-native'
-import { LogoPlaceholder, Loading, Button } from '../Components'
-import { dimens, colors, customFonts } from '../constants'
+import { View, StyleSheet, ImageBackground, ActivityIndicator } from 'react-native'
+import { LogoPlaceholder } from '../Components'
+import { dimens, colors } from '../constants'
 import { commonStyling } from '../common'
 import { PropTypes } from 'prop-types'
 import screens from '../constants/screens'
@@ -34,27 +34,28 @@ class SplashScreen extends Component {
   }
 
   navigateToScreenLogic = async () => {
-    const user = firebase.auth().currentUser
     const firestore = firebase.firestore()
-    if (user) {
-      const userRef = firestore.collection(collectionNames.users)
-      const userID = user.uid
-      let userFirestore = null
-      await userRef.doc(userID).get().then( (doc) => doc.exists ? userFirestore = doc.data() : null )
-      //if user has been deleted from our database then reinit the entire thing
-      if (userFirestore) {
-        const screenToDispatch = Utils.screenToLoadForUser(userFirestore)
-        Utils.dispatchScreen(screenToDispatch, 1000, this.props.navigation)
+    firebase.auth().onAuthStateChanged( async user => {
+      if (user) {
+        const userRef = firestore.collection(collectionNames.users)
+        const userID = user.uid
+        let userFirestore = null
+        await userRef.doc(userID).get().then( (doc) => doc.exists ? userFirestore = doc.data() : null )
+        //if user has been deleted from our database then reinit the entire thing
+        if (userFirestore) {
+          const screenToDispatch = Utils.screenToLoadForUser(userFirestore)
+          Utils.dispatchScreen(screenToDispatch, 1000, this.props.navigation)
+        }
+        else {
+          await firebase.auth().signOut()
+          Utils.dispatchScreen(screens.WelcomeScreen, 1000, this.props.navigation)
+        }
       }
       else {
-        await firebase.auth().signOut()
-        Utils.dispatchScreen(screens.WelcomeScreen, 1000, this.props.navigation)
+        //no user signed in 
+        Utils.dispatchScreen(screens.WelcomeScreen, 2000, this.props.navigation)
       }
-    }
-    else {
-      //no user signed in 
-      Utils.dispatchScreen(screens.WelcomeScreen, 2000, this.props.navigation)
-    }
+    })
   }
 
   render() {

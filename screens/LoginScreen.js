@@ -34,7 +34,7 @@ class LoginScreen extends React.Component {
 
     this.state = {
       navigation: props.navigation,
-      emailEntered: appConfig.DEBUG_MODE ? 'conveytoshikhar@gmail.com' : '',
+      emailEntered: appConfig.DEBUG_MODE ? 'userone@gmail.com' : '',
       passwordEntered: appConfig.DEBUG_MODE ? '1234567890' : '',
       emailErrorStatus: false,
       emailErrorReason: null,
