@@ -44,8 +44,7 @@ const styles = StyleSheet.create({
   textStyle:{
     fontSize: 17,
     textAlign: 'center',
-    marginLeft: 13,
-    fontFamily: customFonts.medium
+    fontFamily: customFonts.semiBold
   },
   socialButtonStyle: {
     width: dimens.defaultButtonWidth,
