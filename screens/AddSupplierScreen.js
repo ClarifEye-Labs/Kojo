@@ -18,7 +18,6 @@ const HEADER_COLLAPSED_HEIGHT = 100;
 const { height: SCREEN_HEIGHT } = Dimensions.get("screen")
 
 class AddSupplierScreen extends Component {
-  _isMounted = false
   constructor(props) {
     super(props)
     this.state = {
@@ -35,13 +34,12 @@ class AddSupplierScreen extends Component {
   }
 
   componentDidMount = () => {
-    this._isMounted = true
     this.getAllSuppliers()
     this.watchAddedSuppliers()
   }
 
   componentWillUnmount() {
-    this._isMounted = false
+    this.unsubscribeRealTimeWatch()
   }
 
 
@@ -74,15 +72,15 @@ class AddSupplierScreen extends Component {
 
     let updateAddedListState = (list) => {
       if(list) {
-        if(this._isMounted) {
+
           this.setState({
             addedSupplierList: list
           }, () => {console.log(this.state.addedSupplierList)})
-        }
+        
       }
     }
 
-    await db.collection(collectionNames.clients)
+    this.unsubscribeRealTimeWatch = await db.collection(collectionNames.clients)
       .doc(client)
       .onSnapshot(function(doc) {
         let data = doc.data()
