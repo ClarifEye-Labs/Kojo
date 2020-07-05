@@ -18,6 +18,7 @@ const HEADER_COLLAPSED_HEIGHT = 100;
 const { height: SCREEN_HEIGHT } = Dimensions.get("screen")
 
 class AddSupplierScreen extends Component {
+  _isMounted = false
   constructor(props) {
     super(props)
     this.state = {
@@ -25,6 +26,7 @@ class AddSupplierScreen extends Component {
       scrollY: new Animated.Value(0),
       showSearch: false,
       supplierToAddList: [],
+      addedSupplierList: [],
       searchSupplierList: [],
       loadingContent: false,
       showConfirmationModal: false,
@@ -33,8 +35,15 @@ class AddSupplierScreen extends Component {
   }
 
   componentDidMount = () => {
+    this._isMounted = true
     this.getAllSuppliers()
+    this.watchAddedSuppliers()
   }
+
+  componentWillUnmount() {
+    this._isMounted = false
+  }
+
 
   getAllSuppliers = async () => { 
     let db = firebase.firestore()
@@ -56,6 +65,33 @@ class AddSupplierScreen extends Component {
             })
         });
       })
+  }
+
+  watchAddedSuppliers = async () => {
+    const client = firebase.auth().currentUser.uid
+    let db = firebase.firestore()
+    let newAddedSupplierList = []
+
+    let updateAddedListState = (list) => {
+      if(list) {
+        if(this._isMounted) {
+          this.setState({
+            addedSupplierList: list
+          }, () => {console.log(this.state.addedSupplierList)})
+        }
+      }
+    }
+
+    await db.collection(collectionNames.clients)
+      .doc(client)
+      .onSnapshot(function(doc) {
+        let data = doc.data()
+        newAddedSupplierList = data.suppliers
+        updateAddedListState(newAddedSupplierList)
+        })
+    
+
+
   }
 
 
@@ -143,9 +179,7 @@ class AddSupplierScreen extends Component {
     await this.addSupplierToFirebase()
       .then(
         this.hideConfirmationModal())
-      .catch(
-        Alert.alert("Supplier not added, try again!")
-      )
+
   }
 
 
@@ -285,7 +319,7 @@ class AddSupplierScreen extends Component {
           contentContainerStyle={{ minHeight: SCREEN_HEIGHT + HEADER_COLLAPSED_HEIGHT }}
           data={this.state.supplierToAddList}
           renderItem={({ item }) => SectionContent(item, { ...this.props, showConfirmationModal: this.showConfirmationModal })}
-          keyExtractor={(item, index) => index}
+          keyExtractor={(item, index) => index.toString()}
           onScroll={Animated.event(
             [{
               nativeEvent: {
