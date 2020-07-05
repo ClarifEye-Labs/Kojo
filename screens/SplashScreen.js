@@ -15,28 +15,25 @@ import { bindActionCreators } from 'redux';
 
 
 class SplashScreen extends Component {
+  unsubscribeListener = null;
   constructor(props) {
     super(props)
     // this.props.watchFirebaseAuthUser();
     // this.props.watchUserFirestoreData();
-    this.state = {
-      navigation: props.navigation,
-      user: undefined,
-      userExists: false,
-      supplierRestaurantSelected: false,
-      phoneEntered: false,
-      navigateToScreenLogic: this.navigateToScreenLogic
-    }
   }
 
-  componentDidMount = async () => {
+  componentDidMount = () => {
     this.navigateToScreenLogic()
+  }
+
+  componentWillUnmount = () => {
+    this.unsubscribeListener()
   }
 
 
   navigateToScreenLogic = async () => {
     const firestore = firebase.firestore()
-    firebase.auth().onAuthStateChanged( async user => {
+    this.unsubscribeListener = firebase.auth().onAuthStateChanged( async user => {
       if (user) {
         const userRef = firestore.collection(collectionNames.users)
         const userID = user.uid
@@ -89,6 +86,7 @@ class SplashScreen extends Component {
 
 
 }
+
 
 const mapStateToProps = state => ({
   firebaseAuthUser: state.userDetailsReducer.firebaseAuthUser,

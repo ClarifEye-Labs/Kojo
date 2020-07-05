@@ -69,7 +69,7 @@ const AppNavigator = createStackNavigator({
   ViewSupplierItemScreen: ViewSupplierItemScreen
 },
   {
-    initialRouteName: screens.WelcomeScreen
+    initialRouteName: screens.SplashScreen
   })
 
 const AppContainer = createAppContainer(AppNavigator);
