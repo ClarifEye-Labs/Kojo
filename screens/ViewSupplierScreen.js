@@ -282,7 +282,7 @@ const SectionContent = (data, props) => {
           style={sectionContentTouchableContainer}
           onPress={() => {
             navigation.navigate(screens.ViewSupplierItemScreen, {
-              supplierID: data.supplierID,
+              supplierID: data.uid,
             });
           }}
         >
@@ -304,17 +304,6 @@ const SectionContent = (data, props) => {
   );
 
   return sectionContentToRender;
-};
-
-const SectionHeader = (section) => {
-  const { sectionHeaderContainer, sectionHeaderTitle } = styles;
-  const sectionHeader = (
-    <View style={sectionHeaderContainer}>
-      <Text style={sectionHeaderTitle}>{section.title}</Text>
-    </View>
-  );
-
-  return sectionHeader;
 };
 
 const styles = StyleSheet.create({

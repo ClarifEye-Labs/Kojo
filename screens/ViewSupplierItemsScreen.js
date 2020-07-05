@@ -19,7 +19,6 @@ class ViewSupplierItemScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      navigation: props.navigation,
       scrollY: new Animated.Value(0),
       supplierID: props.navigation.state.params.supplierID,
       showSearch: false,
