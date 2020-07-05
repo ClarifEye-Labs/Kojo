@@ -323,6 +323,7 @@ class PhoneScreen extends Component {
   };
 
   successfulUpload = () => {
+  
     this.setState({
       phoneSubmitIsLoading: false,
     });

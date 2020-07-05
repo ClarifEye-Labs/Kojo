@@ -114,8 +114,9 @@ class RegistrationScreen extends React.Component {
       return error
     }
 
+  
     if (! /^(([A-Za-z]+[\-\']?)*([A-Za-z]+)?\s)+([A-Za-z]+[\-\']?)*([A-Za-z]+)?$/.test(name)) {
-      error.errorStatus = true,
+       error.errorStatus = true,
         error.errorReason = strings.nameErrorMessage
     }
 

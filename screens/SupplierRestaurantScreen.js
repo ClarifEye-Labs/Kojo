@@ -31,7 +31,7 @@ class SupplierRestaurantScreen extends Component {
         inventory: []
       })
 
-    }else{
+    } else{
       let role = appConfig.userRoleRestaurantOwner
       await userRef.doc(uid).update({
         role: role
