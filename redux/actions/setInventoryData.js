@@ -1,7 +1,7 @@
 import { inventoryData } from '../constants'
 const setInventoryData = (data) => {
     return {
-        type: 'inventoryData',
+        type: inventoryData,
         value: data
     }
 }

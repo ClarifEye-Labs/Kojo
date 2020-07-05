@@ -17,8 +17,8 @@ import { bindActionCreators } from 'redux';
 class SplashScreen extends Component {
   constructor(props) {
     super(props)
-    this.props.watchFirebaseAuthUser();
-    this.props.watchUserFirestoreData();
+    // this.props.watchFirebaseAuthUser();
+    // this.props.watchUserFirestoreData();
     this.state = {
       navigation: props.navigation,
       user: undefined,
@@ -32,6 +32,7 @@ class SplashScreen extends Component {
   componentDidMount = async () => {
     this.navigateToScreenLogic()
   }
+
 
   navigateToScreenLogic = async () => {
     const firestore = firebase.firestore()
@@ -90,8 +91,8 @@ class SplashScreen extends Component {
 }
 
 const mapStateToProps = state => ({
-    firebaseAuthUser: state.userDetailsReducer.firebaseAuthUser,
-    userFirestoreData: state.userDetailsReducer.userFirestoreData
+  firebaseAuthUser: state.userDetailsReducer.firebaseAuthUser,
+  userFirestoreData: state.userDetailsReducer.userFirestoreData
 });
 
 const mapDispatchToProps = dispatch => ({

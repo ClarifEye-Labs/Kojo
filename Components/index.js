@@ -19,4 +19,5 @@ export {default as Edit} from './Edit'
 export {default as TextWithSubheading} from './TextWithSubheading'
 export {default as Confirm} from './Confirm'
 export {default as Icon} from './Icon'
+export {default as DualOptionModal} from './DualOptionModal'
 

@@ -3,6 +3,7 @@ import collectionNames from '../../config/collectionNames'
 import firebase from '../../config/firebase'
 
 
+
 const watchFirebaseAuthUser = () => {
   return function (dispatch) {
     let user = firebase.auth().currentUser

@@ -3,7 +3,8 @@ const collectionNames = {
   suppliers: 'suppliers',
   productType: 'product_type',
   products: 'products',
-  clients: 'clients'
+  clients: 'clients',
+  
 }
 
 export default collectionNames

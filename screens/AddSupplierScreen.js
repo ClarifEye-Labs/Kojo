@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, Animated, FlatList, Dimensions, TouchableOpacity } from 'react-native'
-import { Back, SearchIcon, Loading, Card, Forward, Icon} from '../Components'
+import { View, StyleSheet, Text, Animated, FlatList, Dimensions, TouchableOpacity, Alert } from 'react-native'
+import { Back, SearchIcon, Loading, Card, Forward, Icon, DualOptionModal } from '../Components'
 import { dimens, colors, customFonts, strings, iconNames } from '../constants'
-import { commonStyling } from '../common' 
-import {PropTypes} from 'prop-types'
+import { commonStyling } from '../common'
+import { PropTypes } from 'prop-types'
 import { SearchBar } from 'react-native-elements'
 import * as Animatable from 'react-native-animatable'
 import { LinearGradient } from 'expo-linear-gradient';
 import firebase from '../config/firebase'
 import collectionNames from '../config/collectionNames';
+
+
 
 const HEADER_EXPANDED_HEIGHT = 250;
 const HEADER_COLLAPSED_HEIGHT = 100;
@@ -16,7 +18,7 @@ const HEADER_COLLAPSED_HEIGHT = 100;
 const { height: SCREEN_HEIGHT } = Dimensions.get("screen")
 
 class AddSupplierScreen extends Component {
-  constructor(props){
+  constructor(props) {
     super(props)
     this.state = {
       navigation: props.navigation,
@@ -24,7 +26,9 @@ class AddSupplierScreen extends Component {
       showSearch: false,
       supplierToAddList: [],
       searchSupplierList: [],
-      loadingContent: false
+      loadingContent: false,
+      showConfirmationModal: false,
+      supplierSelectedData: null
     }
   }
 
@@ -32,19 +36,19 @@ class AddSupplierScreen extends Component {
     this.getAllSuppliers()
   }
 
-  getAllSuppliers = async () => {
+  getAllSuppliers = async () => { 
     let db = firebase.firestore()
     const supplierListIDs = []
     const supplierDataList = []
     db.collection(collectionNames.suppliers)
       .get()
-      .then( (querySnapshot) => {
-        querySnapshot.forEach( doc => {
+      .then((querySnapshot) => {
+        querySnapshot.forEach(doc => {
           // doc.data() is never undefined for query doc snapshots
           db.collection(collectionNames.users)
             .doc(doc.data().uid)
             .get()
-            .then( (querySnapshot) => {
+            .then((querySnapshot) => {
               supplierDataList.push(querySnapshot.data())
               this.setState({
                 supplierToAddList: supplierDataList
@@ -52,10 +56,8 @@ class AddSupplierScreen extends Component {
             })
         });
       })
-
-    
   }
-  
+
 
   getMainHeaderView = () => {
     const {
@@ -115,7 +117,94 @@ class AddSupplierScreen extends Component {
     })
   }
 
-  showSearchPanel = () => this.setState({showSearch: true})
+
+
+  showConfirmationModal = (data) => {
+    this.setState({
+      showConfirmationModal: true,
+      supplierSelectedData: data
+    })
+  }
+
+  hideConfirmationModal = () => this.setState({
+    showConfirmationModal: false,
+    supplierSelectedData: null
+  })
+
+  showSearchPanel = () => this.setState({ showSearch: true })
+
+  addSupplier = async () => {
+    let searchSupplierList = this.state.searchSupplierList
+    searchSupplierList.push(this.state.supplierSelectedData)
+    this.setState({
+      searchSupplierList: searchSupplierList
+    })
+
+    await this.addSupplierToFirebase()
+      .then(
+        this.hideConfirmationModal())
+      .catch(
+        Alert.alert("Supplier not added, try again!")
+      )
+  }
+
+
+  addSupplierToFirebase = async () => {
+
+    const supplierUID = this.state.supplierSelectedData.uid
+    const supplierReference = "/suppliers/" + supplierUID
+    const clientReference = "/clients/" + firebase.auth().currentUser.uid
+    const firestore = firebase.firestore()
+
+    //Adding supplier to client db
+    await firestore
+      .collection(collectionNames.clients)
+      .doc(firebase.auth().currentUser.uid)
+      .update({
+        suppliers: firebase.firestore.FieldValue.arrayUnion(supplierReference)
+      })
+      .then(null)
+      .catch((error) => {
+        console.log("TCL: addSupplier -> error", error)
+      })
+
+    //Adding client to supplier db
+    await firestore
+      .collection(collectionNames.suppliers)
+      .doc(supplierUID)
+      .update({
+        clients: firebase.firestore.FieldValue.arrayUnion(clientReference)
+      })
+      .then(null)
+      .catch((error) => {
+        console.log("TCL: addClient -> error", error)
+      })
+
+  }
+
+  // ----------------- CONFIRMATION MODAL -------------------------
+
+  getConfirmationModal = () => {
+    if (this.state.showConfirmationModal) {
+      return (
+        <DualOptionModal
+          firstButtonText="Confirm"
+          secondButtonText="Cancel"
+          firstButtonFunction={this.addSupplier}
+          secondButtonFunction={this.hideConfirmationModal}
+          headingText="Confirm to add this supplier?"
+          hideConfirmationModal={this.hideConfirmationModal}
+        />
+      )
+    }
+
+    else {
+      return (
+        <View>
+        </View>
+      )
+    }
+  }
 
 
   render() {
@@ -195,7 +284,7 @@ class AddSupplierScreen extends Component {
           scrollEnabled={true}
           contentContainerStyle={{ minHeight: SCREEN_HEIGHT + HEADER_COLLAPSED_HEIGHT }}
           data={this.state.supplierToAddList}
-          renderItem={({ item }) => SectionContent(item, this.props)}
+          renderItem={({ item }) => SectionContent(item, { ...this.props, showConfirmationModal: this.showConfirmationModal })}
           keyExtractor={(item, index) => index}
           onScroll={Animated.event(
             [{
@@ -208,6 +297,8 @@ class AddSupplierScreen extends Component {
           }
           scrollEventThrottle={16}
         />
+        {this.getConfirmationModal()}
+
       </Animatable.View>
 
     const componentToRender = this.state.loadingContent ? componentLoading : componentLoaded
@@ -215,6 +306,8 @@ class AddSupplierScreen extends Component {
 
     return componentToRender
   }
+
+
 }
 
 const SectionContent = (data, props) => {
@@ -230,17 +323,20 @@ const SectionContent = (data, props) => {
     initalsContentContainer
   } = styles
 
+
+
   const {
-    navigation
+    navigation,
+    showConfirmationModal
   } = props
 
-  if(!data.imageURL){
+  if (!data.imageURL) {
     data.imageURL = 'https://screenshotlayer.com/images/assets/placeholder.png'
   }
 
   const userInitialsArray = data.name.trim().split(' ').map((name) => name[0])
   const userInitals = (userInitialsArray[0] + userInitialsArray[userInitialsArray.length - 1]).toUpperCase()
-  
+
   const sectionContentToRender = <View style={sectionContentContainerOuter}>
     <View style={cardContainerStyle}>
       <Card width={65} height={65} elevation={dimens.defaultBorderRadius} >
@@ -252,7 +348,7 @@ const SectionContent = (data, props) => {
 
     <View style={sectionContentContainerInner}>
       <TouchableOpacity style={sectionContentTouchableContainer} onPress={() => {
-        
+
       }}>
         <Text style={sectionContentText}>{data.name}</Text>
         <Icon
@@ -261,7 +357,8 @@ const SectionContent = (data, props) => {
           style={forwardButton}
           color={colors.black}
           onPress={() => {
-            
+
+            props.showConfirmationModal(data)
           }} />
       </TouchableOpacity>
     </View>
@@ -283,6 +380,8 @@ const SectionHeader = (section) => {
   return sectionHeader
 
 }
+
+
 
 
 const styles = StyleSheet.create({
