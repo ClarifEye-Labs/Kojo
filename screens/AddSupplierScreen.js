@@ -25,6 +25,7 @@ class AddSupplierScreen extends Component {
       scrollY: new Animated.Value(0),
       showSearch: false,
       supplierToAddList: [],
+      addedSupplierList: [],
       searchSupplierList: [],
       loadingContent: false,
       showConfirmationModal: false,
@@ -34,9 +35,15 @@ class AddSupplierScreen extends Component {
 
   componentDidMount = () => {
     this.getAllSuppliers()
+    this.watchAddedSuppliers()
   }
 
-  getAllSuppliers = async () => { 
+  componentWillUnmount() {
+    this.unsubscribeRealTimeWatch()
+  }
+
+
+  getAllSuppliers = async () => {
     let db = firebase.firestore()
     const supplierListIDs = []
     const supplierDataList = []
@@ -56,6 +63,27 @@ class AddSupplierScreen extends Component {
             })
         });
       })
+  }
+
+  watchAddedSuppliers = async () => {
+    const client = firebase.auth().currentUser.uid
+    let db = firebase.firestore()
+    let updateAddedListState = (list) => {
+      if (list) {
+        this.setState({
+          addedSupplierList: list
+        })
+      }
+    }
+
+    this.unsubscribeRealTimeWatch = await db.collection(collectionNames.clients)
+      .doc(client)
+      .onSnapshot(function (doc) {
+        let data = doc.data()
+        let newAddedSupplierList = data.suppliers
+        updateAddedListState(newAddedSupplierList)
+      })
+
   }
 
 
@@ -143,9 +171,7 @@ class AddSupplierScreen extends Component {
     await this.addSupplierToFirebase()
       .then(
         this.hideConfirmationModal())
-      .catch(
-        Alert.alert("Supplier not added, try again!")
-      )
+
   }
 
 
@@ -205,7 +231,6 @@ class AddSupplierScreen extends Component {
       )
     }
   }
-
 
   render() {
     const headerHeight = this.state.scrollY.interpolate({
@@ -284,8 +309,8 @@ class AddSupplierScreen extends Component {
           scrollEnabled={true}
           contentContainerStyle={{ minHeight: SCREEN_HEIGHT + HEADER_COLLAPSED_HEIGHT }}
           data={this.state.supplierToAddList}
-          renderItem={({ item }) => SectionContent(item, { ...this.props, showConfirmationModal: this.showConfirmationModal })}
-          keyExtractor={(item, index) => index}
+          renderItem={({ item }) => SectionContent(item, { ...this.props, showConfirmationModal: this.showConfirmationModal, addedSupplierList: this.state.addedSupplierList })}
+          keyExtractor={(item, index) => index.toString()}
           onScroll={Animated.event(
             [{
               nativeEvent: {
@@ -327,7 +352,8 @@ const SectionContent = (data, props) => {
 
   const {
     navigation,
-    showConfirmationModal
+    showConfirmationModal,
+    supplierAddedList
   } = props
 
   if (!data.imageURL) {
@@ -351,15 +377,31 @@ const SectionContent = (data, props) => {
 
       }}>
         <Text style={sectionContentText}>{data.name}</Text>
-        <Icon
-          nameAndroid={iconNames.addAndroid}
-          nameIOS={iconNames.addIOS}
-          style={forwardButton}
-          color={colors.black}
-          onPress={() => {
 
-            props.showConfirmationModal(data)
-          }} />
+        {props.addedSupplierList.includes("/suppliers/" + data.uid) ?
+
+          <Icon
+            nameAndroid={iconNames.checkAndroid}
+            nameIOS={iconNames.checkIOS}
+            style={forwardButton}
+            color={colors.black}
+            onPress={() => {
+            }} />
+
+          :
+
+          <Icon
+            nameAndroid={iconNames.addAndroid}
+            nameIOS={iconNames.addIOS}
+            style={forwardButton}
+            color={colors.black}
+            onPress={() => {
+
+              props.showConfirmationModal(data)
+            }} />
+
+        }
+
       </TouchableOpacity>
     </View>
   </View>
@@ -380,6 +422,7 @@ const SectionHeader = (section) => {
   return sectionHeader
 
 }
+
 
 
 
