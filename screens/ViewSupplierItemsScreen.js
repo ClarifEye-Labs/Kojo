@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, Animated, SectionList, ImageBackground, Dimensions, TouchableOpacity, FlatList, Modal } from 'react-native'
+import { View, StyleSheet, Text, Animated, SectionList, ImageBackground, Dimensions, TouchableOpacity, FlatList, Modal, Alert } from 'react-native'
 import { Back, SearchIcon, Loading, Card, Icon, Button } from '../Components'
 import { dimens, colors, customFonts, strings, iconNames } from '../constants'
 import { commonStyling } from '../common'
@@ -27,7 +27,8 @@ class ViewSupplierItemScreen extends Component {
       productsOfSupplier: [],
       loadingContent: false,
       showOrderModal: false,
-      cartList: []
+      cartList: [],
+      confirmButtonLoading: false
     }
   }
 
@@ -100,7 +101,6 @@ class ViewSupplierItemScreen extends Component {
     }
     return listToReturn
   }
-
 
   getMainHeaderView = () => {
     const {
@@ -292,13 +292,54 @@ class ViewSupplierItemScreen extends Component {
       }
     }
 
-    const confirmOrder = () => {
-      alert('Order Placed!')
+    const confirmOrder = async() => {
+      this.setState({
+        confirmButtonLoading: true
+      })
+      let db = firebase.firestore()
+      const {supplierID} = this.state
+      const user = firebase.auth().currentUser
+      let newOrderID = null
+      await db.collection(collectionNames.orders)
+        .add({
+          clientID: user.uid,
+          supplierID: supplierID,
+          items: cartList
+        }).then(docRef => {
+          newOrderID = docRef.id
+        })
+      let newOrderRef = '/orders/'+newOrderID
+      await db.collection(collectionNames.clients)
+        .doc(user.uid)
+        .update({
+          orders: firebase.firestore.FieldValue.arrayUnion(newOrderRef)
+        })
+      await db.collection(collectionNames.suppliers)
+        .doc(supplierID)
+        .update({
+          orders: firebase.firestore.FieldValue.arrayUnion(newOrderRef)
+        })
+      onSuccessfulOrderUpload()
+    }
+
+    const onSuccessfulOrderUpload = () => {
+      this.setState({
+        confirmButtonLoading: false
+      })
+      Alert.alert(
+        "Order Placed",
+        "View it in my orders",
+        [
+          { text: "OK", onPress: () => this.setState({
+            cartList: [],
+            showOrderModal: false
+          })}
+        ]
+      );
     }
 
 
     const { cartList } = this.state
-
 
     const modalToRender =
       <Modal
@@ -330,7 +371,7 @@ class ViewSupplierItemScreen extends Component {
               />
             </View>
             <View style={styles.buttonContainer}>
-              <Button textColor={colors.colorAccent} title='Confirm' style={styles.buttonStyle} onPress={confirmOrder} />
+              <Button textColor={colors.colorAccent} isLoading={this.state.confirmButtonLoading} title='Confirm' style={styles.buttonStyle} onPress={confirmOrder} />
             </View>
           </View>
         </View>

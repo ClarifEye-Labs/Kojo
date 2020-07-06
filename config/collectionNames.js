@@ -4,7 +4,7 @@ const collectionNames = {
   productType: 'product_type',
   products: 'products',
   clients: 'clients',
-  
+  orders: 'orders' 
 }
 
 export default collectionNames
