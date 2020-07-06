@@ -62,29 +62,28 @@ class SplashScreen extends Component {
       overlayStyle,
       logoStyle,
       loadingStyle,
-      loadingContainer
-    } = styles
-
-    const {
-      navigation
-    } = this.props
+      loadingContainer,
+    } = styles;
 
     return (
       <ImageBackground
         style={mainContainer}
         imageStyle={{ paddingLeft: 120 }}
-        source={require('../assets/Splash/splashScreen.jpg')}>
+        source={require("../assets/Splash/splashScreen.jpg")}
+      >
         <View style={overlayStyle}>
           <LogoPlaceholder style={logoStyle} />
           <View style={loadingContainer}>
-            <ActivityIndicator style={loadingStyle} size='large' color={colors.colorAccent} />
+            <ActivityIndicator
+              style={loadingStyle}
+              size="large"
+              color={colors.colorAccent}
+            />
           </View>
         </View>
       </ImageBackground>
     );
   }
-
-
 }
 
 
@@ -93,22 +92,28 @@ const mapStateToProps = state => ({
   userFirestoreData: state.userDetailsReducer.userFirestoreData
 });
 
-const mapDispatchToProps = dispatch => ({
-  watchFirebaseAuthUser: () => { dispatch(watchFirebaseAuthUser()) },
-  watchUserFirestoreData: () => { dispatch(watchUserFirestoreData()) },
-  userLogOut: () => { dispatch(userLogOut()) }
-})
+const mapDispatchToProps = (dispatch) => ({
+  watchFirebaseAuthUser: () => {
+    dispatch(watchFirebaseAuthUser());
+  },
+  watchUserFirestoreData: () => {
+    dispatch(watchUserFirestoreData());
+  },
+  userLogOut: () => {
+    dispatch(userLogOut());
+  },
+});
 
 const styles = StyleSheet.create({
   mainContainer: {
-    ...commonStyling.mainContainer
+    ...commonStyling.mainContainer,
   },
   overlayStyle: {
     backgroundColor: colors.colorPrimaryTransluscent,
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
   },
   logoStyle: {
     width: dimens.logoWidthOnboarding,
@@ -117,19 +122,19 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   loadingStyle: {
-    fontSize: 50
+    fontSize: 50,
   },
   loadingContainer: {
     marginTop: 40,
-  }
-})
+  },
+});
 
 SplashScreen.navigationOptions = {
-  header: null
-}
+  header: null,
+};
 
 SplashScreen.propTypes = {
-  navigation: PropTypes.object
-}
+  navigation: PropTypes.object,
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(SplashScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(SplashScreen);

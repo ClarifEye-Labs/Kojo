@@ -1,7 +1,5 @@
 import { inventoryData } from '../constants/index'
 
-
-
 const initialState = {
     inventoryData: [],
 }

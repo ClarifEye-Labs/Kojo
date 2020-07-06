@@ -218,7 +218,7 @@ class ViewSupplierScreen extends Component {
           }}
           data={this.state.suppliersList}
           renderItem={({ item }) => SectionContent(item, this.props)}
-          keyExtractor={(item, index) => index}
+          keyExtractor={(item, index) => index.toString()}
           onScroll={Animated.event([
             {
               nativeEvent: {
