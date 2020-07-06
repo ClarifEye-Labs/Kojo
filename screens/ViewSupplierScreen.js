@@ -59,7 +59,8 @@ class ViewSupplierScreen extends Component {
       .then(async (doc) => {
         let listOfSuppliers = doc.data().suppliers;
         for (let i = 0; i < listOfSuppliers.length; i++) {
-          let supplierID = listOfSuppliers[i]
+          let supplierRef = listOfSuppliers[i]
+          let supplierID = supplierRef.substring(11)
           await db.collection(collectionNames.users)
             .doc(supplierID)
             .get()
