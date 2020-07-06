@@ -26,6 +26,7 @@ import collectionNames from '../config/collectionNames';
 import Utils from '../utils/Utils';
 import { watchFirebaseAuthUser, watchUserFirestoreData } from '../redux/actions/watchUserData'
 import { connect } from 'react-redux'
+import appConfig from '../config/appConfig'
 
 class LoginScreen extends React.Component {
   constructor(props) {
@@ -33,8 +34,8 @@ class LoginScreen extends React.Component {
 
     this.state = {
       navigation: props.navigation,
-      emailEntered: '',
-      passwordEntered: '',
+      emailEntered: appConfig.DEBUG_MODE ? 'conveytoshikhar@gmail.com' : '',
+      passwordEntered: appConfig.DEBUG_MODE ? '1234567890' : '',
       emailErrorStatus: false,
       emailErrorReason: null,
       passwordErrorStatus: false,
@@ -171,7 +172,7 @@ class LoginScreen extends React.Component {
       this.setState({
         loginButtonLoading: false
       })
-      Utils.dispatchScreen(screenToDispatch, undefined, this.state.navigation)
+      Utils.dispatchScreen(screenToDispatch, undefined, this.props.navigation)
     } else {
       alert('User has been deleted from our database, please register again!')
       this.setState({
@@ -222,7 +223,7 @@ class LoginScreen extends React.Component {
 
             <View style={socialContainer}>
               <Card
-                width={dimens.logoWidthOnboarding}
+                width='90%'
                 height={dimens.buttonHeight}
                 elevation={10}>
                 <SocialButton
@@ -232,7 +233,7 @@ class LoginScreen extends React.Component {
                   style={socialButton}
                   onPress={this.loginWithFacebook} />
               </Card>
-              <Card
+              {/* <Card
                 width={dimens.logoWidthOnboarding}
                 height={dimens.buttonHeight}
                 elevation={10}>
@@ -242,7 +243,7 @@ class LoginScreen extends React.Component {
                   iconColor={colors.googleOrange}
                   style={socialButton}
                   onPress={null} />
-              </Card>
+              </Card> */}
             </View>
 
             <View style={orContainer}>
@@ -335,7 +336,7 @@ class LoginScreen extends React.Component {
           console.log('User already exists, fetching details from database')
           const userData = doc.data()
           const screenToLoadForUser = Utils.screenToLoadForUser(userData)
-          Utils.dispatchScreen(screenToLoadForUser, undefined, this.state.navigation)
+          Utils.dispatchScreen(screenToLoadForUser, undefined, this.props.navigation)
 
         } else {
           //write the user to database 
@@ -351,7 +352,7 @@ class LoginScreen extends React.Component {
             address: null,
             uid: uid
           })
-          Utils.dispatchScreen(screens.SupplierRestaurantScreen, undefined, this.state.navigation)
+          Utils.dispatchScreen(screens.SupplierRestaurantScreen, undefined, this.props.navigation)
 
 
         }

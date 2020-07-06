@@ -58,7 +58,7 @@ class ProfileScreen extends Component {
     })
     this.props.userLogOut()
     // await firebase.auth().signOut()
-    Utils.dispatchScreen(screens.WelcomeScreen, 1000, this.state.navigation)
+    Utils.dispatchScreen(screens.WelcomeScreen, 1000, this.props.navigation)
   }
 
   componentDidMount = () => {
@@ -130,7 +130,7 @@ class ProfileScreen extends Component {
 
         <ScrollView style={scrollView}>
           <View style={rowContainer}>
-            <TouchableOpacity style={editIcon} onPress={() => this.state.navigation.navigate(screens.EditEmailScreen)}>
+            <TouchableOpacity style={editIcon} onPress={() => this.props.navigation.navigate(screens.EditEmailScreen)}>
               <Text style={editIconText}>{strings.edit}</Text>
             </TouchableOpacity>
             <TextWithSubheading
@@ -141,7 +141,7 @@ class ProfileScreen extends Component {
               textTitle={this.state.userEmail ? this.state.userEmail : strings.pleaseProvideThis} />
           </View>
           <View style={rowContainer}>
-            <TouchableOpacity style={editIcon} onPress={() => this.state.navigation.navigate(screens.AddressScreen)} >
+            <TouchableOpacity style={editIcon} onPress={() => this.props.navigation.navigate(screens.AddressScreen)} >
               <Text style={editIconText}>{strings.edit}</Text>
             </TouchableOpacity>
             <TextWithSubheading
@@ -152,7 +152,7 @@ class ProfileScreen extends Component {
               textTitle={this.state.userAddress ? this.state.userAddress : strings.pleaseProvideThis} />
           </View>
           <View style={rowContainer}>
-            <TouchableOpacity style={editIcon} onPress={() => this.state.navigation.navigate(screens.PhoneScreen)}>
+            <TouchableOpacity style={editIcon} onPress={() => this.props.navigation.navigate(screens.PhoneScreen)}>
               <Text style={editIconText}>{strings.edit}</Text>
             </TouchableOpacity>
             <TextWithSubheading

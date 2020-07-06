@@ -47,7 +47,7 @@ class InventoryItemScreen extends Component {
         inventory: firebase.firestore.FieldValue.arrayRemove('/products/' + itemID)
       }).then(() => {
         this.closeDeleteModal()
-        Utils.dispatchScreen(screens.SupplierHome, undefined, this.state.navigation)
+        Utils.dispatchScreen(screens.SupplierHome, undefined, this.props.navigation)
       }).catch(function (error) {
         alert("Error removing document: ", error);
       });

@@ -1,34 +1,43 @@
-import React, { Component } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, ScrollView, Modal, Platform, TextInput, ActivityIndicator } from 'react-native'
-import { Heading, Icon, InputWithSubHeading, Button } from '../Components'
-import { dimens, colors, strings, customFonts } from '../constants'
-import { commonStyling } from '../common'
-import { PropTypes, string } from 'prop-types'
-import iconNames from '../constants/iconNames';
-import LottieView from 'lottie-react-native';
-import { GoogleAutoComplete } from 'react-native-google-autocomplete';
-import appConfig from '../config/appConfig';
-import firebase from '../config/firebase'
-import collectionNames from '../config/collectionNames';
-import Utils from '../utils/Utils';
-import screens from '../constants/screens';
-
+import React, { Component } from "react";
+import {
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  Modal,
+  Platform,
+  TextInput,
+  ActivityIndicator,
+} from "react-native";
+import { Heading, Icon, InputWithSubHeading, Button } from "../Components";
+import { dimens, colors, strings, customFonts } from "../constants";
+import { commonStyling } from "../common";
+import { PropTypes, string } from "prop-types";
+import iconNames from "../constants/iconNames";
+import LottieView from "lottie-react-native";
+import { GoogleAutoComplete } from "react-native-google-autocomplete";
+import appConfig from "../config/appConfig";
+import firebase from "../config/firebase";
+import collectionNames from "../config/collectionNames";
+import Utils from "../utils/Utils";
+import screens from "../constants/screens";
+import * as Animatable from "react-native-animatable";
 
 class AddressScreen extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
-      navigation: props.navigation,
       addressEntered: strings.enterAddress,
       isAddressModalVisible: false,
-      addressPlaceholder: 'Enter your warehouse address'
-    }
+      addressPlaceholder: "Enter your warehouse address",
+    };
   }
 
   // ----- ADDRESS MODAL --------
-  showAddressModal = () => this.setState({ isAddressModalVisible: true })
+  showAddressModal = () => this.setState({ isAddressModalVisible: true });
 
-  hideAddressModal = () => this.setState({ isAddressModalVisible: false })
+  hideAddressModal = () => this.setState({ isAddressModalVisible: false });
 
   getAddressModal = () => {
     const {
@@ -36,18 +45,22 @@ class AddressScreen extends Component {
       modalContentContainerStyle,
       closeButton,
       addressContentContainer,
-      closeText
-    } = styles
+      closeText,
+    } = styles;
     return (
       <Modal
         visible={this.state.isAddressModalVisible}
         transparent={true}
-        animationType='slide'
-        onBackButtonPress={this.closeDeleteModal}>
+        animationType="slide"
+        onBackButtonPress={this.closeDeleteModal}
+      >
         <View style={modalContainerStyle}>
           <View style={modalContentContainerStyle}>
             <View>
-              <TouchableOpacity style={closeButton} onPress={this.hideAddressModal}>
+              <TouchableOpacity
+                style={closeButton}
+                onPress={this.hideAddressModal}
+              >
                 <Text style={closeText}>{strings.cancel}</Text>
               </TouchableOpacity>
             </View>
@@ -55,15 +68,11 @@ class AddressScreen extends Component {
             <View style={addressContentContainer}>
               {this.getAddressAutoCompleteComponent()}
             </View>
-
           </View>
-
         </View>
-
-
       </Modal>
-    )
-  }
+    );
+  };
 
   getAddressAutoCompleteComponent = () => {
     const {
@@ -74,17 +83,27 @@ class AddressScreen extends Component {
       activityIndicatorAddressStyle,
       addressInputContainer,
       closeButtonAddressInput,
-    } = styles
+    } = styles;
 
-    const component =
+    const component = (
       <GoogleAutoComplete
         apiKey={appConfig.googleCloudKey}
         debounce={300}
-        queryTypes='establishment'>
-        {({ inputValue, handleTextChange, locationResults, fetchDetails, isSearching, clearSearch }) => (
+        queryTypes="establishment"
+      >
+        {({
+          inputValue,
+          handleTextChange,
+          locationResults,
+          fetchDetails,
+          isSearching,
+          clearSearch,
+        }) => (
           <React.Fragment>
             <View style={addressComponentStyle}>
-              <Text style={subHeadingStyle}>{strings.addressModalSubheading}</Text>
+              <Text style={subHeadingStyle}>
+                {strings.addressModalSubheading}
+              </Text>
               <View style={addressInputContainer}>
                 <TextInput
                   style={addressTextInput}
@@ -97,80 +116,97 @@ class AddressScreen extends Component {
                   nameIOS={iconNames.crossIOS}
                   onPress={clearSearch}
                   size={38}
-                  color={colors.colorPrimary} />
+                  color={colors.colorPrimary}
+                />
               </View>
-              <ScrollView style={addressScrollingContainer} >
-                {isSearching
-                  ? <ActivityIndicator style={activityIndicatorAddressStyle} size='small' color={colors.grayTransluscent} />
-                  : locationResults.map((ai, i) => (
+              <ScrollView style={addressScrollingContainer}>
+                {isSearching ? (
+                  <ActivityIndicator
+                    style={activityIndicatorAddressStyle}
+                    size="small"
+                    color={colors.grayTransluscent}
+                  />
+                ) : (
+                  locationResults.map((ai, i) =>
                     this.AddressListItem(ai, fetchDetails)
-                  ))}
+                  )
+                )}
               </ScrollView>
             </View>
-
           </React.Fragment>
         )}
       </GoogleAutoComplete>
-    return component
-  }
+    );
+    return component;
+  };
 
   AddressListItem = (addressItem, fetchDetails) => {
-    const {
-      addressListItemContainer,
-      addressItemText
-    } = styles
+    const { addressListItemContainer, addressItemText } = styles;
 
-    const addressListItemComponent =
+    const addressListItemComponent = (
       <View style={addressListItemContainer} key={addressItem.description}>
-        <TouchableOpacity onPress={() => this.handleAddressListItemClick(addressItem, fetchDetails)}>
-          <Text numberOfLines={1} ellipsizeMode='tail' style={addressItemText}>{addressItem.description}</Text>
+        <TouchableOpacity
+          onPress={() =>
+            this.handleAddressListItemClick(addressItem, fetchDetails)
+          }
+        >
+          <Text numberOfLines={1} ellipsizeMode="tail" style={addressItemText}>
+            {addressItem.description}
+          </Text>
         </TouchableOpacity>
       </View>
-    return addressListItemComponent
-  }
+    );
+    return addressListItemComponent;
+  };
 
   handleAddressListItemClick = async (addressItem, fetchDetails) => {
-    const res = await fetchDetails(addressItem.place_id)
-    let place = undefined
+    const res = await fetchDetails(addressItem.place_id);
+    let place = undefined;
 
-    this.hideAddressModal() //hide the modal and set text to addres formatted address 
+    this.hideAddressModal(); //hide the modal and set text to addres formatted address
 
     if (res && res.geometry) {
-      place = {}
-      place.latitude = res.geometry.location.lat
-      place.longitude = res.geometry.location.lng
-      place.formattedName = res.name + ', ' + res.formatted_address
-      place.place_id = res.place_id
+      place = {};
+      place.latitude = res.geometry.location.lat;
+      place.longitude = res.geometry.location.lng;
+      place.formattedName = res.name + ", " + res.formatted_address;
+      place.place_id = res.place_id;
       this.setState({
-        addressEntered: place.formattedName
-      })
+        addressEntered: place.formattedName,
+      });
     }
 
     if (place) {
-      this.uploadAddressToDatabase(place)
+      this.uploadAddressToDatabase(place);
     }
-    return
-  }
+    return;
+  };
 
   uploadAddressToDatabase = async (place) => {
-    const user = firebase.auth().currentUser
-    const uid = user.uid
-    const userRef = firebase.firestore().collection(collectionNames.users)
+    const user = firebase.auth().currentUser;
+    const uid = user.uid;
+    const userRef = firebase.firestore().collection(collectionNames.users);
     if (userRef) {
-      this.animation.play()
-      await userRef.doc(uid).update({
-        address: { ...place }
-      }).then(this.setState({
-        proceedButtonVisible: true
-      })).catch((er) => {
-        console.log(er)
-      })
+      this.animation.play();
+      await userRef
+        .doc(uid)
+        .update({
+          address: { ...place },
+        })
+        .then(
+          this.setState({
+            proceedButtonVisible: true,
+          })
+        )
+        .catch((er) => {
+          console.log(er);
+        });
     }
-  }
+  };
 
   onSubmitClick = () => {
-    Utils.dispatchScreen(screens.PhoneScreen, undefined, this.state.navigation)
-  }
+    Utils.dispatchScreen(screens.PhoneScreen, undefined, this.props.navigation);
+  };
 
   render() {
     const {
@@ -184,49 +220,67 @@ class AddressScreen extends Component {
       orContainer,
       orStyling,
       thinLine,
-      inputAddressTextStyle
-    } = styles
+      inputAddressTextStyle,
+    } = styles;
 
-    const {
-      navigation
-    } = this.props
+    const { navigation } = this.props;
     return (
-      <ScrollView style={mainContainer}>
-        <Icon nameAndroid={iconNames.crossAndroid} nameIOS={iconNames.crossIOS} size={42} style={commonStyling.crossStyle} onPress={() => this.state.navigation.goBack()} />
-        <Heading title={strings.addressHeading} containerStyle={headingContainerStyle} />
-        <Text style={subHeadingStyle}>{strings.addressSubHeading}</Text>
-        <View style={inputContainerStyle}>
-          <TouchableOpacity style={inputContainerTouchableStyle} onPress={this.showAddressModal}>
-            <Text style={inputAddressTextStyle}>{this.state.addressEntered}</Text>
-          </TouchableOpacity>
-        </View>
+      <Animatable.View animation="fadeInUpBig">
+        <ScrollView style={mainContainer}>
+          <Icon
+            nameAndroid={iconNames.crossAndroid}
+            nameIOS={iconNames.crossIOS}
+            size={42}
+            style={commonStyling.crossStyle}
+            onPress={() => this.props.navigation.goBack()}
+          />
+          <Heading
+            title={strings.addressHeading}
+            containerStyle={headingContainerStyle}
+          />
+          <Text style={subHeadingStyle}>{strings.addressSubHeading}</Text>
+          <View style={inputContainerStyle}>
+            <TouchableOpacity
+              style={inputContainerTouchableStyle}
+              onPress={this.showAddressModal}
+            >
+              <Text style={inputAddressTextStyle}>
+                {this.state.addressEntered}
+              </Text>
+            </TouchableOpacity>
+          </View>
 
-        <View style={animationContainerStyle}>
-          <LottieView
-            ref={animation => {
-              this.animation = animation;
-            }}
-            onAnimationFinish={null}
-            loop={false}
-            source={require('../assets/animations/address.json')} />
-        </View>
+          <View style={animationContainerStyle}>
+            <LottieView
+              ref={(animation) => {
+                this.animation = animation;
+              }}
+              onAnimationFinish={null}
+              loop={false}
+              source={require("../assets/animations/address.json")}
+            />
+          </View>
 
-        {this.state.proceedButtonVisible
-          ? <Button title={strings.submit} style={buttonStyle} textColor={colors.colorAccent} onPress={this.onSubmitClick}/>
-          : null}
+          {this.state.proceedButtonVisible ? (
+            <Button
+              title={strings.submit}
+              style={buttonStyle}
+              textColor={colors.colorAccent}
+              onPress={this.onSubmitClick}
+            />
+          ) : null}
 
-        {this.getAddressModal()}
-
-      </ScrollView>
+          {this.getAddressModal()}
+        </ScrollView>
+      </Animatable.View>
     );
   }
-
 }
 
 const styles = StyleSheet.create({
   mainContainer: {
     ...commonStyling.mainContainer,
-    paddingHorizontal: dimens.screenHorizontalMargin
+    paddingHorizontal: dimens.screenHorizontalMargin,
   },
   subHeadingStyle: {
     fontSize: 12,
@@ -243,20 +297,20 @@ const styles = StyleSheet.create({
   animationContainerStyle: {
     marginTop: 50,
     marginBottom: 40,
-    width: '100%',
+    width: "100%",
     height: 200,
-    alignItems: 'center',
-    justifyContent: 'center'
+    alignItems: "center",
+    justifyContent: "center",
   },
   headingStyle: {
-    color: colors.colorPrimary
+    color: colors.colorPrimary,
   },
   inputContainerStyle: {
     marginHorizontal: 8,
     height: dimens.textInputHeight,
     borderBottomColor: colors.grayTransluscent,
     borderBottomWidth: 1,
-    justifyContent: 'center'
+    justifyContent: "center",
   },
   inputAddressTextStyle: {
     fontSize: 19,
@@ -267,32 +321,32 @@ const styles = StyleSheet.create({
     color: colors.blackTransluscent,
     fontSize: 18,
     marginHorizontal: 10,
-    fontFamily: customFonts.regular
+    fontFamily: customFonts.regular,
   },
   orContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-    marginTop: 40
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+    marginTop: 40,
   },
   thinLine: {
     height: dimens.thinLine,
     backgroundColor: colors.grayTransluscent,
-    width: '28%'
+    width: "28%",
   },
   buttonStyle: {
     backgroundColor: colors.colorPrimary,
-    width: '100%',
-    marginTop: 50
+    width: "100%",
+    marginTop: 50,
   },
   inputContainerTouchableStyle: {
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
   },
   modalContainerStyle: {
     flex: 1,
-    backgroundColor: colors.blackTransluscent
+    backgroundColor: colors.blackTransluscent,
   },
   modalContentContainerStyle: {
     flex: 1,
@@ -302,17 +356,17 @@ const styles = StyleSheet.create({
     borderTopRightRadius: dimens.defaultBorderRadius,
   },
   closeButton: {
-    position: 'absolute',
+    position: "absolute",
     top: 20,
-    right: dimens.screenHorizontalMargin
+    right: dimens.screenHorizontalMargin,
   },
   closeText: {
     color: colors.colorPrimary,
     fontFamily: customFonts.semiBold,
-    fontSize: 16
+    fontSize: 16,
   },
   addressTextInput: {
-    width: '100%',
+    width: "100%",
     height: dimens.textInputHeight,
     borderBottomWidth: 1,
     paddingHorizontal: 8,
@@ -322,16 +376,16 @@ const styles = StyleSheet.create({
     borderColor: colors.grayTransluscent,
   },
   addressContentContainer: {
-    width: '100%',
-    height: '100%',
-    marginTop: 40
+    width: "100%",
+    height: "100%",
+    marginTop: 40,
   },
   addressComponentStyle: {
-    paddingHorizontal: dimens.screenHorizontalMargin
+    paddingHorizontal: dimens.screenHorizontalMargin,
   },
   addressScrollingContainer: {
     marginTop: 12,
-    maxHeight: 250
+    maxHeight: 250,
   },
   activityIndicatorAddressStyle: {
     marginTop: 15,
@@ -346,21 +400,20 @@ const styles = StyleSheet.create({
     fontFamily: customFonts.regular,
   },
   addressInputContainer: {
-    flexDirection: 'row',
-    width: '95%',
+    flexDirection: "row",
+    width: "95%",
   },
   closeButtonAddressInput: {
-    marginRight: dimens.screenHorizontalMargin
-  }
-})
-
+    marginRight: dimens.screenHorizontalMargin,
+  },
+});
 
 AddressScreen.navigationOptions = {
-  header: null
-}
+  header: null,
+};
 
 AddressScreen.propTypes = {
-  navigation: PropTypes.object
-}
+  navigation: PropTypes.object,
+};
 
-export default AddressScreen
+export default AddressScreen;

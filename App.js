@@ -34,6 +34,7 @@ import EditEmailScreen from './screens/EditEmailScreen';
 import ViewClientsScreen from './screens/ViewClientsScreen';
 import ViewAllOrders from './screens/ViewAllOrders';
 import { configureStore } from './redux/app-redux'
+import ViewSupplierItemScreen from './screens/ViewSupplierItemsScreen';
 
 const store = configureStore()
 
@@ -64,7 +65,8 @@ const AppNavigator = createStackNavigator({
   AddSupplierScreen: AddSupplierScreen,
   EditEmailScreen: EditEmailScreen,
   ViewClientsScreen: ViewClientsScreen,
-  ViewAllOrders: ViewAllOrders
+  ViewAllOrders: ViewAllOrders,
+  ViewSupplierItemScreen: ViewSupplierItemScreen
 },
   {
     initialRouteName: screens.SplashScreen

@@ -510,6 +510,18 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: dimens.screenHorizontalMargin,
     marginTop: dimens.screenSafeUpperNotchDistance + 18
+  },
+  initalsContentContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.colorPrimary,
+    height: '100%',
+    borderRadius: 8
+  },
+  initials: {
+    color: colors.colorAccent,
+    fontSize: 14,
+    fontFamily: customFonts.medium
   }
 })
 

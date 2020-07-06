@@ -114,8 +114,9 @@ class RegistrationScreen extends React.Component {
       return error
     }
 
+  
     if (! /^(([A-Za-z]+[\-\']?)*([A-Za-z]+)?\s)+([A-Za-z]+[\-\']?)*([A-Za-z]+)?$/.test(name)) {
-      error.errorStatus = true,
+       error.errorStatus = true,
         error.errorReason = strings.nameErrorMessage
     }
 
@@ -207,25 +208,15 @@ class RegistrationScreen extends React.Component {
     firebase
       .auth()
       .createUserWithEmailAndPassword(emailEntered, passwordEntered)
-      .then((user) => this.successfulRegistration(user))
+      .then((user) => this.successfulRegistration())
       .catch((error) => this.registrationFailure(error))
 
   }
 
-  successfulRegistration = async (user) => {
-    await firebase.auth().currentUser.updateProfile({
-      displayName: this.state.nameEntered
-    })
-
+  successfulRegistration = async () => {
     await this.writeUserToFireStore()
-
     this.props.watchFirebaseAuthUser();
     this.props.watchUserFirestoreData();
-
-    this.setState({
-      showLoadingDialog: false
-    }, () => { Utils.dispatchScreen(screens.SupplierRestaurantScreen, undefined, this.state.navigation) })
-
   }
 
   writeUserToFireStore = async () => {
@@ -235,12 +226,14 @@ class RegistrationScreen extends React.Component {
     const user = firebase.auth().currentUser
     await ref.doc(user.uid).set({
       uid: user.uid,
-      name: user.displayName,
+      name: this.state.nameEntered,
       email: user.email,
       role: null,
       address: null,
       phone: null
     })
+
+    Utils.dispatchScreen(screens.SupplierRestaurantScreen, undefined, this.props.navigation)
 
 
   }
