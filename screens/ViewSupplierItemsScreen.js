@@ -304,7 +304,8 @@ class ViewSupplierItemScreen extends Component {
         .add({
           clientID: user.uid,
           supplierID: supplierID,
-          items: cartList
+          items: cartList,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
         }).then(docRef => {
           newOrderID = docRef.id
         })
