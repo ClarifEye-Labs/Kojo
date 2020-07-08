@@ -7,7 +7,7 @@ import {
   FlatList,
   Dimensions,
 } from "react-native";
-import { Back, Loading } from "../Components";
+import { Back, Loading, Card } from "../Components";
 import { dimens, colors, customFonts, strings } from "../constants";
 import { commonStyling } from "../common";
 import { PropTypes } from "prop-types";
@@ -29,6 +29,7 @@ class ViewOrdersClient extends Component {
       scrollY: new Animated.Value(0),
       orderList: [],
       loadingContent: false,
+      orderItemToSupplierHashMap: {}
     };
   }
 
@@ -55,19 +56,32 @@ class ViewOrdersClient extends Component {
             .doc(orderRef)
             .get()
             .then((doc) => {
-              orderList.push(doc.data());
+              let order = doc.data()
+              order.id = doc.id
+              orderList.push(order);
             });
         }
       });
+    //for each order fetch the supplier details 
+    let orderItemToSupplierHashMap = {} 
+    for(let i=0; i<orderList.length; i++) {
+      const orderItem = orderList[i]
+      const supplierID = orderItem.supplierID
+      await db.collection(collectionNames.users)
+              .doc(supplierID)
+              .get()
+              .then(doc => {
+                orderItemToSupplierHashMap[orderItem.id] = doc.data()
+              })
+    }
     this.setState({
       orderList: orderList,
+      orderItemToSupplierHashMap: orderItemToSupplierHashMap,
       loadingContent: false,
     });
   };
 
-  watchOrdersOfClient = () => {
-
-  };
+  watchOrdersOfClient = () => {};
 
   getMainHeaderView = () => {
     const {
@@ -95,6 +109,114 @@ class ViewOrdersClient extends Component {
   };
 
   showSearchPanel = () => this.setState({ showSearch: true });
+  
+  convertTimeStampToLocalDateTime = (timestamp) => {
+    const date = timestamp.toDate()
+    var newDate = new Date(date.getTime()+date.getTimezoneOffset()*60*1000);
+    var offset = date.getTimezoneOffset() / 60;
+    var hours = date.getHours();
+    newDate.setHours(hours - offset);
+    return newDate
+  }
+  OrderItem = (item, props) => {
+    const {
+      orderItemToSupplierHashMap
+    } = this.state
+    const timestamp = this.convertTimeStampToLocalDateTime(item.timestamp)
+    const supplierOfOrder = orderItemToSupplierHashMap[item.id]
+    const supplierName = supplierOfOrder.name
+    const userInitialsArray = supplierName.split(' ').map((name) => name[0])
+    const supplierNameInitials = (userInitialsArray[0] + userInitialsArray[userInitialsArray.length - 1]).toUpperCase()
+
+    const styles = {
+      sectionContentContainerOuter: {
+        height: 90,
+        alignItems: "center",
+        width: "100%",
+        flexDirection: "row",
+      },
+      sectionContentContainerInner: {
+        height: "100%",
+        justifyContent: "center",
+        marginLeft:
+          dimens.screenHorizontalMargin + 65 + dimens.screenHorizontalMargin,
+        borderBottomWidth: 0.2,
+        flexDirection: "row",
+        justifyContent: "center",
+        borderBottomColor: colors.black,
+      },
+      sectionContentTouchableContainer: {
+        flexDirection: "row",
+        width: "100%",
+        height: "100%",
+        marginRight: dimens.screenHorizontalMargin,
+        alignItems: "center",
+      },
+      sectionContentText: {
+        fontFamily: customFonts.regular,
+        fontSize: 18,
+        marginLeft: dimens.screenHorizontalMargin,
+        maxWidth: 220,
+        color: colors.black,
+      },
+      forwardButton: {
+        position: "absolute",
+        marginTop: 4,
+        right: dimens.screenHorizontalMargin,
+      },
+      imageStyle: {
+        width: "100%",
+        height: "100%",
+        borderRadius: dimens.defaultBorderRadius,
+      },
+      cardContainerStyle: {
+        position: "absolute",
+        left: dimens.screenHorizontalMargin,
+      },
+      initials: {
+        color: colors.colorAccent,
+        fontSize: 14,
+        fontFamily: customFonts.medium,
+      },
+      initalsContentContainer: {
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: colors.colorPrimary,
+        height: "100%",
+        borderRadius: 8,
+      },
+    };
+
+    const {
+      sectionContentContainerOuter,
+      sectionContentContainerInner,
+      sectionContentTouchableContainer,
+      sectionContentText,
+      imageStyle,
+      cardContainerStyle,
+      initials,
+      forwardButton,
+      initalsContentContainer,
+    } = styles;
+
+    const sectionContentToRender = (
+      <View style={sectionContentContainerOuter}>
+        <View style={cardContainerStyle}>
+        <Card width={65} height={65} elevation={dimens.defaultBorderRadius}>
+          <View style={initalsContentContainer}>
+            <Text style={initials}>{supplierNameInitials}</Text>
+          </View>
+        </Card>
+        </View>
+        <View style={sectionContentContainerInner}>
+          <View style={sectionContentTouchableContainer}>
+            <Text style={sectionContentText}>{supplierName}</Text>
+          </View>
+        </View>
+      </View>
+    );
+    return sectionContentToRender;
+  };
 
   render() {
     const headerHeight = this.state.scrollY.interpolate({
@@ -176,7 +298,7 @@ class ViewOrdersClient extends Component {
 
         <FlatList
           data={this.state.orderList}
-          renderItem={({ item }) => OrderItem(item, this.props)}
+          renderItem={({ item }) => this.OrderItem(item, this.props)}
           keyExtractor={(item) => item.id}
         />
       </Animatable.View>
@@ -189,10 +311,6 @@ class ViewOrdersClient extends Component {
     return componentToRender;
   }
 }
-
-const OrderItem = (item, props) => {
-  return <View><Text>Hi</Text></View>;
-};
 
 const styles = StyleSheet.create({
   mainContainer: {
