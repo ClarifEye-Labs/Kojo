@@ -15,6 +15,7 @@ import * as Animatable from "react-native-animatable";
 import { LinearGradient } from "expo-linear-gradient";
 import firebase from "../config/firebase";
 import collectionNames from "../config/collectionNames";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const HEADER_EXPANDED_HEIGHT = 250;
 const HEADER_COLLAPSED_HEIGHT = 100;
@@ -29,7 +30,7 @@ class ViewOrdersClient extends Component {
       scrollY: new Animated.Value(0),
       orderList: [],
       loadingContent: false,
-      orderItemToSupplierHashMap: {}
+      orderItemToSupplierHashMap: {},
     };
   }
 
@@ -56,23 +57,24 @@ class ViewOrdersClient extends Component {
             .doc(orderRef)
             .get()
             .then((doc) => {
-              let order = doc.data()
-              order.id = doc.id
+              let order = doc.data();
+              order.id = doc.id;
               orderList.push(order);
             });
         }
       });
-    //for each order fetch the supplier details 
-    let orderItemToSupplierHashMap = {} 
-    for(let i=0; i<orderList.length; i++) {
-      const orderItem = orderList[i]
-      const supplierID = orderItem.supplierID
-      await db.collection(collectionNames.users)
-              .doc(supplierID)
-              .get()
-              .then(doc => {
-                orderItemToSupplierHashMap[orderItem.id] = doc.data()
-              })
+    //for each order fetch the supplier details
+    let orderItemToSupplierHashMap = {};
+    for (let i = 0; i < orderList.length; i++) {
+      const orderItem = orderList[i];
+      const supplierID = orderItem.supplierID;
+      await db
+        .collection(collectionNames.users)
+        .doc(supplierID)
+        .get()
+        .then((doc) => {
+          orderItemToSupplierHashMap[orderItem.id] = doc.data();
+        });
     }
     this.setState({
       orderList: orderList,
@@ -109,28 +111,30 @@ class ViewOrdersClient extends Component {
   };
 
   showSearchPanel = () => this.setState({ showSearch: true });
-  
+
   convertTimeStampToLocalDateTime = (timestamp) => {
-    const date = timestamp.toDate()
-    var newDate = new Date(date.getTime()+date.getTimezoneOffset()*60*1000);
+    const date = timestamp.toDate();
+    var newDate = new Date(
+      date.getTime() + date.getTimezoneOffset() * 60 * 1000
+    );
     var offset = date.getTimezoneOffset() / 60;
     var hours = date.getHours();
     newDate.setHours(hours - offset);
-    return newDate
-  }
+    return newDate;
+  };
   OrderItem = (item, props) => {
-    const {
-      orderItemToSupplierHashMap
-    } = this.state
-    const timestamp = this.convertTimeStampToLocalDateTime(item.timestamp)
-    const supplierOfOrder = orderItemToSupplierHashMap[item.id]
-    const supplierName = supplierOfOrder.name
-    const userInitialsArray = supplierName.split(' ').map((name) => name[0])
-    const supplierNameInitials = (userInitialsArray[0] + userInitialsArray[userInitialsArray.length - 1]).toUpperCase()
-
+    const { orderItemToSupplierHashMap } = this.state;
+    const timestamp = this.convertTimeStampToLocalDateTime(item.timestamp).toString();
+    const supplierOfOrder = orderItemToSupplierHashMap[item.id];
+    const supplierName = supplierOfOrder.name;
+    const userInitialsArray = supplierName.split(" ").map((name) => name[0]);
+    const supplierNameInitials = (
+      userInitialsArray[0] + userInitialsArray[userInitialsArray.length - 1]
+    ).toUpperCase();
+    const numberOfItems = item.items.length;
     const styles = {
       sectionContentContainerOuter: {
-        height: 90,
+        height: 120,
         alignItems: "center",
         width: "100%",
         flexDirection: "row",
@@ -138,25 +142,29 @@ class ViewOrdersClient extends Component {
       sectionContentContainerInner: {
         height: "100%",
         justifyContent: "center",
-        marginLeft:
-          dimens.screenHorizontalMargin + 65 + dimens.screenHorizontalMargin,
+        marginLeft: dimens.screenHorizontalMargin + 65,
         borderBottomWidth: 0.2,
         flexDirection: "row",
         justifyContent: "center",
         borderBottomColor: colors.black,
       },
       sectionContentTouchableContainer: {
-        flexDirection: "row",
         width: "100%",
         height: "100%",
-        marginRight: dimens.screenHorizontalMargin,
-        alignItems: "center",
+        justifyContent: 'center'
       },
       sectionContentText: {
-        fontFamily: customFonts.regular,
-        fontSize: 18,
+        fontFamily: customFonts.semiBold,
+        fontSize: 14,
         marginLeft: dimens.screenHorizontalMargin,
         maxWidth: 220,
+        color: colors.black,
+      },
+      sectionContentSubtext: {
+        fontFamily: customFonts.regular,
+        fontSize: 12,
+        marginLeft: dimens.screenHorizontalMargin,
+        marginTop: 8,
         color: colors.black,
       },
       forwardButton: {
@@ -185,6 +193,12 @@ class ViewOrdersClient extends Component {
         height: "100%",
         borderRadius: 8,
       },
+      dateStyle: {
+        position: 'absolute',
+        right: 0,
+        top: 10,
+        color: colors.colorPrimary
+      }
     };
 
     const {
@@ -192,26 +206,30 @@ class ViewOrdersClient extends Component {
       sectionContentContainerInner,
       sectionContentTouchableContainer,
       sectionContentText,
+      sectionContentSubtext,
       imageStyle,
       cardContainerStyle,
       initials,
       forwardButton,
+      dateStyle,
       initalsContentContainer,
     } = styles;
 
     const sectionContentToRender = (
       <View style={sectionContentContainerOuter}>
         <View style={cardContainerStyle}>
-        <Card width={65} height={65} elevation={dimens.defaultBorderRadius}>
-          <View style={initalsContentContainer}>
-            <Text style={initials}>{supplierNameInitials}</Text>
-          </View>
-        </Card>
+          <Card width={65} height={65} elevation={dimens.defaultBorderRadius}>
+            <View style={initalsContentContainer}>
+              <Text style={initials}>{supplierNameInitials}</Text>
+            </View>
+          </Card>
         </View>
         <View style={sectionContentContainerInner}>
-          <View style={sectionContentTouchableContainer}>
-            <Text style={sectionContentText}>{supplierName}</Text>
-          </View>
+          <TouchableOpacity style={sectionContentTouchableContainer}>
+              <Text style={sectionContentText}>{supplierName}</Text>
+              <Text style={sectionContentSubtext}>Number of items: {numberOfItems}</Text>
+              <Text style={sectionContentSubtext}>{timestamp}</Text>
+          </TouchableOpacity>
         </View>
       </View>
     );
