@@ -25,7 +25,8 @@ const screens = {
   EditEmailScreen: 'EditEmailScreen',
   ViewClientsScreen: 'ViewClientsScreen',
   ViewAllOrders: 'ViewAllOrders',
-  ViewSupplierItemScreen: 'ViewSupplierItemScreen'
+  ViewSupplierItemScreen: 'ViewSupplierItemScreen',
+  ViewOrderItemDetails: 'ViewOrderItemDetails'
 }
 
 export default screens;

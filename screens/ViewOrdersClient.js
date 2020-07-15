@@ -7,8 +7,15 @@ import {
   FlatList,
   Dimensions,
 } from "react-native";
-import { Back, Loading, Card } from "../Components";
-import { dimens, colors, customFonts, strings } from "../constants";
+import { Back, Loading, Card, Icon } from "../Components";
+import {
+  dimens,
+  colors,
+  customFonts,
+  strings,
+  iconNames,
+  screens,
+} from "../constants";
 import { commonStyling } from "../common";
 import { PropTypes } from "prop-types";
 import * as Animatable from "react-native-animatable";
@@ -122,9 +129,12 @@ class ViewOrdersClient extends Component {
     newDate.setHours(hours - offset);
     return newDate;
   };
+
   OrderItem = (item, props) => {
     const { orderItemToSupplierHashMap } = this.state;
-    const timestamp = this.convertTimeStampToLocalDateTime(item.timestamp).toString();
+    const timestamp = this.convertTimeStampToLocalDateTime(
+      item.timestamp
+    ).toLocaleString();
     const supplierOfOrder = orderItemToSupplierHashMap[item.id];
     const supplierName = supplierOfOrder.name;
     const userInitialsArray = supplierName.split(" ").map((name) => name[0]);
@@ -132,6 +142,7 @@ class ViewOrdersClient extends Component {
       userInitialsArray[0] + userInitialsArray[userInitialsArray.length - 1]
     ).toUpperCase();
     const numberOfItems = item.items.length;
+    const { navigation } = props;
     const styles = {
       sectionContentContainerOuter: {
         height: 120,
@@ -141,17 +152,17 @@ class ViewOrdersClient extends Component {
       },
       sectionContentContainerInner: {
         height: "100%",
-        justifyContent: "center",
-        marginLeft: dimens.screenHorizontalMargin + 65,
+        width: "100%",
+        marginLeft: dimens.screenHorizontalMargin + 70,
         borderBottomWidth: 0.2,
         flexDirection: "row",
-        justifyContent: "center",
         borderBottomColor: colors.black,
       },
       sectionContentTouchableContainer: {
         width: "100%",
         height: "100%",
-        justifyContent: 'center'
+        justifyContent: "center",
+        alignItems: "flexStart",
       },
       sectionContentText: {
         fontFamily: customFonts.semiBold,
@@ -194,11 +205,11 @@ class ViewOrdersClient extends Component {
         borderRadius: 8,
       },
       dateStyle: {
-        position: 'absolute',
+        position: "absolute",
         right: 0,
         top: 10,
-        color: colors.colorPrimary
-      }
+        color: colors.colorPrimary,
+      },
     };
 
     const {
@@ -225,12 +236,39 @@ class ViewOrdersClient extends Component {
           </Card>
         </View>
         <View style={sectionContentContainerInner}>
-          <TouchableOpacity style={sectionContentTouchableContainer}>
-              <Text style={sectionContentText}>{supplierName}</Text>
-              <Text style={sectionContentSubtext}>Number of items: {numberOfItems}</Text>
-              <Text style={sectionContentSubtext}>{timestamp}</Text>
+          <TouchableOpacity
+            style={sectionContentTouchableContainer}
+            onPress={() =>
+              navigation.navigate(screens.ViewOrderItemDetails, {
+                orderItem: item,
+              })
+            }
+          >
+            <Text style={sectionContentText}>{supplierName}</Text>
+            <Text style={sectionContentSubtext}>
+              Number of items: {numberOfItems}
+            </Text>
+            <Text
+              style={{
+                ...sectionContentSubtext,
+                ...{ color: colors.colorPrimary },
+              }}
+            >
+              {timestamp}
+            </Text>
           </TouchableOpacity>
         </View>
+        <Icon
+          nameAndroid={iconNames.forwardAndroid}
+          nameIOS={iconNames.forwardIOS}
+          style={forwardButton}
+          color={colors.black}
+          onPress={() =>
+            navigation.navigate(screens.ViewOrderItemDetails, {
+              orderItem: item,
+            })
+          }
+        />
       </View>
     );
     return sectionContentToRender;
@@ -316,8 +354,20 @@ class ViewOrdersClient extends Component {
 
         <FlatList
           data={this.state.orderList}
+          contentContainerStyle={{
+            minHeight: SCREEN_HEIGHT + HEADER_COLLAPSED_HEIGHT,
+          }}
           renderItem={({ item }) => this.OrderItem(item, this.props)}
           keyExtractor={(item) => item.id}
+          onScroll={Animated.event([
+            {
+              nativeEvent: {
+                contentOffset: {
+                  y: this.state.scrollY,
+                },
+              },
+            },
+          ])}
         />
       </Animatable.View>
     );
