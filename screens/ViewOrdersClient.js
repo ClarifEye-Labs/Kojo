@@ -67,7 +67,7 @@ class ViewOrdersClient extends Component {
             .then((doc) => {
               let order = doc.data();
               order.id = doc.id;
-              orderList.push(order);
+            orderList.unshift(order);
             });
         }
       });

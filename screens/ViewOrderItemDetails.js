@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { View, StyleSheet, Text } from "react-native";
-import { Heading, Back } from "../Components";
+import { View, StyleSheet, Text, FlatList, ImageBackground } from "react-native";
+import { Heading, Back, Card } from "../Components";
 import { dimens, colors, strings, customFonts } from "../constants";
 import { commonStyling } from "../common";
 import { PropTypes } from "prop-types";
@@ -15,6 +15,73 @@ class ViewOrderItemDetails extends Component {
       supplierOfOrder: props.navigation.state.params.supplierOfOrder,
     };
   }
+
+  OrderItem(data) {
+    const styles = {
+      itemContainer: {
+        borderBottomWidth: 1,
+        paddingTop: 12,
+        paddingBottom: 12,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        borderBottomColor: colors.grayTransluscent
+      },
+      numberContainer: {
+        borderWidth: 1,
+        borderRadius: 4,
+        width: 120,
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
+        height: 'auto',
+        paddingTop: 4,
+        paddingBottom: 4,
+        borderColor: colors.colorPrimaryTransluscent
+      },
+      itemName: {
+        fontSize: 18,
+        color: colors.colorPrimary,
+        fontFamily: customFonts.medium
+      },
+      qty: {
+        color: colors.colorPrimary,
+        fontSize: 14,
+        marginRight: 4
+      },
+      unit: {
+        color: colors.colorPrimary,
+        fontSize: 14,
+        width: 40
+      },
+      imageStyle: {
+        width: '100%',
+        height: '100%',
+        borderRadius: dimens.defaultBorderRadius
+      },
+      cardContainerStyle: {
+        position: 'absolute',
+        left: dimens.screenHorizontalMargin
+      },
+    }
+
+    const componentToRender =
+      <View style={styles.itemContainer} id={data.id}>
+        <Card width={50} height={50} elevation={dimens.defaultBorderRadius}>
+          <ImageBackground
+            style={styles.imageStyle}
+            imageStyle={{ borderRadius: dimens.defaultBorderRadius }}
+            source={{ uri: data.imageURL }} />
+        </Card>
+        <Text style={styles.itemName}>{data.name}</Text>
+        <View style={styles.numberContainer}>
+          <Text style={styles.qty}>{data.qty}</Text>
+          <Text style={styles.unit} numberOfLines={1} ellipsizeMode='tail'>{data.unit}</Text>
+        </View>
+      </View>
+    return componentToRender
+  }
+
 
   render() {
     const {
@@ -94,7 +161,9 @@ class ViewOrderItemDetails extends Component {
               {strings.itemsOrdered}
             </Text>
             {/* Flatlist comes here */}
-            
+            {items.map( item =>  {
+              return this.OrderItem(item)
+            })}            
           </View>
         </View>
       </ScrollView>
