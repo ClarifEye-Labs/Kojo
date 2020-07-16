@@ -106,7 +106,15 @@ const strings = {
   findTheItemsToOrderBelow: 'Find the items to order below',
   yourOrder: 'Your Order',
   findYourOrderBelow: 'Find your order below: ',
-  chooseAddSupplierOption: 'Add Supplier Confirmation'
+  chooseAddSupplierOption: 'Add Supplier Confirmation',
+  detailsOfSupplier: 'Details of Supplier',
+  addressOfSupplier: 'Supplier\'s address: ',
+  emailOfSupplier: 'Supplier\'s email: ',
+  phoneOfSupplier: 'Supplier\'s phone: ',
+  orderDetails: 'Order Details',
+  dateOfOrder: 'Time ordered: ',
+  itemsOrdered: 'Items Ordered: ',
+  orderID:  'Order ID: '
 }
 
 export default strings

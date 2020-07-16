@@ -23,6 +23,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import firebase from "../config/firebase";
 import collectionNames from "../config/collectionNames";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import Utils from "../utils/Utils";
 
 const HEADER_EXPANDED_HEIGHT = 250;
 const HEADER_COLLAPSED_HEIGHT = 100;
@@ -119,22 +120,9 @@ class ViewOrdersClient extends Component {
 
   showSearchPanel = () => this.setState({ showSearch: true });
 
-  convertTimeStampToLocalDateTime = (timestamp) => {
-    const date = timestamp.toDate();
-    var newDate = new Date(
-      date.getTime() + date.getTimezoneOffset() * 60 * 1000
-    );
-    var offset = date.getTimezoneOffset() / 60;
-    var hours = date.getHours();
-    newDate.setHours(hours - offset);
-    return newDate;
-  };
-
   OrderItem = (item, props) => {
     const { orderItemToSupplierHashMap } = this.state;
-    const timestamp = this.convertTimeStampToLocalDateTime(
-      item.timestamp
-    ).toLocaleString();
+    const timestamp = Utils.convertTimeStampToLocalDateTime(item.timestamp).toString()
     const supplierOfOrder = orderItemToSupplierHashMap[item.id];
     const supplierName = supplierOfOrder.name;
     const userInitialsArray = supplierName.split(" ").map((name) => name[0]);
@@ -154,7 +142,7 @@ class ViewOrdersClient extends Component {
         height: "100%",
         width: "100%",
         marginLeft: dimens.screenHorizontalMargin + 70,
-        borderBottomWidth: 0.2,
+        borderBottomWidth: 0.5,
         flexDirection: "row",
         borderBottomColor: colors.black,
       },
@@ -241,6 +229,7 @@ class ViewOrdersClient extends Component {
             onPress={() =>
               navigation.navigate(screens.ViewOrderItemDetails, {
                 orderItem: item,
+                supplierOfOrder: orderItemToSupplierHashMap[item.id]
               })
             }
           >
@@ -266,6 +255,7 @@ class ViewOrdersClient extends Component {
           onPress={() =>
             navigation.navigate(screens.ViewOrderItemDetails, {
               orderItem: item,
+              supplierOfOrder: orderItemToSupplierHashMap[item.id]
             })
           }
         />
@@ -413,7 +403,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginLeft:
       dimens.screenHorizontalMargin + 65 + dimens.screenHorizontalMargin,
-    borderBottomWidth: 0.2,
+    borderBottomWidth: 0.5,
     flexDirection: "row",
     justifyContent: "center",
     borderBottomColor: colors.black,

@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     marginLeft: dimens.screenHorizontalMargin + 65 + dimens.screenHorizontalMargin,
-    borderBottomWidth: 0.2,
+    borderBottomWidth: 0.5,
     flexDirection: 'row',
     justifyContent: 'center',
     borderBottomColor: colors.black
